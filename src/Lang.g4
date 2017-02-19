@@ -3,13 +3,13 @@ prog:'#'STRING 'BEGIN' expression* 'END';
 expression: varDecl|methodDecl|ifExpr|whileExpr|forExpr|writeExpr|readExpr;
 
 //expressions
-varDecl:('global')? '~' dataType variableName 'IS' variable';';
+varDecl:('global')? '~' dataType variableName 'IS' (variable| readExpr)';';
 methodDecl:'~' ('void'|dataType) '('(('~' dataType variableName)(',' '~' dataType variableName)*)? ')' methodName opener expression* 'return' (variableName|INT|STRING)?';' closer;
 ifExpr:'if' '(' condition ')' opener expression* closer (('?' '(' condition ')' opener expression* closer)* ('?' opener expression* closer)?)?;
 whileExpr: 'REPEAT' opener expression* closer 'UNTILL' '(' condition ')';
 forExpr: 'for' '(' varDecl condition (';' IDcrement '(' variable ')')? ')' opener;
 writeExpr: 'WRITE(' STRING ');';
-readExpr: 'READ'
+readExpr: 'READ';
 
 //condition form
 condition: (variableName|INT) LOP (variableName|INT);
