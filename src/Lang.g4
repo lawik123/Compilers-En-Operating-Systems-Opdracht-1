@@ -1,6 +1,6 @@
 grammar Lang;
 prog:'#'STRING 'BEGIN' expression* 'END';
-expression: varDecl|methodDecl|ifExpr|whileExpr|forExpr;
+expression: varDecl|methodDecl|ifExpr|whileExpr|forExpr|writeExpr|readExpr;
 
 //expressions
 varDecl:('global')? '~' dataType variableName 'IS' variable';';
@@ -8,6 +8,8 @@ methodDecl:'~' ('void'|dataType) '('(('~' dataType variableName)(',' '~' dataTyp
 ifExpr:'if' '(' condition ')' opener expression* closer (('?' '(' condition ')' opener expression* closer)* ('?' opener expression* closer)?)?;
 whileExpr: 'REPEAT' opener expression* closer 'UNTILL' '(' condition ')';
 forExpr: 'for' '(' varDecl condition (';' IDcrement '(' variable ')')? ')' opener;
+writeExpr: 'WRITE(' STRING ');';
+readExpr: 'READ'
 
 //condition form
 condition: (variableName|INT) LOP (variableName|INT);
