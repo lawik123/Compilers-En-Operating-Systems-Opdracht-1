@@ -1,6 +1,12 @@
 grammar Lang;
 prog:'#'STRING 'BEGIN' expression* 'END';
-expression: varDecl|methodDecl|ifExpr|whileExpr|forExpr|writeExpr|readExpr;
+expression: varDecl     #varDecleration
+|methodDecl
+|ifExpr
+|whileExpr
+|forExpr
+|writeExpr
+|readExpr;
 
 //expressions
 varDecl:('global')? '~' dataType variableName 'IS' (variable| readExpr)';';
