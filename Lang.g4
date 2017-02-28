@@ -1,24 +1,34 @@
 grammar Lang;
 prog:'#'STRING 'BEGIN' expression* 'END';
-expression: varDecl     #varDecleration
+expression: varDecl
 |methodDecl
 |ifExpr
 |whileExpr
 |forExpr
 |writeExpr
-|readExpr;
+|readExpr
+|mathExpr;
 
 //expressions
-varDecl:('global')? '~' dataType variableName 'IS' (variable| readExpr)';';
-methodDecl:'~' ('void'|dataType) '('(('~' dataType variableName)(',' '~' dataType variableName)*)? ')' methodName opener expression* 'return' (variableName|INT|STRING)?';' closer;
+varDecl:('global')? '~' type=dataType identifier=variableName 'IS' (value=variable | value2=readExpr)';';
+methodDecl:'~' ('void'|dataType) '('(('~' returntype=dataType variableName)(',' '~' dataType variableName)*)? ')' methodName opener expression* 'return' (variableName|INT|STRING)?';' closer;
 ifExpr:'if' '(' condition ')' opener expression* closer (('?' '(' condition ')' opener expression* closer)* ('?' opener expression* closer)?)?;
 whileExpr: 'REPEAT' opener expression* closer 'UNTILL' '(' condition ')';
 forExpr: 'for' '(' varDecl condition (';' IDcrement '(' variable ')')? ')' opener;
 writeExpr: 'WRITE(' STRING ');';
 readExpr: 'READ';
 
+//mathmetic expressions
+mathExpr: '('	mathExpr	')'                            #parenthesisExpression
+          		    |   '-'	mathExpr                             #minusFirstExpression
+          		    |	leftExpr=mathExpr	op=('*'	|	'/')	rightExpr=mathExpr #multiplyDivideExpression
+          			|	leftExpr=mathExpr	op=('+'	|	'-')	rightExpr=mathExpr #addSubstractExpression
+          			|	leftExpr=mathExpr	op=('<'	|	'<='|	'>'|	'>=')	rightExpr=mathExpr #compareExpression
+          			|	INT                                        #intLitteralExpression
+          			;
+
 //condition form
-condition: (variableName|INT) LOP (variableName|INT);
+condition: (identifierLeft=variableName|INT) lop=LOP (identifierRight=variableName|INT);
 
 //types
 IDcrement: 'incr'|'decr';

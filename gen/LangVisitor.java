@@ -1,4 +1,4 @@
-// Generated from D:/school/jaar2/kwartiel3/Compilers&OperatingSystems/Opdracht-1/Compilers-En-Operating-Systems-Opdracht-1/src\Lang.g4 by ANTLR 4.6
+// Generated from D:/school/jaar2/kwartiel3/Compilers&OperatingSystems/Opdracht-1/Compilers-En-Operating-Systems-Opdracht-1\Lang.g4 by ANTLR 4.6
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -63,6 +63,48 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitReadExpr(LangParser.ReadExprContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code intLitteralExpression}
+	 * labeled alternative in {@link LangParser#mathExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIntLitteralExpression(LangParser.IntLitteralExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code compareExpression}
+	 * labeled alternative in {@link LangParser#mathExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCompareExpression(LangParser.CompareExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code minusFirstExpression}
+	 * labeled alternative in {@link LangParser#mathExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMinusFirstExpression(LangParser.MinusFirstExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code multiplyDivideExpression}
+	 * labeled alternative in {@link LangParser#mathExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMultiplyDivideExpression(LangParser.MultiplyDivideExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code parenthesisExpression}
+	 * labeled alternative in {@link LangParser#mathExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParenthesisExpression(LangParser.ParenthesisExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code addSubstractExpression}
+	 * labeled alternative in {@link LangParser#mathExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAddSubstractExpression(LangParser.AddSubstractExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link LangParser#condition}.
 	 * @param ctx the parse tree
