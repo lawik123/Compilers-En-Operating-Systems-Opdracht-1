@@ -15,13 +15,13 @@ public class TypeEvaluator extends LangBaseVisitor<Type> {
         Type type = visit(ctx.type);
         Type identifier = visit(ctx.identifier);
         Type value = visit(ctx.value);
-        //todo value2 (READ)
+        Type value2 = visit(ctx.value2);
         if(type.equals("int")) {
-            if (identifier == Type.STRING && value == Type.INT) {
+            if ((identifier == Type.STRING && value == Type.INT) || (identifier == Type.STRING && value2 == Type.INT)) {
                 return Type.BOOL;
             }
         } else if(type.equals("string")) {
-            if (identifier == Type.STRING && value == Type.STRING) {
+            if ((identifier == Type.STRING && value == Type.STRING) || (identifier == Type.STRING && value2 == Type.STRING)) {
                 return Type.BOOL;
             }
         }

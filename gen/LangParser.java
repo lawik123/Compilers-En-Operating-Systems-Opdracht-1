@@ -288,17 +288,18 @@ public class LangParser extends Parser {
 		public DataTypeContext type;
 		public VariableNameContext identifier;
 		public VariableContext value;
+		public ReadExprContext value2;
 		public DataTypeContext dataType() {
 			return getRuleContext(DataTypeContext.class,0);
 		}
 		public VariableNameContext variableName() {
 			return getRuleContext(VariableNameContext.class,0);
 		}
-		public ReadExprContext readExpr() {
-			return getRuleContext(ReadExprContext.class,0);
-		}
 		public VariableContext variable() {
 			return getRuleContext(VariableContext.class,0);
+		}
+		public ReadExprContext readExpr() {
+			return getRuleContext(ReadExprContext.class,0);
 		}
 		public VarDeclContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -357,7 +358,7 @@ public class LangParser extends Parser {
 			case T__19:
 				{
 				setState(63);
-				readExpr();
+				((VarDeclContext)_localctx).value2 = readExpr();
 				}
 				break;
 			default:
