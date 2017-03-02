@@ -28,6 +28,12 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitVarDecl(LangParser.VarDeclContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link LangParser#varMod}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVarMod(LangParser.VarModContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link LangParser#methodDecl}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -64,19 +70,19 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitReadExpr(LangParser.ReadExprContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code intLitteralExpression}
-	 * labeled alternative in {@link LangParser#mathExpr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIntLitteralExpression(LangParser.IntLitteralExpressionContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code compareExpression}
 	 * labeled alternative in {@link LangParser#mathExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitCompareExpression(LangParser.CompareExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code intLitteralExpression}
+	 * labeled alternative in {@link LangParser#mathExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIntLitteralExpression(LangParser.IntLitteralExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code minusFirstExpression}
 	 * labeled alternative in {@link LangParser#mathExpr}.
@@ -118,6 +124,12 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDataType(LangParser.DataTypeContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link LangParser#voidType}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVoidType(LangParser.VoidTypeContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link LangParser#methodName}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -147,4 +159,10 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitCloser(LangParser.CloserContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link LangParser#returnvalues}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitReturnvalues(LangParser.ReturnvaluesContext ctx);
 }

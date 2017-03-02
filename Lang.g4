@@ -11,21 +11,20 @@ expression: varDecl
 
 //expressions
 varDecl:('global')? '~' type=dataType identifier=variableName 'IS' (value=variable | value2=readExpr)';';
-methodDecl:'~' ('void'|dataType) '('(('~' returntype=dataType variableName)(',' '~' dataType variableName)*)? ')' methodName opener expression* 'return' (variableName|INT|STRING)?';' closer;
+varMod: identifier=variableName 'IS' (value=variable | value2=readExpr | mathExpr)';';
+methodDecl:'~' (voidreturntype=voidType |returntype=dataType) '('(('~' dataType variableName)(',' '~' dataType variableName)*)? ')' methodName opener expression* 'return' (returnvalue=returnvalues)?';' closer;
 ifExpr:'if' '(' condition ')' opener expression* closer (('?' '(' condition ')' opener expression* closer)* ('?' opener expression* closer)?)?;
 whileExpr: 'REPEAT' opener expression* closer 'UNTILL' '(' condition ')';
-forExpr: 'for' '(' varDecl condition (';' IDcrement '(' variable ')')? ')' opener;
-writeExpr: 'WRITE(' STRING ');';
+forExpr: 'for' '(' varDecl condition (';' IDcrement '(' variableName ')')? ')' opener expression* closer;
+writeExpr: 'WRITE(' STRING | variableName (( '+' STRING | variableName)*)? ');';
 readExpr: 'READ';
 
 //mathmetic expressions
 mathExpr: '('	mathExpr	')'                            #parenthesisExpression
-          		    |   '-'	mathExpr                             #minusFirstExpression
-          		    |	leftExpr=mathExpr	op=('*'	|	'/')	rightExpr=mathExpr #multiplyDivideExpression
-          			|	leftExpr=mathExpr	op=('+'	|	'-')	rightExpr=mathExpr #addSubstractExpression
-          			|	leftExpr=mathExpr	op=('<'	|	'<='|	'>'|	'>=')	rightExpr=mathExpr #compareExpression
-          			|	INT                                        #intLitteralExpression
-          			;
+          		    |	leftExpr=mathvalues	(op=OP	rightExpr=mathvalues)+ #mathExpression
+           			;
+
+mathvalues: variableName | INT;
 
 //condition form
 condition: (identifierLeft=variableName|INT) lop=LOP (identifierRight=variableName|INT);
@@ -33,11 +32,12 @@ condition: (identifierLeft=variableName|INT) lop=LOP (identifierRight=variableNa
 //types
 IDcrement: 'incr'|'decr';
 dataType: 'int'|'string';
+voidType: 'void';
 
 //names
 methodName: STRING;
 variableName: STRING;
-variable: STRING|INT;
+variable: STRINGVALUE|INT;
 
 //openers and closers
 opener: '/';
@@ -49,7 +49,11 @@ LOP:'<'|'<='|'>'|'>='|'=='|'!=';
 
 //datatype
 INT: [0-9]+;
-STRING: [a-zA-Z]+;
+STRING: [a-z] [a-zA-Z0-9]*;
+STRINGVALUE: '"' [a-zA-Z0-9]* '"';
+
+//return types
+returnvalues: variableName | INT | STRING;
 
 //skippers
 WL:	[\n\t\r] ->	skip;       //skip enter or tabs

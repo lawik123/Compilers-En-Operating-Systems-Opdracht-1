@@ -37,6 +37,16 @@ public interface LangListener extends ParseTreeListener {
 	 */
 	void exitVarDecl(LangParser.VarDeclContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link LangParser#varMod}.
+	 * @param ctx the parse tree
+	 */
+	void enterVarMod(LangParser.VarModContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LangParser#varMod}.
+	 * @param ctx the parse tree
+	 */
+	void exitVarMod(LangParser.VarModContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link LangParser#methodDecl}.
 	 * @param ctx the parse tree
 	 */
@@ -97,18 +107,6 @@ public interface LangListener extends ParseTreeListener {
 	 */
 	void exitReadExpr(LangParser.ReadExprContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code intLitteralExpression}
-	 * labeled alternative in {@link LangParser#mathExpr}.
-	 * @param ctx the parse tree
-	 */
-	void enterIntLitteralExpression(LangParser.IntLitteralExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code intLitteralExpression}
-	 * labeled alternative in {@link LangParser#mathExpr}.
-	 * @param ctx the parse tree
-	 */
-	void exitIntLitteralExpression(LangParser.IntLitteralExpressionContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code compareExpression}
 	 * labeled alternative in {@link LangParser#mathExpr}.
 	 * @param ctx the parse tree
@@ -120,6 +118,18 @@ public interface LangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitCompareExpression(LangParser.CompareExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code intLitteralExpression}
+	 * labeled alternative in {@link LangParser#mathExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterIntLitteralExpression(LangParser.IntLitteralExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code intLitteralExpression}
+	 * labeled alternative in {@link LangParser#mathExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitIntLitteralExpression(LangParser.IntLitteralExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code minusFirstExpression}
 	 * labeled alternative in {@link LangParser#mathExpr}.
@@ -189,6 +199,16 @@ public interface LangListener extends ParseTreeListener {
 	 */
 	void exitDataType(LangParser.DataTypeContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link LangParser#voidType}.
+	 * @param ctx the parse tree
+	 */
+	void enterVoidType(LangParser.VoidTypeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LangParser#voidType}.
+	 * @param ctx the parse tree
+	 */
+	void exitVoidType(LangParser.VoidTypeContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link LangParser#methodName}.
 	 * @param ctx the parse tree
 	 */
@@ -238,4 +258,14 @@ public interface LangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitCloser(LangParser.CloserContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link LangParser#returnvalues}.
+	 * @param ctx the parse tree
+	 */
+	void enterReturnvalues(LangParser.ReturnvaluesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LangParser#returnvalues}.
+	 * @param ctx the parse tree
+	 */
+	void exitReturnvalues(LangParser.ReturnvaluesContext ctx);
 }
