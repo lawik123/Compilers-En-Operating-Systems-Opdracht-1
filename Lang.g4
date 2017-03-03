@@ -20,11 +20,14 @@ writeExpr: 'WRITE(' STRING | variableName (( '+' STRING | variableName)*)? ');';
 readExpr: 'READ';
 
 //mathmetic expressions
-mathExpr: '('	mathExpr	')'                            #parenthesisExpression
-          		    |	leftExpr=mathvalues	(op=OP	rightExpr=mathvalues)+ #mathExpression
+mathExpr: '(' mathExpr ')'                            #parenthesisExpression
+                    | '-' mathExpr #minusFirstMathExpression
+                    |	leftExpr=mathExpr	op=('*'	|	':')	rightExpr=mathExpr #multiplyDivideExpression
+                    |	leftExpr=mathExpr	op=('+'	|	'-')	rightExpr=mathExpr #addSubstractExpression
+          		    |   value=mathvalues #mathValuesExpression
            			;
 
-mathvalues: variableName | INT;
+mathvalues:  variableName|INT;
 
 //condition form
 condition: (identifierLeft=variableName|INT) lop=LOP (identifierRight=variableName|INT);
