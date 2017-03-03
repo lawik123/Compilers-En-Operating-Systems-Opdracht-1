@@ -81,14 +81,43 @@ public class TypeEvaluator extends LangBaseVisitor<Type> {
         throw new EvaluateException("Incompatible Type");
     }
 
+    //mathExpression visitors
     @Override
-    public Type visitMathExpr(LangParser.MathExprContext ctx) throws EvaluateException {
-        Type leftExpr = visit(ctx.leftExpr);
-        Type rightExpr = visit(ctx.rightExpr);
+    public Type visitMathValuesExpression(LangParser.MathValuesExpressionContext ctx) {
+        return Type.INT;
+    }
 
-        if(leftExpr == Type.INT && rightExpr == Type.INT) {
-            return Type.BOOL;
+    @Override
+    public Type visitMinusFirstMathExpression(LangParser.MinusFirstMathExpressionContext ctx) {
+        Type expression  = visit(ctx.mathExpr());
+        if(expression==Type.INT) {
+            return Type.INT;
         }
-        throw new EvaluateException("incompatible Type");
+        throw new EvaluateException("Incompatible type");
+    }
+
+    @Override
+    public Type visitMultiplyDivideExpression(LangParser.MultiplyDivideExpressionContext ctx) {
+        Type left = visit(ctx.leftExpr);
+        Type right = visit(ctx.rightExpr);
+        if(left==Type.INT&&right==Type.INT) {
+            return Type.INT;
+        }
+        throw new EvaluateException("Incompatible type");
+    }
+
+    @Override
+    public Type visitParenthesisExpression(LangParser.ParenthesisExpressionContext ctx) {
+        return visit(ctx.mathExpr());
+    }
+
+    @Override
+    public Type visitAddSubstractExpression(LangParser.AddSubstractExpressionContext ctx) {
+        Type left = visit(ctx.leftExpr);
+        Type right = visit(ctx.rightExpr);
+        if(left==Type.INT&&right==Type.INT) {
+            return Type.INT;
+        }
+        throw new EvaluateException("Incompatible type");
     }
 }

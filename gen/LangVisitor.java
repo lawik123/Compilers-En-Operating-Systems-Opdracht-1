@@ -70,11 +70,40 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitReadExpr(LangParser.ReadExprContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link LangParser#mathExpr}.
+	 * Visit a parse tree produced by the {@code minusFirstMathExpression}
+	 * labeled alternative in {@link LangParser#mathExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitMathExpr(LangParser.MathExprContext ctx);
+	T visitMinusFirstMathExpression(LangParser.MinusFirstMathExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code multiplyDivideExpression}
+	 * labeled alternative in {@link LangParser#mathExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMultiplyDivideExpression(LangParser.MultiplyDivideExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code mathValuesExpression}
+	 * labeled alternative in {@link LangParser#mathExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMathValuesExpression(LangParser.MathValuesExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code parenthesisExpression}
+	 * labeled alternative in {@link LangParser#mathExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParenthesisExpression(LangParser.ParenthesisExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code addSubstractExpression}
+	 * labeled alternative in {@link LangParser#mathExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAddSubstractExpression(LangParser.AddSubstractExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link LangParser#mathvalues}.
 	 * @param ctx the parse tree

@@ -22,7 +22,7 @@ readExpr: 'READ';
 
 //mathmetic expressions
 mathExpr: '(' mathExpr ')'                            #parenthesisExpression
-                    | '-' mathExpr #minusFirstMathExpression
+                    | '-' mathExpr                      #minusFirstMathExpression
                     |	leftExpr=mathExpr	op=('*'	|	':')	rightExpr=mathExpr #multiplyDivideExpression
                     |	leftExpr=mathExpr	op=('+'	|	'-')	rightExpr=mathExpr #addSubstractExpression
           		    |   value=mathvalues #mathValuesExpression
