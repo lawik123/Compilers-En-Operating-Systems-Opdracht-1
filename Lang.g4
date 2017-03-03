@@ -20,9 +20,7 @@ writeExpr: 'WRITE(' STRING | variableName (( '+' STRING | variableName)*)? ');';
 readExpr: 'READ';
 
 //mathmetic expressions
-mathExpr: '('	mathExpr	')'                            #parenthesisExpression
-          		    |	leftExpr=mathvalues	(op=OP	rightExpr=mathvalues)+ #mathExpression
-           			;
+mathExpr: ('(')? leftExpr=mathvalues	(op=OP ('(')?	rightExpr=mathvalues (')')?)*;
 
 mathvalues: variableName | INT;
 

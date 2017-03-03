@@ -107,77 +107,25 @@ public interface LangListener extends ParseTreeListener {
 	 */
 	void exitReadExpr(LangParser.ReadExprContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code compareExpression}
-	 * labeled alternative in {@link LangParser#mathExpr}.
+	 * Enter a parse tree produced by {@link LangParser#mathExpr}.
 	 * @param ctx the parse tree
 	 */
-	void enterCompareExpression(LangParser.CompareExpressionContext ctx);
+	void enterMathExpr(LangParser.MathExprContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code compareExpression}
-	 * labeled alternative in {@link LangParser#mathExpr}.
+	 * Exit a parse tree produced by {@link LangParser#mathExpr}.
 	 * @param ctx the parse tree
 	 */
-	void exitCompareExpression(LangParser.CompareExpressionContext ctx);
+	void exitMathExpr(LangParser.MathExprContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code intLitteralExpression}
-	 * labeled alternative in {@link LangParser#mathExpr}.
+	 * Enter a parse tree produced by {@link LangParser#mathvalues}.
 	 * @param ctx the parse tree
 	 */
-	void enterIntLitteralExpression(LangParser.IntLitteralExpressionContext ctx);
+	void enterMathvalues(LangParser.MathvaluesContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code intLitteralExpression}
-	 * labeled alternative in {@link LangParser#mathExpr}.
+	 * Exit a parse tree produced by {@link LangParser#mathvalues}.
 	 * @param ctx the parse tree
 	 */
-	void exitIntLitteralExpression(LangParser.IntLitteralExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code minusFirstExpression}
-	 * labeled alternative in {@link LangParser#mathExpr}.
-	 * @param ctx the parse tree
-	 */
-	void enterMinusFirstExpression(LangParser.MinusFirstExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code minusFirstExpression}
-	 * labeled alternative in {@link LangParser#mathExpr}.
-	 * @param ctx the parse tree
-	 */
-	void exitMinusFirstExpression(LangParser.MinusFirstExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code multiplyDivideExpression}
-	 * labeled alternative in {@link LangParser#mathExpr}.
-	 * @param ctx the parse tree
-	 */
-	void enterMultiplyDivideExpression(LangParser.MultiplyDivideExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code multiplyDivideExpression}
-	 * labeled alternative in {@link LangParser#mathExpr}.
-	 * @param ctx the parse tree
-	 */
-	void exitMultiplyDivideExpression(LangParser.MultiplyDivideExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code parenthesisExpression}
-	 * labeled alternative in {@link LangParser#mathExpr}.
-	 * @param ctx the parse tree
-	 */
-	void enterParenthesisExpression(LangParser.ParenthesisExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code parenthesisExpression}
-	 * labeled alternative in {@link LangParser#mathExpr}.
-	 * @param ctx the parse tree
-	 */
-	void exitParenthesisExpression(LangParser.ParenthesisExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code addSubstractExpression}
-	 * labeled alternative in {@link LangParser#mathExpr}.
-	 * @param ctx the parse tree
-	 */
-	void enterAddSubstractExpression(LangParser.AddSubstractExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code addSubstractExpression}
-	 * labeled alternative in {@link LangParser#mathExpr}.
-	 * @param ctx the parse tree
-	 */
-	void exitAddSubstractExpression(LangParser.AddSubstractExpressionContext ctx);
+	void exitMathvalues(LangParser.MathvaluesContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link LangParser#condition}.
 	 * @param ctx the parse tree
