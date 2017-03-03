@@ -7,16 +7,17 @@ expression: varDecl
 |forExpr
 |writeExpr
 |readExpr
-|mathExpr;
+|varMod
+;
 
 //expressions
-varDecl:('global')? '~' type=dataType identifier=variableName 'IS' (value=variable | value2=readExpr)';';
+varDecl:('global')? '~' type=dataType identifier=variableName 'IS' (value=variable | value2=readExpr| value3=mathExpr)';';
 varMod: identifier=variableName 'IS' (value=variable | value2=readExpr | mathExpr)';';
 methodDecl:'~' (voidreturntype=voidType |returntype=dataType) '('(('~' dataType variableName)(',' '~' dataType variableName)*)? ')' methodName opener expression* 'return' (returnvalue=returnvalues)?';' closer;
 ifExpr:'if' '(' condition ')' opener expression* closer (('?' '(' condition ')' opener expression* closer)* ('?' opener expression* closer)?)?;
 whileExpr: 'REPEAT' opener expression* closer 'UNTILL' '(' condition ')';
 forExpr: 'for' '(' varDecl condition (';' IDcrement '(' variableName ')')? ')' opener expression* closer;
-writeExpr: 'WRITE(' STRING | variableName (( '+' STRING | variableName)*)? ');';
+writeExpr: 'WRITE(' (STRINGVALUE | mathExpr) (( '+' (STRINGVALUE|mathExpr))*)? ');';
 readExpr: 'READ';
 
 //mathmetic expressions
@@ -30,7 +31,7 @@ mathExpr: '(' mathExpr ')'                            #parenthesisExpression
 mathvalues:  variableName|INT;
 
 //condition form
-condition: (identifierLeft=variableName|INT) lop=LOP (identifierRight=variableName|INT);
+condition: (identifierLeft=variableName|INT|mathExpr) lop=LOP (identifierRight=variableName|INT|mathExpr);
 
 //types
 IDcrement: 'incr'|'decr';
@@ -56,7 +57,7 @@ STRING: [a-z] [a-zA-Z0-9]*;
 STRINGVALUE: '"' [a-zA-Z0-9]* '"';
 
 //return types
-returnvalues: variableName | INT | STRING;
+returnvalues: STRINGVALUE| mathExpr;
 
 //skippers
 WL:	[\n\t\r] ->	skip;       //skip enter or tabs
