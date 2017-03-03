@@ -70,47 +70,17 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitReadExpr(LangParser.ReadExprContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code compareExpression}
-	 * labeled alternative in {@link LangParser#mathExpr}.
+	 * Visit a parse tree produced by {@link LangParser#mathExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitCompareExpression(LangParser.CompareExpressionContext ctx);
+	T visitMathExpr(LangParser.MathExprContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code intLitteralExpression}
-	 * labeled alternative in {@link LangParser#mathExpr}.
+	 * Visit a parse tree produced by {@link LangParser#mathvalues}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitIntLitteralExpression(LangParser.IntLitteralExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code minusFirstExpression}
-	 * labeled alternative in {@link LangParser#mathExpr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitMinusFirstExpression(LangParser.MinusFirstExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code multiplyDivideExpression}
-	 * labeled alternative in {@link LangParser#mathExpr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitMultiplyDivideExpression(LangParser.MultiplyDivideExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code parenthesisExpression}
-	 * labeled alternative in {@link LangParser#mathExpr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitParenthesisExpression(LangParser.ParenthesisExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code addSubstractExpression}
-	 * labeled alternative in {@link LangParser#mathExpr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAddSubstractExpression(LangParser.AddSubstractExpressionContext ctx);
+	T visitMathvalues(LangParser.MathvaluesContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link LangParser#condition}.
 	 * @param ctx the parse tree
