@@ -1,123 +1,128 @@
-import org.antlr.v4.runtime.tree.ParseTree;
+import javax.xml.crypto.Data;
 
 /**
  * Created by lars on 2/21/2017.
  */
-public class TypeEvaluator extends LangBaseVisitor<Type> {
+public class TypeEvaluator extends LangBaseVisitor<DataType> {
 
     @Override
-    public Type visitProg(LangParser.ProgContext ctx) {
+    public DataType visitProg(LangParser.ProgContext ctx) {
         return super.visitProg(ctx);
     }
 
     @Override
-    public Type visitVarDecl(LangParser.VarDeclContext ctx) throws EvaluateException {
-        Type type = visit(ctx.type);
-        Type identifier = visit(ctx.identifier);
-        Type value = visit(ctx.value);
-        Type value2 = visit(ctx.value2);
+    public DataType visitVarDecl(LangParser.VarDeclContext ctx) throws EvaluateException {
+        DataType type = visit(ctx.type);
+        DataType identifier = visit(ctx.identifier);
+        DataType value = visit(ctx.value);      //variable
+        DataType value2 = visit(ctx.value2);    //read expr
+        DataType value3 = visit(ctx.value3);    //math expr
         if (type.equals("int")) {
-            if ((identifier == Type.STRING && value == Type.INT) || (identifier == Type.STRING && value2 == Type.INT)) {
-                return Type.INT;
+            if ((identifier == DataType.STRING && value == DataType.INT) || (identifier == DataType.STRING && value2 == DataType.INT || (identifier == DataType.STRING && value3 == DataType.INT))) {
+                return DataType.INT;
             }
+            throw new EvaluateException("Incompatible types");
+
         } else if (type.equals("string")) {
-            if ((identifier == Type.STRING && value == Type.STRING) || (identifier == Type.STRING && value2 == Type.STRING)) {
-                return Type.STRING;
+            if ((identifier == DataType.STRING && value == DataType.STRING) || (identifier == DataType.STRING && value2 == DataType.STRING)) {
+                return DataType.STRING;
             }
+            throw new EvaluateException("Incompatible types");
         }
-        throw new EvaluateException("Incompatible type");
+        throw new EvaluateException("Incompatible types");
     }
 
     @Override
-    public Type visitVarMod(LangParser.VarModContext ctx) {
-        Type identifier = visit(ctx.identifier);
-        Type value = visit(ctx.value);
-        Type value2 = visit(ctx.value2);
-        if ((identifier == Type.STRING && value == Type.INT) || (identifier == Type.STRING && value2 == Type.INT)) {
-            return Type.INT;
-        } else if ((identifier == Type.STRING && value == Type.STRING) || (identifier == Type.STRING && value2 == Type.STRING)) {
-            return Type.STRING;
+    public DataType visitVarMod(LangParser.VarModContext ctx) {
+        DataType identifier = visit(ctx.identifier);
+        DataType value = visit(ctx.value);
+        DataType value2 = visit(ctx.value2);
+        if ((identifier == DataType.STRING && value == DataType.INT) || (identifier == DataType.STRING && value2 == DataType.INT)) {
+            return DataType.INT;
+        } else if ((identifier == DataType.STRING && value == DataType.STRING) || (identifier == DataType.STRING && value2 == DataType.STRING)) {
+            return DataType.STRING;
         }
-
-        throw new EvaluateException("Incompatible type");
+        throw new EvaluateException("Incompatible types");
 
 }
 
     @Override
-    public Type visitCondition(LangParser.ConditionContext ctx) throws EvaluateException {
-        Type identifierLeft = visit(ctx.identifierLeft);
-        Type identifierRight = visit(ctx.identifierRight);
+    public DataType visitCondition(LangParser.ConditionContext ctx) throws EvaluateException {
+        DataType identifierLeft = visit(ctx.identifierLeft);
+        DataType identifierRight = visit(ctx.identifierRight);
 
-        if (identifierLeft == Type.INT && identifierRight == Type.INT) {
-            return Type.BOOL;
+        if (identifierLeft == DataType.INT && identifierRight == DataType.INT) {
+            return DataType.BOOL;
         }
-        throw new EvaluateException("Incompatible type");
+        throw new EvaluateException("Incompatible types");
     }
 
     @Override
-    public Type visitMethodDecl(LangParser.MethodDeclContext ctx) throws EvaluateException {
-        Type returnType = visit(ctx.returntype);
-        Type voidReturnType = visit(ctx.voidreturntype);
+    public DataType visitMethodDecl(LangParser.MethodDeclContext ctx) throws EvaluateException {
+        DataType returnType = visit(ctx.returntype);
+        DataType voidReturnType = visit(ctx.voidreturntype);
 
-        Type returnvalue = visit(ctx.returnvalue);
+        DataType returnvalue = visit(ctx.returnvalue);
 
         if (returnType.equals("int")) {
-            if (returnvalue == Type.INT) {
-                return Type.INT;
+            if (returnvalue == DataType.INT) {
+                return DataType.INT;
             }
-            throw new EvaluateException("Incompatible Type");
+            throw new EvaluateException("Return Type is not an Integer");
         } else if (returnType.equals("string")) {
-            if (returnvalue == Type.STRING) {
-                return Type.STRING;
+            if (returnvalue == DataType.STRING) {
+                return DataType.STRING;
             }
-            throw new EvaluateException("Incompatible Type");
+            throw new EvaluateException("Return Type is not a String");
         } else if (voidReturnType.equals("void")) {
             if (returnvalue == null) {
-                return Type.NULL;
+                return DataType.NULL;
             }
-            throw new EvaluateException("Incompatible Type");
+            throw new EvaluateException("Method declaration is void, no return type needed");
         }
 
-        throw new EvaluateException("Incompatible Type");
+        throw new EvaluateException("Incompatible types");
     }
+
+
 
     //mathExpression visitors
     @Override
-    public Type visitMathValuesExpression(LangParser.MathValuesExpressionContext ctx) {
-        return Type.INT;
+    public DataType visitMathValuesExpression(LangParser.MathValuesExpressionContext ctx) {
+        return DataType.INT;
     }
 
     @Override
-    public Type visitMinusFirstMathExpression(LangParser.MinusFirstMathExpressionContext ctx) {
-        Type expression  = visit(ctx.mathExpr());
-        if(expression==Type.INT) {
-            return Type.INT;
+    public DataType visitMinusFirstMathExpression(LangParser.MinusFirstMathExpressionContext ctx) {
+        DataType expression  = visit(ctx.mathExpr());
+        if(expression== DataType.INT) {
+            return DataType.INT;
         }
-        throw new EvaluateException("Incompatible type");
+        throw new EvaluateException("Incompatible types");
     }
 
     @Override
-    public Type visitMultiplyDivideExpression(LangParser.MultiplyDivideExpressionContext ctx) {
-        Type left = visit(ctx.leftExpr);
-        Type right = visit(ctx.rightExpr);
-        if(left==Type.INT&&right==Type.INT) {
-            return Type.INT;
+    public DataType visitMultiplyDivideExpression(LangParser.MultiplyDivideExpressionContext ctx) {
+        DataType left = visit(ctx.leftExpr);
+        DataType right = visit(ctx.rightExpr);
+        if(left== DataType.INT&&right== DataType.INT) {
+            return DataType.INT;
         }
-        throw new EvaluateException("Incompatible type");
+        throw new EvaluateException("Incompatible types");
     }
 
     @Override
-    public Type visitParenthesisExpression(LangParser.ParenthesisExpressionContext ctx) {
+    public DataType visitParenthesisExpression(LangParser.ParenthesisExpressionContext ctx) {
         return visit(ctx.mathExpr());
     }
 
     @Override
-    public Type visitAddSubstractExpression(LangParser.AddSubstractExpressionContext ctx) {
-        Type left = visit(ctx.leftExpr);
-        Type right = visit(ctx.rightExpr);
-        if(left==Type.INT&&right==Type.INT) {
-            return Type.INT;
+    public DataType visitAddSubstractExpression(LangParser.AddSubstractExpressionContext ctx) {
+        DataType left = visit(ctx.leftExpr);
+        DataType right = visit(ctx.rightExpr);
+        if(left== DataType.INT&&right== DataType.INT) {
+            return DataType.INT;
         }
-        throw new EvaluateException("Incompatible type");
+        throw new EvaluateException("Incompatible types");
     }
 }
