@@ -31,7 +31,7 @@ mathExpr: '(' mathExpr ')'                            #parenthesisExpression
 mathvalues:  variableName|INT;
 
 //condition form
-condition: (identifierLeft=variableName|INT|mathExpr) lop=LOP (identifierRight=variableName|INT|mathExpr);
+condition: (mathExpr) lop=LOP (mathExpr);
 
 //types
 IDcrement: 'incr'|'decr';
