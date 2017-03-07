@@ -1,4 +1,4 @@
-// Generated from D:/school/jaar2/kwartiel3/Compilers&OperatingSystems/Opdracht-1/Compilers-En-Operating-Systems-Opdracht-1\Lang.g4 by ANTLR 4.6
+// Generated from D:/Desktop/Saxion/Jaar 2/Kwartiel 3/Compilers en Operating Systems/Practicum/Opdracht1(2)/Compilers-En-Operating-Systems-Opdracht-1\Lang.g4 by ANTLR 4.6
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -39,13 +39,25 @@ public class LangBaseListener implements LangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterVarDecl(LangParser.VarDeclContext ctx) { }
+	@Override public void enterDeclareIntVariable(LangParser.DeclareIntVariableContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitVarDecl(LangParser.VarDeclContext ctx) { }
+	@Override public void exitDeclareIntVariable(LangParser.DeclareIntVariableContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDeclareStringVariable(LangParser.DeclareStringVariableContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDeclareStringVariable(LangParser.DeclareStringVariableContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -75,37 +87,37 @@ public class LangBaseListener implements LangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterIfExpr(LangParser.IfExprContext ctx) { }
+	@Override public void enterIfStm(LangParser.IfStmContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitIfExpr(LangParser.IfExprContext ctx) { }
+	@Override public void exitIfStm(LangParser.IfStmContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterWhileExpr(LangParser.WhileExprContext ctx) { }
+	@Override public void enterWhileStm(LangParser.WhileStmContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitWhileExpr(LangParser.WhileExprContext ctx) { }
+	@Override public void exitWhileStm(LangParser.WhileStmContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterForExpr(LangParser.ForExprContext ctx) { }
+	@Override public void enterForStm(LangParser.ForStmContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitForExpr(LangParser.ForExprContext ctx) { }
+	@Override public void exitForStm(LangParser.ForStmContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -231,13 +243,13 @@ public class LangBaseListener implements LangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterVoidType(LangParser.VoidTypeContext ctx) { }
+	@Override public void enterMethodType(LangParser.MethodTypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitVoidType(LangParser.VoidTypeContext ctx) { }
+	@Override public void exitMethodType(LangParser.MethodTypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -267,13 +279,25 @@ public class LangBaseListener implements LangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterVariable(LangParser.VariableContext ctx) { }
+	@Override public void enterStringvalues(LangParser.StringvaluesContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitVariable(LangParser.VariableContext ctx) { }
+	@Override public void exitStringvalues(LangParser.StringvaluesContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterVariableValue(LangParser.VariableValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitVariableValue(LangParser.VariableValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

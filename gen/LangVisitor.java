@@ -1,4 +1,4 @@
-// Generated from D:/school/jaar2/kwartiel3/Compilers&OperatingSystems/Opdracht-1/Compilers-En-Operating-Systems-Opdracht-1\Lang.g4 by ANTLR 4.6
+// Generated from D:/Desktop/Saxion/Jaar 2/Kwartiel 3/Compilers en Operating Systems/Practicum/Opdracht1(2)/Compilers-En-Operating-Systems-Opdracht-1\Lang.g4 by ANTLR 4.6
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -22,11 +22,19 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpression(LangParser.ExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link LangParser#varDecl}.
+	 * Visit a parse tree produced by the {@code declareIntVariable}
+	 * labeled alternative in {@link LangParser#varDecl}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitVarDecl(LangParser.VarDeclContext ctx);
+	T visitDeclareIntVariable(LangParser.DeclareIntVariableContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code declareStringVariable}
+	 * labeled alternative in {@link LangParser#varDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeclareStringVariable(LangParser.DeclareStringVariableContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link LangParser#varMod}.
 	 * @param ctx the parse tree
@@ -40,23 +48,23 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMethodDecl(LangParser.MethodDeclContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link LangParser#ifExpr}.
+	 * Visit a parse tree produced by {@link LangParser#ifStm}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitIfExpr(LangParser.IfExprContext ctx);
+	T visitIfStm(LangParser.IfStmContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link LangParser#whileExpr}.
+	 * Visit a parse tree produced by {@link LangParser#whileStm}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitWhileExpr(LangParser.WhileExprContext ctx);
+	T visitWhileStm(LangParser.WhileStmContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link LangParser#forExpr}.
+	 * Visit a parse tree produced by {@link LangParser#forStm}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitForExpr(LangParser.ForExprContext ctx);
+	T visitForStm(LangParser.ForStmContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link LangParser#writeExpr}.
 	 * @param ctx the parse tree
@@ -123,11 +131,11 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDataType(LangParser.DataTypeContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link LangParser#voidType}.
+	 * Visit a parse tree produced by {@link LangParser#methodType}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitVoidType(LangParser.VoidTypeContext ctx);
+	T visitMethodType(LangParser.MethodTypeContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link LangParser#methodName}.
 	 * @param ctx the parse tree
@@ -141,11 +149,17 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitVariableName(LangParser.VariableNameContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link LangParser#variable}.
+	 * Visit a parse tree produced by {@link LangParser#stringvalues}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitVariable(LangParser.VariableContext ctx);
+	T visitStringvalues(LangParser.StringvaluesContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link LangParser#variableValue}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVariableValue(LangParser.VariableValueContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link LangParser#opener}.
 	 * @param ctx the parse tree

@@ -11,13 +11,14 @@ expression: varDecl
 ;
 
 //expressions
-varDecl:('global')? '~' type=dataType identifier=variableName 'IS' (value=variable | value2=readExpr| value3=mathExpr)';';
-varMod: identifier=variableName 'IS' (value=variable | value2=readExpr | mathExpr)';';
-methodDecl:'~' (voidreturntype=voidType |returntype=dataType) '('(('~' dataType variableName)(',' '~' dataType variableName)*)? ')' methodName opener expression* 'return' (returnvalue=returnvalues)?';' closer;
+varDecl:('global')? '~' type='int' identifier=variableName 'IS' mathExpr';' #declareIntVariable|
+('global')? '~' type='string' identifier=variableName 'IS' stringvalues';' #declareStringVariable;
+varMod: identifier=variableName 'IS' value=variableValue';';
+methodDecl:'~' type=methodType '('(('~' dataType variableName)(',' '~' dataType variableName)*)? ')' methodName opener expression* 'return' (returnvalue=returnvalues)?';' closer;
 ifStm:'if' '(' condition ')' opener expression* closer (('?' '(' condition ')' opener expression* closer)* ('?' opener expression* closer)?)?;
 whileStm: 'REPEAT' opener expression* closer 'UNTILL' '(' condition ')';
 forStm: 'for' '(' varDecl condition (';' IDcrement '(' variableName ')')? ')' opener expression* closer;
-writeExpr: 'WRITE(' (STRINGVALUE | mathExpr) (( '+' (STRINGVALUE|mathExpr))*)? ');';
+writeExpr: 'WRITE(' (mathExpr|stringvalues) (( '+' (mathExpr|stringvalues))*)? ');';
 readExpr: 'READ';
 
 //mathmetic expressions
@@ -31,17 +32,20 @@ mathExpr: '(' mathExpr ')'                            #parenthesisExpression
 mathvalues:  variableName|INT;
 
 //condition form
-condition: (mathExpr) lop=LOP (mathExpr);
+condition: (identifierLeft=mathExpr) lop=LOP (identifierRight=mathExpr);
 
 //types
 IDcrement: 'incr'|'decr';
 dataType: 'int'|'string';
-voidType: 'void';
-
+methodType:'int'|'string'|'void';
 //names
 methodName: STRING;
 variableName: STRING;
-variable: stringtest=STRINGVALUE|inttest=INT;
+stringvalues:STRINGVALUE | variableName;
+variableValue:
+stringvalues
+| readExpr
+| mathExpr;
 
 //openers and closers
 opener: '/';
@@ -57,7 +61,7 @@ STRING: [a-z] [a-zA-Z0-9]*;
 STRINGVALUE: '"' [a-zA-Z0-9]* '"';
 
 //return types
-returnvalues: STRINGVALUE| mathExpr;
+returnvalues: stringvalues | mathExpr;
 
 //skippers
 WL:	[\n\t\r] ->	skip;       //skip enter or tabs
