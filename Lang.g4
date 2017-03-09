@@ -5,7 +5,7 @@ expression: varDecl
 |varMod
 ;
 
-nonGlobalExpr: |ifStm
+nonGlobalExpr: ifStm
             |whileStm
             |forStm
             |writeExpr
@@ -18,7 +18,7 @@ nonGlobalExpr: |ifStm
 varDecl:(isGlobal='global')? '~' type='int' identifier=variableName 'IS' mathExpr';' #declareIntVariable|
 (isGlobal='global')? '~' type='string' identifier=variableName 'IS' stringvalues';' #declareStringVariable;
 varMod: identifier=variableName 'IS' value=variableValue';';
-methodDecl:'~' type=methodType '('('~' methodParamType=dataType variableName (',')?)* ')' methodIdentifier=methodName opener nonGlobalExpr* 'return' (returnvalue=returnvalues)?';' closer;
+methodDecl:'~' type=methodType '(' params ')' methodIdentifier=methodName opener nonGlobalExpr* 'return' (returnvalue=returnvalues)?';' closer;
 ifStm:'if' '(' condition ')' opener nonGlobalExpr* closer (('?' '(' condition ')' opener nonGlobalExpr* closer)* ('?' opener nonGlobalExpr* closer)?)?;
 whileStm: 'REPEAT' opener nonGlobalExpr* closer 'UNTILL' '(' condition ')';
 forStm: 'for' '(' varDecl condition (';' IDcrement '(' variableName ')')? ')' opener nonGlobalExpr* closer;
@@ -37,6 +37,8 @@ mathvalues:  variableName |INT;
 
 //condition form
 condition: (identifierLeft=mathExpr) lop=LOP (identifierRight=mathExpr);
+
+params: ('~' methodParamType=dataType variableName (',')?)*;
 
 //types
 IDcrement: 'incr'|'decr';

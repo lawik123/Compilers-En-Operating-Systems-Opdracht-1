@@ -27,6 +27,16 @@ public interface LangListener extends ParseTreeListener {
 	 */
 	void exitExpression(LangParser.ExpressionContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link LangParser#nonGlobalExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterNonGlobalExpr(LangParser.NonGlobalExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LangParser#nonGlobalExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitNonGlobalExpr(LangParser.NonGlobalExprContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code declareIntVariable}
 	 * labeled alternative in {@link LangParser#varDecl}.
 	 * @param ctx the parse tree
@@ -200,6 +210,16 @@ public interface LangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitCondition(LangParser.ConditionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link LangParser#params}.
+	 * @param ctx the parse tree
+	 */
+	void enterParams(LangParser.ParamsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LangParser#params}.
+	 * @param ctx the parse tree
+	 */
+	void exitParams(LangParser.ParamsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link LangParser#dataType}.
 	 * @param ctx the parse tree

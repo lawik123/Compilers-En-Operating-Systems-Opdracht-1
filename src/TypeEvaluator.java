@@ -91,6 +91,12 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
         throw new EvaluateException("Incompatible types");
 }
 
+    @Override
+    public DataType visitCloser(LangParser.CloserContext ctx) {
+        return super.visitCloser(ctx);
+    }
+
+
 
     @Override
     public DataType visitMethodDecl(LangParser.MethodDeclContext ctx) throws EvaluateException {
