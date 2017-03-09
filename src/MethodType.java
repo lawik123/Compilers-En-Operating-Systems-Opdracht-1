@@ -10,9 +10,9 @@ public class MethodType extends Type {
 
     public MethodType(DataType returnType, List<DataType> parameters) {
         this.returnType = returnType;
+
         this.parameters = parameters;
     }
-
     public void addParameter(DataType dataType) {
         parameters.add(dataType);
     }

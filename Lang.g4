@@ -11,10 +11,10 @@ expression: varDecl
 ;
 
 //expressions
-varDecl:('global')? '~' type='int' identifier=variableName 'IS' mathExpr';' #declareIntVariable|
-('global')? '~' type='string' identifier=variableName 'IS' stringvalues';' #declareStringVariable;
+varDecl:(isGlobal='global')? '~' type='int' identifier=variableName 'IS' mathExpr';' #declareIntVariable|
+(isGlobal='global')? '~' type='string' identifier=variableName 'IS' stringvalues';' #declareStringVariable;
 varMod: identifier=variableName 'IS' value=variableValue';';
-methodDecl:'~' type=methodType '('(('~' dataType variableName)(',' '~' dataType variableName)*)? ')' methodName opener expression* 'return' (returnvalue=returnvalues)?';' closer;
+methodDecl:'~' type=methodType '('('~' methodParamType=dataType variableName (',')?)* ')' methodIdentifier=methodName opener expression* 'return' (returnvalue=returnvalues)?';' closer;
 ifStm:'if' '(' condition ')' opener expression* closer (('?' '(' condition ')' opener expression* closer)* ('?' opener expression* closer)?)?;
 whileStm: 'REPEAT' opener expression* closer 'UNTILL' '(' condition ')';
 forStm: 'for' '(' varDecl condition (';' IDcrement '(' variableName ')')? ')' opener expression* closer;
@@ -29,7 +29,7 @@ mathExpr: '(' mathExpr ')'                            #parenthesisExpression
           		    |   value=mathvalues #mathValuesExpression
            			;
 
-mathvalues:  variableName|INT;
+mathvalues:  variableName |INT;
 
 //condition form
 condition: (identifierLeft=mathExpr) lop=LOP (identifierRight=mathExpr);
@@ -56,7 +56,7 @@ OP:'+'|'-'|'*'|':';
 LOP:'<'|'<='|'>'|'>='|'=='|'!=';
 
 //datatype
-INT: [0-9]+;
+INT: '0'	|	[1-9][0-9]*;
 STRING: [a-z] [a-zA-Z0-9]*;
 STRINGVALUE: '"' [a-zA-Z0-9]* '"';
 

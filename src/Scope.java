@@ -15,7 +15,15 @@ public class Scope {
         this.symbolTable = new HashMap<String, Symbol>();
     }
 
-    private Symbol declareVariable(String key, DataType dataType, boolean isGlobal) {
+    /**
+     * Constructor for global scope
+     * has no parent
+     */
+    public Scope() {
+        this.symbolTable = new HashMap<String, Symbol>();
+    }
+
+    public Symbol declareVariable(String key, DataType dataType, boolean isGlobal) {
         if(isGlobal) {
             Symbol var = lookupVariable(key);
             if(var == null) {
@@ -40,7 +48,7 @@ public class Scope {
         return null;
     }
 
-    private Symbol declareMethod(String key, DataType dataType, List<DataType> parameters) {
+    public Symbol declareMethod(String key, DataType dataType, List<DataType> parameters) {
         MethodType method = new MethodType(dataType, parameters);
 
         Symbol newMethod = new Symbol(key, method);

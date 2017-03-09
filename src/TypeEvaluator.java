@@ -1,12 +1,14 @@
 import javax.xml.crypto.Data;
+import java.util.List;
 
 /**
  * Created by lars on 2/21/2017.
  */
 public class TypeEvaluator extends LangBaseVisitor<DataType> {
-
+    private Scope globalScope;
     @Override
     public DataType visitProg(LangParser.ProgContext ctx) {
+        globalScope = new Scope();
         return super.visitProg(ctx);
     }
 
@@ -35,18 +37,32 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
 
     @Override
     public DataType visitDeclareIntVariable(LangParser.DeclareIntVariableContext ctx) {
+        String globalizer = ctx.isGlobal.getText();
+        String identifier = ctx.identifier.getText();
         DataType value = visit(ctx.mathExpr());
         if(value==DataType.INT){
-            return DataType.INT;
+            if(globalizer.equals("global")) {
+                globalScope.declareVariable(identifier, DataType.INT, true);
+                return DataType.INT;
+            } else {
+                //todo add variable to current scope
+            }
         }
         throw new EvaluateException("Incompatible types");
     }
 
     @Override
     public DataType visitDeclareStringVariable(LangParser.DeclareStringVariableContext ctx) {
+        String globalizer = ctx.isGlobal.getText();
+        String identifier = ctx.identifier.getText();
         DataType value = visit(ctx.stringvalues());
         if(value==DataType.STRING){
-            return DataType.STRING;
+            if(globalizer.equals("global")) {
+                globalScope.declareVariable(identifier, DataType.STRING, true);
+                return DataType.STRING;
+            } else {
+                //todo add variable to current scope
+            }
         }
         throw new EvaluateException("Incompatible types");
     }
@@ -72,29 +88,24 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
             return DataType.STRING;
         }
         throw new EvaluateException("Incompatible types");
-
 }
 
 
     @Override
-    public DataType visitCondition(LangParser.ConditionContext ctx) throws EvaluateException {
-        DataType identifierLeft = visit(ctx.identifierLeft);
-        DataType identifierRight = visit(ctx.identifierRight);
-
-        if (identifierLeft == DataType.INT && identifierRight == DataType.INT) {
-            return DataType.BOOL;
-        }
-        throw new EvaluateException("Incompatible types");
-    }
-
-    @Override
     public DataType visitMethodDecl(LangParser.MethodDeclContext ctx) throws EvaluateException {
         String methodType = ctx.type.getText();
+        String methodIdentifier = ctx.methodIdentifier.getText();
+
 
         DataType returnvalue = visit(ctx.returnvalue);
 
+        //todo Initialize parameters
+        List<DataType> parameters = null;
+
+
         if (methodType.equals("int")) {
             if (returnvalue == DataType.INT) {
+                globalScope.declareMethod(methodIdentifier, DataType.INT, parameters);
                 return DataType.INT;
             }
             throw new EvaluateException("Return Type is not an Integer");
