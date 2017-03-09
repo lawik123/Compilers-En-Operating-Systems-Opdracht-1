@@ -30,6 +30,13 @@ public class LangBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements L
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitNonGlobalExpr(LangParser.NonGlobalExprContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitDeclareIntVariable(LangParser.DeclareIntVariableContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -136,6 +143,20 @@ public class LangBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements L
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitCondition(LangParser.ConditionContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitParams(LangParser.ParamsContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitParams2(LangParser.Params2Context ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

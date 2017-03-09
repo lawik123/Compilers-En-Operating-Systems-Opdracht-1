@@ -1,4 +1,5 @@
 import javax.xml.crypto.Data;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -100,9 +101,9 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
 
     @Override
     public DataType visitMethodDecl(LangParser.MethodDeclContext ctx) throws EvaluateException {
+
         String methodType = ctx.type.getText();
         String methodIdentifier = ctx.methodIdentifier.getText();
-        String methodParamType = ctx.methodParamType.getText();
 
         DataType returnvalue = visit(ctx.returnvalue);
 
@@ -111,13 +112,14 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
         if (methodType.equals("int")) {
             if (returnvalue == DataType.INT) {
                 MethodType newMethod = new MethodType(DataType.INT);
-                if(methodParamType.equals("int")) {
-                    newMethod.addParameter(DataType.INT);
-                } else if(methodParamType.equals("string")){
-                    newMethod.addParameter(DataType.STRING);
+                newMethod.addParameter(visit(ctx.params()));
+                for(int i =0; i<ctx.params2().size();i++){
+                    newMethod.addParameter(visit(ctx.params2(i)));
                 }
                 globalScope.declareMethod(methodIdentifier, newMethod);
-                //todo visit children
+                for(int i =0; i<ctx.nonGlobalExpr().size();i++){
+                    visit(ctx.nonGlobalExpr(i));
+                }
                 currentScope.closeScope();
                 return DataType.INT;
             }
@@ -125,31 +127,59 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
         } else if (methodType.equals("string")) {
             if (returnvalue == DataType.STRING) {
                 MethodType newMethod = new MethodType(DataType.STRING);
-                if(methodParamType.equals("int")) {
-                    newMethod.addParameter(DataType.INT);
-                } else if(methodParamType.equals("string")){
-                    newMethod.addParameter(DataType.STRING);
+                newMethod.addParameter(visit(ctx.params()));
+                for(int i =0; i<ctx.params2().size();i++){
+                    newMethod.addParameter(visit(ctx.params2(i)));
                 }
                 globalScope.declareMethod(methodIdentifier, newMethod);
+                for(int i =0; i<ctx.nonGlobalExpr().size();i++){
+                    visit(ctx.nonGlobalExpr(i));
+                }
                 currentScope.closeScope();
                 return DataType.STRING;
             }
             throw new EvaluateException("Return Type is not a String");
         } else if (methodType.equals("void")) {
-            if (returnvalue == null) {
+            if (ctx.returnvalue.getText().equals("")) {
                 MethodType newMethod = new MethodType(DataType.VOID);
-                if(methodParamType.equals("int")) {
-                    newMethod.addParameter(DataType.INT);
-                } else if(methodParamType.equals("string")){
-                    newMethod.addParameter(DataType.STRING);
+                newMethod.addParameter(visit(ctx.params()));
+                for(int i =0; i<ctx.params2().size();i++){
+                    newMethod.addParameter(visit(ctx.params2(i)));
                 }
                 globalScope.declareMethod(methodIdentifier, newMethod);
+                for(int i =0; i<ctx.nonGlobalExpr().size();i++){
+                    visit(ctx.nonGlobalExpr(i));
+                }
                 currentScope.closeScope();
-                return DataType.NULL;
+                return DataType.VOID;
             }
             throw new EvaluateException("Method declaration is void, no return type needed");
         }
 
+        throw new EvaluateException("Incompatible types");
+    }
+
+    @Override
+    public DataType visitParams(LangParser.ParamsContext ctx) {
+        String type = ctx.methodParamType.getText();
+        if(type.equals("int")){
+            return DataType.INT;
+        }
+        else if(type.equals("string")){
+            return DataType.STRING;
+        }
+        throw new EvaluateException("Incompatible types");
+    }
+
+    @Override
+    public DataType visitParams2(LangParser.Params2Context ctx) {
+        String type = ctx.methodParamType2.getText();
+        if(type.equals("int")){
+            return DataType.INT;
+        }
+        else if(type.equals("string")){
+            return DataType.STRING;
+        }
         throw new EvaluateException("Incompatible types");
     }
 

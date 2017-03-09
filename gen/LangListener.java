@@ -1,4 +1,4 @@
-// Generated from D:/school/jaar2/kwartiel3/Compilers&OperatingSystems/Opdracht-1/Compilers-En-Operating-Systems-Opdracht-1\Lang.g4 by ANTLR 4.6
+// Generated from D:/Desktop/Saxion/Jaar 2/Kwartiel 3/Compilers en Operating Systems/Practicum/Opdracht1(2)/Compilers-En-Operating-Systems-Opdracht-1\Lang.g4 by ANTLR 4.6
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -220,6 +220,16 @@ public interface LangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitParams(LangParser.ParamsContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link LangParser#params2}.
+	 * @param ctx the parse tree
+	 */
+	void enterParams2(LangParser.Params2Context ctx);
+	/**
+	 * Exit a parse tree produced by {@link LangParser#params2}.
+	 * @param ctx the parse tree
+	 */
+	void exitParams2(LangParser.Params2Context ctx);
 	/**
 	 * Enter a parse tree produced by {@link LangParser#dataType}.
 	 * @param ctx the parse tree

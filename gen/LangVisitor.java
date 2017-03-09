@@ -22,6 +22,12 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitExpression(LangParser.ExpressionContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link LangParser#nonGlobalExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNonGlobalExpr(LangParser.NonGlobalExprContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code declareIntVariable}
 	 * labeled alternative in {@link LangParser#varDecl}.
 	 * @param ctx the parse tree
@@ -124,6 +130,18 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitCondition(LangParser.ConditionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link LangParser#params}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParams(LangParser.ParamsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link LangParser#params2}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitParams2(LangParser.Params2Context ctx);
 	/**
 	 * Visit a parse tree produced by {@link LangParser#dataType}.
 	 * @param ctx the parse tree
