@@ -6,6 +6,7 @@ import java.util.List;
  */
 public class TypeEvaluator extends LangBaseVisitor<DataType> {
     private Scope globalScope;
+    private Scope currentScope;
     @Override
     public DataType visitProg(LangParser.ProgContext ctx) {
         globalScope = new Scope();
@@ -95,27 +96,49 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
     public DataType visitMethodDecl(LangParser.MethodDeclContext ctx) throws EvaluateException {
         String methodType = ctx.type.getText();
         String methodIdentifier = ctx.methodIdentifier.getText();
-
+        String methodParamType = ctx.methodParamType.getText();
 
         DataType returnvalue = visit(ctx.returnvalue);
 
-        //todo Initialize parameters
-        List<DataType> parameters = null;
-
+        currentScope = globalScope.openScope();
 
         if (methodType.equals("int")) {
             if (returnvalue == DataType.INT) {
-                globalScope.declareMethod(methodIdentifier, DataType.INT, parameters);
+                MethodType newMethod = new MethodType(DataType.INT);
+                if(methodParamType.equals("int")) {
+                    newMethod.addParameter(DataType.INT);
+                } else if(methodParamType.equals("string")){
+                    newMethod.addParameter(DataType.STRING);
+                }
+                globalScope.declareMethod(methodIdentifier, newMethod);
+                //todo visit children
+                currentScope.closeScope();
                 return DataType.INT;
             }
             throw new EvaluateException("Return Type is not an Integer");
         } else if (methodType.equals("string")) {
             if (returnvalue == DataType.STRING) {
+                MethodType newMethod = new MethodType(DataType.STRING);
+                if(methodParamType.equals("int")) {
+                    newMethod.addParameter(DataType.INT);
+                } else if(methodParamType.equals("string")){
+                    newMethod.addParameter(DataType.STRING);
+                }
+                globalScope.declareMethod(methodIdentifier, newMethod);
+                currentScope.closeScope();
                 return DataType.STRING;
             }
             throw new EvaluateException("Return Type is not a String");
         } else if (methodType.equals("void")) {
             if (returnvalue == null) {
+                MethodType newMethod = new MethodType(DataType.VOID);
+                if(methodParamType.equals("int")) {
+                    newMethod.addParameter(DataType.INT);
+                } else if(methodParamType.equals("string")){
+                    newMethod.addParameter(DataType.STRING);
+                }
+                globalScope.declareMethod(methodIdentifier, newMethod);
+                currentScope.closeScope();
                 return DataType.NULL;
             }
             throw new EvaluateException("Method declaration is void, no return type needed");

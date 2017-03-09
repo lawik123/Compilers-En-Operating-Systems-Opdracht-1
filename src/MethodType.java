@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -6,12 +7,10 @@ import java.util.List;
 public class MethodType extends Type {
 
     private DataType returnType;
-    private List<DataType> parameters;
+    private List<DataType> parameters = new ArrayList<DataType>();
 
-    public MethodType(DataType returnType, List<DataType> parameters) {
+    public MethodType(DataType returnType) {
         this.returnType = returnType;
-
-        this.parameters = parameters;
     }
     public void addParameter(DataType dataType) {
         parameters.add(dataType);

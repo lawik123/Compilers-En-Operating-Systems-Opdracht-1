@@ -7,6 +7,7 @@ import java.util.Map;
  */
 public class Scope {
 
+
     private Scope parentScope;
     private Map<String, Symbol> symbolTable;
 
@@ -48,10 +49,9 @@ public class Scope {
         return null;
     }
 
-    public Symbol declareMethod(String key, DataType dataType, List<DataType> parameters) {
-        MethodType method = new MethodType(dataType, parameters);
+    public Symbol declareMethod(String key, MethodType newM) {
 
-        Symbol newMethod = new Symbol(key, method);
+        Symbol newMethod = new Symbol(key, newM);
 
         symbolTable.put(key, newMethod);
         return newMethod;
@@ -62,7 +62,7 @@ public class Scope {
         if(variable != null) {
             return variable;
         } else {
-            variable = parentScope.lookupVariable(key);
+            variable = parentScope.lookupForGlobalVariable(key);
             if(variable != null) {
                 return variable;
             } else {
@@ -84,12 +84,12 @@ public class Scope {
         return symbolTable.get(key);
     }
 
-    private Scope openScope() {
+    public Scope openScope() {
 
         return new Scope(this);
     }
 
-    private Scope closeScope() {
+    public Scope closeScope() {
         return getParentScope();
     }
 

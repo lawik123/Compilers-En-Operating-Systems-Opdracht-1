@@ -2,23 +2,27 @@ grammar Lang;
 prog:'#'STRING 'BEGIN' expression* 'END';
 expression: varDecl
 |methodDecl
-|ifStm
-|whileStm
-|forStm
-|writeExpr
-|readExpr
 |varMod
 ;
+
+nonGlobalExpr: |ifStm
+            |whileStm
+            |forStm
+            |writeExpr
+            |readExpr
+            |varMod
+            |varDecl
+            ;
 
 //expressions
 varDecl:(isGlobal='global')? '~' type='int' identifier=variableName 'IS' mathExpr';' #declareIntVariable|
 (isGlobal='global')? '~' type='string' identifier=variableName 'IS' stringvalues';' #declareStringVariable;
 varMod: identifier=variableName 'IS' value=variableValue';';
-methodDecl:'~' type=methodType '('('~' methodParamType=dataType variableName (',')?)* ')' methodIdentifier=methodName opener expression* 'return' (returnvalue=returnvalues)?';' closer;
-ifStm:'if' '(' condition ')' opener expression* closer (('?' '(' condition ')' opener expression* closer)* ('?' opener expression* closer)?)?;
-whileStm: 'REPEAT' opener expression* closer 'UNTILL' '(' condition ')';
-forStm: 'for' '(' varDecl condition (';' IDcrement '(' variableName ')')? ')' opener expression* closer;
-writeExpr: 'WRITE(' (mathExpr|stringvalues) (( '+' (mathExpr|stringvalues))*)? ');';
+methodDecl:'~' type=methodType '('('~' methodParamType=dataType variableName (',')?)* ')' methodIdentifier=methodName opener nonGlobalExpr* 'return' (returnvalue=returnvalues)?';' closer;
+ifStm:'if' '(' condition ')' opener nonGlobalExpr* closer (('?' '(' condition ')' opener nonGlobalExpr* closer)* ('?' opener nonGlobalExpr* closer)?)?;
+whileStm: 'REPEAT' opener nonGlobalExpr* closer 'UNTILL' '(' condition ')';
+forStm: 'for' '(' varDecl condition (';' IDcrement '(' variableName ')')? ')' opener nonGlobalExpr* closer;
+writeExpr: 'WRITE(' (mathExpr|stringvalues) ( '+' (mathExpr|stringvalues)*)? ');';
 readExpr: 'READ';
 
 //mathmetic expressions
