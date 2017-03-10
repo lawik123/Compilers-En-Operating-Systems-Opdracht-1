@@ -105,6 +105,7 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
         String methodType = ctx.type.getText();
         String methodIdentifier = ctx.methodIdentifier.getText();
 
+
         DataType returnvalue = visit(ctx.returnvalue);
 
         currentScope = globalScope.openScope();
