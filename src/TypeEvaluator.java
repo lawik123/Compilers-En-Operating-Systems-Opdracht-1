@@ -6,8 +6,10 @@ import java.util.List;
  * Created by lars on 2/21/2017.
  */
 public class TypeEvaluator extends LangBaseVisitor<DataType> {
+
     private Scope globalScope;
     private Scope currentScope;
+
     @Override
     public DataType visitProg(LangParser.ProgContext ctx) {
         globalScope = new Scope();
@@ -37,17 +39,19 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
 //    }
 
 
+    //variable visitors
     @Override
     public DataType visitDeclareIntVariable(LangParser.DeclareIntVariableContext ctx) {
         String globalizer = ctx.isGlobal.getText();
         String identifier = ctx.identifier.getText();
         DataType value = visit(ctx.mathExpr());
-        if(value==DataType.INT){
-            if(globalizer.equals("global")) {
-                globalScope.declareVariable(identifier, DataType.INT, true);
+        if (value == DataType.INT) {
+            if (globalizer.equals("global")) {
+                globalScope.declareVariable(identifier, DataType.INT);
                 return DataType.INT;
             } else {
-                //todo add variable to current scope
+                currentScope.declareVariable(identifier, DataType.INT);
+                return DataType.INT;
             }
         }
         throw new EvaluateException("Incompatible types");
@@ -58,12 +62,13 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
         String globalizer = ctx.isGlobal.getText();
         String identifier = ctx.identifier.getText();
         DataType value = visit(ctx.stringvalues());
-        if(value==DataType.STRING){
-            if(globalizer.equals("global")) {
-                globalScope.declareVariable(identifier, DataType.STRING, true);
+        if (value == DataType.STRING) {
+            if (globalizer.equals("global")) {
+                globalScope.declareVariable(identifier, DataType.STRING);
                 return DataType.STRING;
             } else {
-                //todo add variable to current scope
+                currentScope.declareVariable(identifier, DataType.STRING);
+                return DataType.STRING;
             }
         }
         throw new EvaluateException("Incompatible types");
@@ -75,22 +80,28 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
     }
 
     @Override
-    public DataType visitStringvalues(LangParser.StringvaluesContext ctx) {
-        return DataType.STRING;
-    }
-
-    @Override
     public DataType visitVarMod(LangParser.VarModContext ctx) {
-//        DataType identifier = visit(ctx.identifier);
+        String identifier = ctx.identifier.getText();
+
+        //get the variable from the scope
+        Symbol variableSymbol = currentScope.lookupVariable(identifier);
+        //get the DataType from the variable
+        VariableType variableToModify = (VariableType) variableSymbol.getType();
+
         DataType value = visit(ctx.value);
-//        DataType value2 = visit(ctx.value2);
-        if (value == DataType.INT) {
-            return DataType.INT;
-        } else if (value == DataType.STRING) {
-            return DataType.STRING;
+
+
+        if (variableToModify.getDataType() == DataType.INT) {        //check variable DataType with values DataType
+            if (value == DataType.INT) {
+                return DataType.INT;
+            }
+        } else if (variableToModify.getDataType() == DataType.STRING) {
+            if (value == DataType.STRING) {
+                return DataType.STRING;
+            }
         }
         throw new EvaluateException("Incompatible types");
-}
+    }
 
     @Override
     public DataType visitCloser(LangParser.CloserContext ctx) {
@@ -98,75 +109,75 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
     }
 
 
-
+    //method visitors
     @Override
     public DataType visitMethodDecl(LangParser.MethodDeclContext ctx) throws EvaluateException {
 
         String methodType = ctx.type.getText();
         String methodIdentifier = ctx.methodIdentifier.getText();
 
+        Symbol lookupMethod = globalScope.lookupMethod(methodIdentifier);
 
         DataType returnvalue = visit(ctx.returnvalue);
 
         currentScope = globalScope.openScope();
-
-        if (methodType.equals("int")) {
-            if (returnvalue == DataType.INT) {
-                MethodType newMethod = new MethodType(DataType.INT);
-                newMethod.addParameter(visit(ctx.params()));
-                for(int i =0; i<ctx.params2().size();i++){
-                    newMethod.addParameter(visit(ctx.params2(i)));
+        if (lookupMethod != null) {
+            if (methodType.equals("int")) {
+                if (returnvalue == DataType.INT) {
+                    MethodType newMethod = new MethodType(DataType.INT);
+                    newMethod.addParameter(visit(ctx.params()));
+                    for (int i = 0; i < ctx.params2().size(); i++) {
+                        newMethod.addParameter(visit(ctx.params2(i)));
+                    }
+                    globalScope.declareMethod(methodIdentifier, newMethod);
+                    for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
+                        visit(ctx.nonGlobalExpr(i));
+                    }
+                    currentScope = currentScope.closeScope();
+                    return DataType.INT;
                 }
-                globalScope.declareMethod(methodIdentifier, newMethod);
-                for(int i =0; i<ctx.nonGlobalExpr().size();i++){
-                    visit(ctx.nonGlobalExpr(i));
+                throw new EvaluateException("Return Type is not an Integer");
+            } else if (methodType.equals("string")) {
+                if (returnvalue == DataType.STRING) {
+                    MethodType newMethod = new MethodType(DataType.STRING);
+                    newMethod.addParameter(visit(ctx.params()));
+                    for (int i = 0; i < ctx.params2().size(); i++) {
+                        newMethod.addParameter(visit(ctx.params2(i)));
+                    }
+                    globalScope.declareMethod(methodIdentifier, newMethod);
+                    for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
+                        visit(ctx.nonGlobalExpr(i));
+                    }
+                    currentScope = currentScope.closeScope();
+                    return DataType.STRING;
                 }
-                currentScope.closeScope();
-                return DataType.INT;
+                throw new EvaluateException("Return Type is not a String");
+            } else if (methodType.equals("void")) {
+                if (ctx.returnvalue.getText().equals("")) {
+                    MethodType newMethod = new MethodType(DataType.VOID);
+                    newMethod.addParameter(visit(ctx.params()));
+                    for (int i = 0; i < ctx.params2().size(); i++) {
+                        newMethod.addParameter(visit(ctx.params2(i)));
+                    }
+                    globalScope.declareMethod(methodIdentifier, newMethod);
+                    for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
+                        visit(ctx.nonGlobalExpr(i));
+                    }
+                    currentScope = currentScope.closeScope();
+                    return DataType.VOID;
+                }
+                throw new EvaluateException("Method declaration is void, no return type needed");
             }
-            throw new EvaluateException("Return Type is not an Integer");
-        } else if (methodType.equals("string")) {
-            if (returnvalue == DataType.STRING) {
-                MethodType newMethod = new MethodType(DataType.STRING);
-                newMethod.addParameter(visit(ctx.params()));
-                for(int i =0; i<ctx.params2().size();i++){
-                    newMethod.addParameter(visit(ctx.params2(i)));
-                }
-                globalScope.declareMethod(methodIdentifier, newMethod);
-                for(int i =0; i<ctx.nonGlobalExpr().size();i++){
-                    visit(ctx.nonGlobalExpr(i));
-                }
-                currentScope.closeScope();
-                return DataType.STRING;
-            }
-            throw new EvaluateException("Return Type is not a String");
-        } else if (methodType.equals("void")) {
-            if (ctx.returnvalue.getText().equals("")) {
-                MethodType newMethod = new MethodType(DataType.VOID);
-                newMethod.addParameter(visit(ctx.params()));
-                for(int i =0; i<ctx.params2().size();i++){
-                    newMethod.addParameter(visit(ctx.params2(i)));
-                }
-                globalScope.declareMethod(methodIdentifier, newMethod);
-                for(int i =0; i<ctx.nonGlobalExpr().size();i++){
-                    visit(ctx.nonGlobalExpr(i));
-                }
-                currentScope.closeScope();
-                return DataType.VOID;
-            }
-            throw new EvaluateException("Method declaration is void, no return type needed");
         }
-
-        throw new EvaluateException("Incompatible types");
+        throw new EvaluateException("Method already exists");
     }
 
     @Override
     public DataType visitParams(LangParser.ParamsContext ctx) {
         String type = ctx.methodParamType.getText();
-        if(type.equals("int")){
+        if (type.equals("int")) {
             return DataType.INT;
-        }
-        else if(type.equals("string")){
+        } else if (type.equals("string")) {
             return DataType.STRING;
         }
         throw new EvaluateException("Incompatible types");
@@ -175,10 +186,9 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
     @Override
     public DataType visitParams2(LangParser.Params2Context ctx) {
         String type = ctx.methodParamType2.getText();
-        if(type.equals("int")){
+        if (type.equals("int")) {
             return DataType.INT;
-        }
-        else if(type.equals("string")){
+        } else if (type.equals("string")) {
             return DataType.STRING;
         }
         throw new EvaluateException("Incompatible types");
@@ -189,16 +199,42 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
         return super.visitReturnvalues(ctx);
     }
 
-    //mathExpression visitors
+    //statement visitors
     @Override
-    public DataType visitMathValuesExpression(LangParser.MathValuesExpressionContext ctx) {
-        return DataType.INT;
+    public DataType visitIfStm(LangParser.IfStmContext ctx) {
+        currentScope = currentScope.openScope();
+        for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
+            visit(ctx.nonGlobalExpr(i));
+        }
+        currentScope = currentScope.closeScope();
+        return super.visitIfStm(ctx);
     }
 
     @Override
+    public DataType visitWhileStm(LangParser.WhileStmContext ctx) {
+        currentScope = currentScope.openScope();
+        for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
+            visit(ctx.nonGlobalExpr(i));
+        }
+        currentScope = currentScope.closeScope();
+        return super.visitWhileStm(ctx);
+    }
+
+    @Override
+    public DataType visitForStm(LangParser.ForStmContext ctx) {
+        currentScope = currentScope.openScope();
+        for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
+            visit(ctx.nonGlobalExpr(i));
+        }
+        currentScope = currentScope.closeScope();
+        return super.visitForStm(ctx);
+    }
+
+    //mathExpression visitors
+    @Override
     public DataType visitMinusFirstMathExpression(LangParser.MinusFirstMathExpressionContext ctx) {
-        DataType expression  = visit(ctx.mathExpr());
-        if(expression== DataType.INT) {
+        DataType expression = visit(ctx.mathExpr());
+        if (expression == DataType.INT) {
             return DataType.INT;
         }
         throw new EvaluateException("Incompatible types");
@@ -208,7 +244,7 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
     public DataType visitMultiplyDivideExpression(LangParser.MultiplyDivideExpressionContext ctx) {
         DataType left = visit(ctx.leftExpr);
         DataType right = visit(ctx.rightExpr);
-        if(left== DataType.INT&&right== DataType.INT) {
+        if (left == DataType.INT && right == DataType.INT) {
             return DataType.INT;
         }
         throw new EvaluateException("Incompatible types");
@@ -223,12 +259,20 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
     public DataType visitAddSubstractExpression(LangParser.AddSubstractExpressionContext ctx) {
         DataType left = visit(ctx.leftExpr);
         DataType right = visit(ctx.rightExpr);
-        if(left== DataType.INT&&right== DataType.INT) {
+        if (left == DataType.INT && right == DataType.INT) {
             return DataType.INT;
         }
         throw new EvaluateException("Incompatible types");
     }
 
+    //Getters for the DataType control
+    @Override
+    public DataType visitStringvalues(LangParser.StringvaluesContext ctx) {
+        return DataType.STRING;
+    }
 
-
+    @Override
+    public DataType visitMathValuesExpression(LangParser.MathValuesExpressionContext ctx) {
+        return DataType.INT;
+    }
 }

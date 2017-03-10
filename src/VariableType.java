@@ -3,10 +3,12 @@
  */
 public class VariableType extends Type {
     private DataType dataType;
-    private boolean isGlobal;
 
-    public VariableType(DataType dataType, boolean isGlobal) {
+    public VariableType(DataType dataType) {
         this.dataType = dataType;
-        this.isGlobal = isGlobal;
+    }
+
+    public DataType getDataType() {
+        return dataType;
     }
 }

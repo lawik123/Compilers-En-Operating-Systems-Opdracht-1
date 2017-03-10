@@ -44,6 +44,7 @@ params2: ',' '~' methodParamType2=dataType variableName;
 IDcrement: 'incr'|'decr';
 dataType: 'int'|'string';
 methodType:'int'|'string'|'void';
+
 //names
 methodName: STRING;
 variableName: STRING;

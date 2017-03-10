@@ -1,5 +1,4 @@
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -7,8 +6,7 @@ import java.util.Map;
  */
 public class Scope {
 
-
-    private Scope parentScope;
+    private Scope parentScope = null;
     private Map<String, Symbol> symbolTable;
 
     public Scope(Scope parentScope) {
@@ -24,27 +22,15 @@ public class Scope {
         this.symbolTable = new HashMap<String, Symbol>();
     }
 
-    public Symbol declareVariable(String key, DataType dataType, boolean isGlobal) {
-        if(isGlobal) {
-            Symbol var = lookupVariable(key);
-            if(var == null) {
-                VariableType variable = new VariableType(dataType, isGlobal);
+    public Symbol declareVariable(String key, DataType dataType) {
+        Symbol var = lookupVariable(key);
+        if (var == null) {
+            VariableType variable = new VariableType(dataType);
 
-                Symbol newVariable = new Symbol(key, variable);
+            Symbol newVariable = new Symbol(key, variable);
 
-                symbolTable.put(key, newVariable);
-                return newVariable;
-            }
-        } else {
-            Symbol var = lookupForGlobalVariable(key);
-            if(var == null) {
-                VariableType variable = new VariableType(dataType, isGlobal);
-
-                Symbol newVariable = new Symbol(key, variable);
-
-                symbolTable.put(key, newVariable);
-                return newVariable;
-            }
+            symbolTable.put(key, newVariable);
+            return newVariable;
         }
         return null;
     }
@@ -57,13 +43,22 @@ public class Scope {
         return newMethod;
     }
 
-    private Symbol lookupForGlobalVariable(String key) {
+
+    /**
+     * looks up a variable within the Scope and all his parentscopes
+     *
+     * @param key
+     * @return
+     */
+    public Symbol lookupVariable(String key) {
         Symbol variable = symbolTable.get(key);
-        if(variable != null) {
+        if (variable != null) {
             return variable;
         } else {
-            variable = parentScope.lookupForGlobalVariable(key);
-            if(variable != null) {
+            //if parentscope is null the global scope is reached, has no parent
+            if (parentScope != null)
+                variable = parentScope.lookupVariable(key);
+            if (variable != null) {
                 return variable;
             } else {
                 return null;
@@ -71,21 +66,11 @@ public class Scope {
         }
     }
 
-    private Symbol lookupVariable(String key) {
-        Symbol variable = symbolTable.get(key);
-        if(variable != null) {
-            return variable;
-        } else {
-            return null;
-        }
-    }
-
-    private Symbol lookupMethod(String key) {
+    public Symbol lookupMethod(String key) {
         return symbolTable.get(key);
     }
 
     public Scope openScope() {
-
         return new Scope(this);
     }
 
