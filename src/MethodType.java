@@ -15,4 +15,8 @@ public class MethodType extends Type {
     public void addParameter(DataType dataType) {
         parameters.add(dataType);
     }
+
+    public DataType getReturnType() {
+        return returnType;
+    }
 }

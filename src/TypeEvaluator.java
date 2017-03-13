@@ -230,6 +230,20 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
         return super.visitForStm(ctx);
     }
 
+
+
+    @Override
+    public DataType visitCallMethodExpr(LangParser.CallMethodExprContext ctx) {
+        String methodName = ctx.methodIdentifier.getText();
+        Symbol methodSymbol = globalScope.lookupMethod(methodName);
+        if(methodSymbol != null) {
+            MethodType calledMethod = (MethodType) methodSymbol.getType();
+            return calledMethod.getReturnType();
+        } else {
+            throw new EvaluateException("method does not exist");
+        }
+
+    }
     //mathExpression visitors
     @Override
     public DataType visitMinusFirstMathExpression(LangParser.MinusFirstMathExpressionContext ctx) {

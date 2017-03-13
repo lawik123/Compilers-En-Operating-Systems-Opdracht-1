@@ -12,17 +12,19 @@ nonGlobalExpr:ifStm
             |readExpr
             |varMod
             |varDecl
+            |callMethodExpr
             ;
 
 //expressions
 varDecl:(isGlobal='global')? '~' type='int' identifier=variableName 'IS' mathExpr';' #declareIntVariable|
 (isGlobal='global')? '~' type='string' identifier=variableName 'IS' stringvalues';' #declareStringVariable;
 varMod: identifier=variableName 'IS' value=variableValue';';
-methodDecl:'~' type=methodType '(' params params2* ')' methodIdentifier=methodName opener nonGlobalExpr* 'return' (returnvalue=returnvalues)?';' closer;
+methodDecl:'~' type=methodType '(' (params params2*)? ')' methodIdentifier=methodName opener nonGlobalExpr* 'return' (returnvalue=returnvalues)?';' closer;
 ifStm:'if' '(' condition ')' opener nonGlobalExpr* closer (('?' '(' condition ')' opener nonGlobalExpr* closer)* ('?' opener nonGlobalExpr* closer)?)?;
 whileStm: 'REPEAT' opener nonGlobalExpr* closer 'UNTILL' '(' condition ')';
 forStm: 'for' '(' varDecl condition (';' IDcrement '(' variableName ')')? ')' opener nonGlobalExpr* closer;
 writeExpr: 'WRITE(' (mathExpr|stringvalues) ( '+' (mathExpr|stringvalues)*)? ');';
+callMethodExpr: '('(variableName variableName2*)?')'methodIdentifier=methodName ';';
 readExpr: 'READ';
 
 //mathmetic expressions
@@ -40,6 +42,7 @@ condition: (identifierLeft=mathExpr) lop=LOP (identifierRight=mathExpr);
 
 params: '~' methodParamType=dataType variableName;
 params2: ',' '~' methodParamType2=dataType variableName;
+variableName2: ',' variableName;
 //types
 IDcrement: 'incr'|'decr';
 dataType: 'int'|'string';
