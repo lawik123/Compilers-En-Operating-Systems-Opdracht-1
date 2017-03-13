@@ -1,9 +1,32 @@
 #test BEGIN
 
-global ~int x IS 1;
-~int ()methode1 /
-x IS 2;
-return x + 1;
+global ~int a IS 2;
+global ~string b IS "hallo";
+
+~int ()run /
+~int c IS 6;
+a IS 6;
+
+if(1<2) /
+c IS 4;
+\ ? (a < c) /
+()newMethod;
+\ ? /
+WRITE(b);
+\
+
+~void ()newMethod /
+while (1 < 2) /
+for(~int x IS 1; x < 10) /
+~string read IS READ;
+\
+
+
+for(~int y IS 2; y < 20; incr(x)) /
+a IS y * 2;
+\
+\
+return
 \
 
 END
