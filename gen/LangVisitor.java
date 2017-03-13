@@ -78,6 +78,12 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitWriteExpr(LangParser.WriteExprContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link LangParser#callMethodExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCallMethodExpr(LangParser.CallMethodExprContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link LangParser#readExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -142,6 +148,12 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitParams2(LangParser.Params2Context ctx);
+	/**
+	 * Visit a parse tree produced by {@link LangParser#variableName2}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVariableName2(LangParser.VariableName2Context ctx);
 	/**
 	 * Visit a parse tree produced by {@link LangParser#dataType}.
 	 * @param ctx the parse tree
