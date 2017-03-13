@@ -1,6 +1,7 @@
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,19 +15,25 @@ public class Compiler {
     public static void main(String[] args) {
         try {
             // Create lexer and get a token stream
-            File file = new File("test.txt");
-            FileInputStream fis = new FileInputStream(file);
-            LangLexer lexer =
-                    new LangLexer(new ANTLRInputStream(fis));
+            ANTLRInputStream inputStream = new ANTLRFileStream("test.txt");
+
+            LangLexer lexer = new LangLexer(inputStream);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
-            // Create a parser (using tokenstream as input)
-            // and parse main rule
+
+            // Create parser
             LangParser parser = new LangParser(tokens);
-            LangParser.ProgContext programTree = parser.prog();
+            ParseTree tree = parser.prog(); // begin parsing at expression rule
+
+            try {
+                TypeEvaluator typeEvaluator = new TypeEvaluator();
+                typeEvaluator.visit(tree);
+                System.out.println("success");
+            }catch (EvaluateException e){
+                e.printStackTrace();
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String a = "pietje";
-        System.out.println(a+1+1);
     }
 }

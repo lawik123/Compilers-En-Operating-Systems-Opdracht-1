@@ -1,7 +1,6 @@
 #test BEGIN
 
 global ~int x IS 1;
-
 ~int ()methode1 /
 x IS 2;
 return x + 1;

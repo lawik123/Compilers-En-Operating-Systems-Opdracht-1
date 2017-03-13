@@ -115,17 +115,22 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
 
         String methodType = ctx.type.getText();
         String methodIdentifier = ctx.methodIdentifier.getText();
-
+        String params = null;
         Symbol lookupMethod = globalScope.lookupMethod(methodIdentifier);
+        try {
+            params = ctx.params().getText();
+        }catch (NullPointerException npe){
 
+        }
         DataType returnvalue = visit(ctx.returnvalue);
-
         currentScope = globalScope.openScope();
-        if (lookupMethod != null) {
+        if (lookupMethod == null) {
             if (methodType.equals("int")) {
                 if (returnvalue == DataType.INT) {
                     MethodType newMethod = new MethodType(DataType.INT);
-                    newMethod.addParameter(visit(ctx.params()));
+                    if(params!=null) {
+                        newMethod.addParameter(visit(ctx.params()));
+                    }
                     for (int i = 0; i < ctx.params2().size(); i++) {
                         newMethod.addParameter(visit(ctx.params2(i)));
                     }
@@ -140,7 +145,9 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
             } else if (methodType.equals("string")) {
                 if (returnvalue == DataType.STRING) {
                     MethodType newMethod = new MethodType(DataType.STRING);
-                    newMethod.addParameter(visit(ctx.params()));
+                    if(params!=null) {
+                        newMethod.addParameter(visit(ctx.params()));
+                    }
                     for (int i = 0; i < ctx.params2().size(); i++) {
                         newMethod.addParameter(visit(ctx.params2(i)));
                     }
@@ -155,7 +162,9 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
             } else if (methodType.equals("void")) {
                 if (ctx.returnvalue.getText().equals("")) {
                     MethodType newMethod = new MethodType(DataType.VOID);
-                    newMethod.addParameter(visit(ctx.params()));
+                    if(params!=null) {
+                        newMethod.addParameter(visit(ctx.params()));
+                    }
                     for (int i = 0; i < ctx.params2().size(); i++) {
                         newMethod.addParameter(visit(ctx.params2(i)));
                     }
