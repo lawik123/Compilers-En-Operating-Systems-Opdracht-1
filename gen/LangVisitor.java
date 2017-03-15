@@ -84,11 +84,17 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCallMethodExpr(LangParser.CallMethodExprContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link LangParser#readExpr}.
+	 * Visit a parse tree produced by {@link LangParser#readIntExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitReadExpr(LangParser.ReadExprContext ctx);
+	T visitReadIntExpr(LangParser.ReadIntExprContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link LangParser#readStringExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitReadStringExpr(LangParser.ReadStringExprContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code minusFirstMathExpression}
 	 * labeled alternative in {@link LangParser#mathExpr}.

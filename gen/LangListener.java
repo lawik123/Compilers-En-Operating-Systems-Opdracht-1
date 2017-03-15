@@ -131,15 +131,25 @@ public interface LangListener extends ParseTreeListener {
 	 */
 	void exitCallMethodExpr(LangParser.CallMethodExprContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link LangParser#readExpr}.
+	 * Enter a parse tree produced by {@link LangParser#readIntExpr}.
 	 * @param ctx the parse tree
 	 */
-	void enterReadExpr(LangParser.ReadExprContext ctx);
+	void enterReadIntExpr(LangParser.ReadIntExprContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link LangParser#readExpr}.
+	 * Exit a parse tree produced by {@link LangParser#readIntExpr}.
 	 * @param ctx the parse tree
 	 */
-	void exitReadExpr(LangParser.ReadExprContext ctx);
+	void exitReadIntExpr(LangParser.ReadIntExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link LangParser#readStringExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterReadStringExpr(LangParser.ReadStringExprContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LangParser#readStringExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitReadStringExpr(LangParser.ReadStringExprContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code minusFirstMathExpression}
 	 * labeled alternative in {@link LangParser#mathExpr}.

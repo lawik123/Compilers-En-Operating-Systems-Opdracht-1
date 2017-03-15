@@ -9,23 +9,23 @@ nonGlobalExpr:ifStm
             |whileStm
             |forStm
             |writeExpr
-            |readExpr
             |varMod
             |varDecl
             |callMethodExpr
             ;
 
 //expressions
-varDecl:(isGlobal='global')? '~' type='int' identifier=variableName 'IS' mathExpr';' #declareIntVariable|
-(isGlobal='global')? '~' type='string' identifier=variableName 'IS' stringvalues';' #declareStringVariable;
+varDecl:(isGlobal='global')? '~' type='int' identifier=variableName 'IS' mathExpr ';' #declareIntVariable|
+(isGlobal='global')? '~' type='string' identifier=variableName 'IS' stringvalues ';' #declareStringVariable;
 varMod: identifier=variableName 'IS' value=variableValue';';
 methodDecl:'~' type=methodType '(' (params params2*)? ')' methodIdentifier=methodName opener nonGlobalExpr* 'return' (returnvalue=returnvalues)?';' closer;
 ifStm:'if' '(' condition ')' opener nonGlobalExpr* closer (('?' '(' condition ')' opener nonGlobalExpr* closer)* ('?' opener nonGlobalExpr* closer)?)?;
-whileStm: 'REPEAT' opener nonGlobalExpr* closer 'UNTILL' '(' condition ')';
+whileStm: 'REPEAT' opener nonGlobalExpr* closer 'UNTIL' '(' condition ')';
 forStm: 'for' '(' varDecl condition (';' IDcrement '(' variableName ')')? ')' opener nonGlobalExpr* closer;
 writeExpr: 'WRITE(' (mathExpr|stringvalues) ( '+' (mathExpr|stringvalues)*)? ');';
 callMethodExpr: '('(variableName variableName2*)?')'methodIdentifier=methodName ';';
-readExpr: 'READ';
+readIntExpr: 'READINT';
+readStringExpr: 'READSTRING';
 
 //mathmetic expressions
 mathExpr: '(' mathExpr ')'                            #parenthesisExpression
@@ -35,7 +35,7 @@ mathExpr: '(' mathExpr ')'                            #parenthesisExpression
           		    |   value=mathvalues #mathValuesExpression
            			;
 
-mathvalues:  variableName |INT;
+mathvalues:  variableName |INT | readIntExpr;
 
 //condition form
 condition: (identifierLeft=mathExpr) lop=LOP (identifierRight=mathExpr);
@@ -51,10 +51,9 @@ methodType:'int'|'string'|'void';
 //names
 methodName: STRING;
 variableName: STRING;
-stringvalues:STRINGVALUE | variableName;
+stringvalues:STRINGVALUE | variableName | readStringExpr;
 variableValue:
 stringvalues
-| readExpr
 | mathExpr;
 
 //openers and closers

@@ -159,13 +159,25 @@ public class LangBaseListener implements LangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterReadExpr(LangParser.ReadExprContext ctx) { }
+	@Override public void enterReadIntExpr(LangParser.ReadIntExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitReadExpr(LangParser.ReadExprContext ctx) { }
+	@Override public void exitReadIntExpr(LangParser.ReadIntExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterReadStringExpr(LangParser.ReadStringExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitReadStringExpr(LangParser.ReadStringExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

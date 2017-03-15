@@ -42,11 +42,17 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
     //variable visitors
     @Override
     public DataType visitDeclareIntVariable(LangParser.DeclareIntVariableContext ctx) {
-        String globalizer = ctx.isGlobal.getText();
+        String globalizer =null;
+        try{
+            globalizer = ctx.isGlobal.getText();
+        }catch (NullPointerException npe){
+
+        }
+
         String identifier = ctx.identifier.getText();
         DataType value = visit(ctx.mathExpr());
         if (value == DataType.INT) {
-            if (globalizer.equals("global")) {
+            if (globalizer!=null&&globalizer.equals("global")) {
                 globalScope.declareVariable(identifier, DataType.INT);
                 return DataType.INT;
             } else {
@@ -59,11 +65,17 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
 
     @Override
     public DataType visitDeclareStringVariable(LangParser.DeclareStringVariableContext ctx) {
-        String globalizer = ctx.isGlobal.getText();
+        String globalizer =null;
+        try{
+            globalizer = ctx.isGlobal.getText();
+        }catch (NullPointerException npe){
+
+        }
+
         String identifier = ctx.identifier.getText();
         DataType value = visit(ctx.stringvalues());
         if (value == DataType.STRING) {
-            if (globalizer.equals("global")) {
+            if (globalizer!=null && globalizer.equals("global")) {
                 globalScope.declareVariable(identifier, DataType.STRING);
                 return DataType.STRING;
             } else {
@@ -117,12 +129,18 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
         String methodIdentifier = ctx.methodIdentifier.getText();
         String params = null;
         Symbol lookupMethod = globalScope.lookupMethod(methodIdentifier);
+        DataType returnvalue =null;
         try {
             params = ctx.params().getText();
         }catch (NullPointerException npe){
 
         }
-        DataType returnvalue = visit(ctx.returnvalue);
+        try{
+            returnvalue = visit(ctx.returnvalue);
+        }catch (NullPointerException npe){
+
+        }
+
         currentScope = globalScope.openScope();
         if (lookupMethod == null) {
             if (methodType.equals("int")) {
@@ -160,7 +178,7 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
                 }
                 throw new EvaluateException("Return Type is not a String");
             } else if (methodType.equals("void")) {
-                if (ctx.returnvalue.getText().equals("")) {
+                if (ctx.returnvalue==null) {
                     MethodType newMethod = new MethodType(DataType.VOID);
                     if(params!=null) {
                         newMethod.addParameter(visit(ctx.params()));
@@ -295,5 +313,15 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
     @Override
     public DataType visitMathValuesExpression(LangParser.MathValuesExpressionContext ctx) {
         return DataType.INT;
+    }
+
+    @Override
+    public DataType visitReadIntExpr(LangParser.ReadIntExprContext ctx) {
+        return DataType.INT;
+    }
+
+    @Override
+    public DataType visitReadStringExpr(LangParser.ReadStringExprContext ctx) {
+        return DataType.STRING;
     }
 }

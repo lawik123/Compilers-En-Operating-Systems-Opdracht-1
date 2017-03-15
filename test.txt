@@ -3,6 +3,20 @@
 global ~int a IS 2;
 global ~string b IS "hallo";
 
+~void ()newMethod /
+REPEAT /
+for(~int x IS 1; x < 10) /
+~string read IS READSTRING;
+\
+\UNTIL(1 < 2)
+
+
+for(~int y IS 2; y < 20; incr(x)) /
+a IS y * 2;
+\
+return;
+\
+
 ~int ()run /
 ~int c IS 6;
 a IS 6;
@@ -15,18 +29,9 @@ c IS 4;
 WRITE(b);
 \
 
-~void ()newMethod /
-while (1 < 2) /
-for(~int x IS 1; x < 10) /
-~string read IS READ;
+return 1;
 \
 
 
-for(~int y IS 2; y < 20; incr(x)) /
-a IS y * 2;
-\
-\
-return
-\
 
 END
