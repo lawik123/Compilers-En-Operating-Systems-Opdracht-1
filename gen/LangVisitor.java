@@ -131,11 +131,26 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAddSubstractExpression(LangParser.AddSubstractExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link LangParser#mathvalues}.
+	 * Visit a parse tree produced by the {@code intvariable}
+	 * labeled alternative in {@link LangParser#mathvalues}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitMathvalues(LangParser.MathvaluesContext ctx);
+	T visitIntvariable(LangParser.IntvariableContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code intlitteral}
+	 * labeled alternative in {@link LangParser#mathvalues}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIntlitteral(LangParser.IntlitteralContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code intread}
+	 * labeled alternative in {@link LangParser#mathvalues}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIntread(LangParser.IntreadContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link LangParser#condition}.
 	 * @param ctx the parse tree

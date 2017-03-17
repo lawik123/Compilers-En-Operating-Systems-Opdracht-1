@@ -243,13 +243,37 @@ public class LangBaseListener implements LangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMathvalues(LangParser.MathvaluesContext ctx) { }
+	@Override public void enterIntvariable(LangParser.IntvariableContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMathvalues(LangParser.MathvaluesContext ctx) { }
+	@Override public void exitIntvariable(LangParser.IntvariableContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIntlitteral(LangParser.IntlitteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIntlitteral(LangParser.IntlitteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIntread(LangParser.IntreadContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIntread(LangParser.IntreadContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

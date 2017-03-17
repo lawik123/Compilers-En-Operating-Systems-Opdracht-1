@@ -1,8 +1,9 @@
 grammar Lang;
-prog:'#'STRING 'BEGIN' expression* 'END';
+prog:'#' className=STRING 'BEGIN' expression* 'END';
 expression: varDecl
 |methodDecl
 |varMod
+|mathExpr
 ;
 
 nonGlobalExpr:ifStm
@@ -35,7 +36,9 @@ mathExpr: '(' mathExpr ')'                            #parenthesisExpression
           		    |   value=mathvalues #mathValuesExpression
            			;
 
-mathvalues:  variableName |INT | readIntExpr;
+mathvalues:  variableName #intvariable
+|INT #intlitteral
+| readIntExpr#intread;
 
 //condition form
 condition: (identifierLeft=mathExpr) lop=LOP (identifierRight=mathExpr);

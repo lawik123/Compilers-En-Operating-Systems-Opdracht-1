@@ -8,6 +8,7 @@ public class Scope {
 
     private Scope parentScope = null;
     private Map<String, Symbol> symbolTable;
+    private Map<String, String> jasminPosition;
 
     public Scope(Scope parentScope) {
         this.parentScope = parentScope;
@@ -60,6 +61,22 @@ public class Scope {
                 variable = parentScope.lookupVariable(key);
             if (variable != null) {
                 return variable;
+            } else {
+                return null;
+            }
+        }
+    }
+
+    public String lookupJasminPosition(String key) {
+        String position = jasminPosition.get(key);
+        if (position != null) {
+            return position;
+        } else {
+            //if parentscope is null the global scope is reached, has no parent
+            if (parentScope != null)
+                position = parentScope.lookupJasminPosition(key);
+            if (position != null) {
+                return position;
             } else {
                 return null;
             }

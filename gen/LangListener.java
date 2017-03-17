@@ -211,15 +211,41 @@ public interface LangListener extends ParseTreeListener {
 	 */
 	void exitAddSubstractExpression(LangParser.AddSubstractExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link LangParser#mathvalues}.
+	 * Enter a parse tree produced by the {@code intvariable}
+	 * labeled alternative in {@link LangParser#mathvalues}.
 	 * @param ctx the parse tree
 	 */
-	void enterMathvalues(LangParser.MathvaluesContext ctx);
+	void enterIntvariable(LangParser.IntvariableContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link LangParser#mathvalues}.
+	 * Exit a parse tree produced by the {@code intvariable}
+	 * labeled alternative in {@link LangParser#mathvalues}.
 	 * @param ctx the parse tree
 	 */
-	void exitMathvalues(LangParser.MathvaluesContext ctx);
+	void exitIntvariable(LangParser.IntvariableContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code intlitteral}
+	 * labeled alternative in {@link LangParser#mathvalues}.
+	 * @param ctx the parse tree
+	 */
+	void enterIntlitteral(LangParser.IntlitteralContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code intlitteral}
+	 * labeled alternative in {@link LangParser#mathvalues}.
+	 * @param ctx the parse tree
+	 */
+	void exitIntlitteral(LangParser.IntlitteralContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code intread}
+	 * labeled alternative in {@link LangParser#mathvalues}.
+	 * @param ctx the parse tree
+	 */
+	void enterIntread(LangParser.IntreadContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code intread}
+	 * labeled alternative in {@link LangParser#mathvalues}.
+	 * @param ctx the parse tree
+	 */
+	void exitIntread(LangParser.IntreadContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link LangParser#condition}.
 	 * @param ctx the parse tree
