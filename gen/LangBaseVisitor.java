@@ -1,4 +1,4 @@
-// Generated from D:/Desktop/Saxion/Jaar 2/Kwartiel 3/Compilers en Operating Systems/Practicum/Opdracht1(2)/Compilers-En-Operating-Systems-Opdracht-1\Lang.g4 by ANTLR 4.6
+// Generated from D:/school/jaar2/kwartiel3/Compilers&OperatingSystems/Compilers-En-Operating-Systems-Opdracht-1\Lang.g4 by ANTLR 4.6
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**
@@ -170,7 +170,21 @@ public class LangBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements L
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitCondition(LangParser.ConditionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitWhileCondition(LangParser.WhileConditionContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitForCondition(LangParser.ForConditionContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitIfCondition(LangParser.IfConditionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -192,6 +206,20 @@ public class LangBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements L
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitVariableName2(LangParser.VariableName2Context ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitParams3(LangParser.Params3Context ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitParams4(LangParser.Params4Context ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -226,7 +254,21 @@ public class LangBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements L
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitStringvalues(LangParser.StringvaluesContext ctx) { return visitChildren(ctx); }
+	@Override public T visitStringLiteral(LangParser.StringLiteralContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitStringVariable(LangParser.StringVariableContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitStringRead(LangParser.StringReadContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

@@ -1,4 +1,4 @@
-// Generated from D:/Desktop/Saxion/Jaar 2/Kwartiel 3/Compilers en Operating Systems/Practicum/Opdracht1(2)/Compilers-En-Operating-Systems-Opdracht-1\Lang.g4 by ANTLR 4.6
+// Generated from D:/school/jaar2/kwartiel3/Compilers&OperatingSystems/Compilers-En-Operating-Systems-Opdracht-1\Lang.g4 by ANTLR 4.6
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -279,13 +279,37 @@ public class LangBaseListener implements LangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCondition(LangParser.ConditionContext ctx) { }
+	@Override public void enterWhileCondition(LangParser.WhileConditionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitCondition(LangParser.ConditionContext ctx) { }
+	@Override public void exitWhileCondition(LangParser.WhileConditionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterForCondition(LangParser.ForConditionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitForCondition(LangParser.ForConditionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIfCondition(LangParser.IfConditionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIfCondition(LangParser.IfConditionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -322,6 +346,30 @@ public class LangBaseListener implements LangListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitVariableName2(LangParser.VariableName2Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterParams3(LangParser.Params3Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitParams3(LangParser.Params3Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterParams4(LangParser.Params4Context ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitParams4(LangParser.Params4Context ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -375,13 +423,37 @@ public class LangBaseListener implements LangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterStringvalues(LangParser.StringvaluesContext ctx) { }
+	@Override public void enterStringLiteral(LangParser.StringLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitStringvalues(LangParser.StringvaluesContext ctx) { }
+	@Override public void exitStringLiteral(LangParser.StringLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterStringVariable(LangParser.StringVariableContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStringVariable(LangParser.StringVariableContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterStringRead(LangParser.StringReadContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStringRead(LangParser.StringReadContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

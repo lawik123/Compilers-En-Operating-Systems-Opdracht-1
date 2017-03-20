@@ -8,7 +8,7 @@ public class Scope {
 
     private Scope parentScope = null;
     private Map<String, Symbol> symbolTable;
-    private Map<String, String> jasminPosition;
+
 
     public Scope(Scope parentScope) {
         this.parentScope = parentScope;
@@ -35,6 +35,7 @@ public class Scope {
         }
         return null;
     }
+
 
     public Symbol declareMethod(String key, MethodType newM) {
 
@@ -67,21 +68,7 @@ public class Scope {
         }
     }
 
-    public String lookupJasminPosition(String key) {
-        String position = jasminPosition.get(key);
-        if (position != null) {
-            return position;
-        } else {
-            //if parentscope is null the global scope is reached, has no parent
-            if (parentScope != null)
-                position = parentScope.lookupJasminPosition(key);
-            if (position != null) {
-                return position;
-            } else {
-                return null;
-            }
-        }
-    }
+
 
     public Symbol lookupMethod(String key) {
         return symbolTable.get(key);

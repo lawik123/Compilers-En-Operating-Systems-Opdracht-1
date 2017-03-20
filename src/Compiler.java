@@ -32,7 +32,8 @@ public class Compiler {
 
                 CodeGenerator codeGenerator = new CodeGenerator();
                 ArrayList<String> code = codeGenerator.visit(tree);
-                for(String c: code){
+
+                for(String c: code) {
                     System.out.println(c);
                 }
             }catch (EvaluateException e){

@@ -1,5 +1,11 @@
 #test BEGIN
 
--(50*20+(2*3))*(5+4)
+~int ()myMethod /
+    for(~int a IS 0; a < 10) /
+    ~string s IS "hallo"
+
+    \
+    return 1;
+\
 
 END

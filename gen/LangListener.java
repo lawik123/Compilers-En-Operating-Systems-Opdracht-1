@@ -1,4 +1,4 @@
-// Generated from D:/Desktop/Saxion/Jaar 2/Kwartiel 3/Compilers en Operating Systems/Practicum/Opdracht1(2)/Compilers-En-Operating-Systems-Opdracht-1\Lang.g4 by ANTLR 4.6
+// Generated from D:/school/jaar2/kwartiel3/Compilers&OperatingSystems/Compilers-En-Operating-Systems-Opdracht-1\Lang.g4 by ANTLR 4.6
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -247,15 +247,35 @@ public interface LangListener extends ParseTreeListener {
 	 */
 	void exitIntread(LangParser.IntreadContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link LangParser#condition}.
+	 * Enter a parse tree produced by {@link LangParser#whileCondition}.
 	 * @param ctx the parse tree
 	 */
-	void enterCondition(LangParser.ConditionContext ctx);
+	void enterWhileCondition(LangParser.WhileConditionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link LangParser#condition}.
+	 * Exit a parse tree produced by {@link LangParser#whileCondition}.
 	 * @param ctx the parse tree
 	 */
-	void exitCondition(LangParser.ConditionContext ctx);
+	void exitWhileCondition(LangParser.WhileConditionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link LangParser#forCondition}.
+	 * @param ctx the parse tree
+	 */
+	void enterForCondition(LangParser.ForConditionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LangParser#forCondition}.
+	 * @param ctx the parse tree
+	 */
+	void exitForCondition(LangParser.ForConditionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link LangParser#ifCondition}.
+	 * @param ctx the parse tree
+	 */
+	void enterIfCondition(LangParser.IfConditionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LangParser#ifCondition}.
+	 * @param ctx the parse tree
+	 */
+	void exitIfCondition(LangParser.IfConditionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link LangParser#params}.
 	 * @param ctx the parse tree
@@ -286,6 +306,26 @@ public interface LangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitVariableName2(LangParser.VariableName2Context ctx);
+	/**
+	 * Enter a parse tree produced by {@link LangParser#params3}.
+	 * @param ctx the parse tree
+	 */
+	void enterParams3(LangParser.Params3Context ctx);
+	/**
+	 * Exit a parse tree produced by {@link LangParser#params3}.
+	 * @param ctx the parse tree
+	 */
+	void exitParams3(LangParser.Params3Context ctx);
+	/**
+	 * Enter a parse tree produced by {@link LangParser#params4}.
+	 * @param ctx the parse tree
+	 */
+	void enterParams4(LangParser.Params4Context ctx);
+	/**
+	 * Exit a parse tree produced by {@link LangParser#params4}.
+	 * @param ctx the parse tree
+	 */
+	void exitParams4(LangParser.Params4Context ctx);
 	/**
 	 * Enter a parse tree produced by {@link LangParser#dataType}.
 	 * @param ctx the parse tree
@@ -327,15 +367,41 @@ public interface LangListener extends ParseTreeListener {
 	 */
 	void exitVariableName(LangParser.VariableNameContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link LangParser#stringvalues}.
+	 * Enter a parse tree produced by the {@code stringLiteral}
+	 * labeled alternative in {@link LangParser#stringvalues}.
 	 * @param ctx the parse tree
 	 */
-	void enterStringvalues(LangParser.StringvaluesContext ctx);
+	void enterStringLiteral(LangParser.StringLiteralContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link LangParser#stringvalues}.
+	 * Exit a parse tree produced by the {@code stringLiteral}
+	 * labeled alternative in {@link LangParser#stringvalues}.
 	 * @param ctx the parse tree
 	 */
-	void exitStringvalues(LangParser.StringvaluesContext ctx);
+	void exitStringLiteral(LangParser.StringLiteralContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code stringVariable}
+	 * labeled alternative in {@link LangParser#stringvalues}.
+	 * @param ctx the parse tree
+	 */
+	void enterStringVariable(LangParser.StringVariableContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stringVariable}
+	 * labeled alternative in {@link LangParser#stringvalues}.
+	 * @param ctx the parse tree
+	 */
+	void exitStringVariable(LangParser.StringVariableContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code stringRead}
+	 * labeled alternative in {@link LangParser#stringvalues}.
+	 * @param ctx the parse tree
+	 */
+	void enterStringRead(LangParser.StringReadContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stringRead}
+	 * labeled alternative in {@link LangParser#stringvalues}.
+	 * @param ctx the parse tree
+	 */
+	void exitStringRead(LangParser.StringReadContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link LangParser#variableValue}.
 	 * @param ctx the parse tree

@@ -42,17 +42,17 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
     //variable visitors
     @Override
     public DataType visitDeclareIntVariable(LangParser.DeclareIntVariableContext ctx) {
-        String globalizer =null;
-        try{
+        String globalizer = null;
+        try {
             globalizer = ctx.isGlobal.getText();
-        }catch (NullPointerException npe){
+        } catch (NullPointerException npe) {
 
         }
 
         String identifier = ctx.identifier.getText();
         DataType value = visit(ctx.mathExpr());
         if (value == DataType.INT) {
-            if (globalizer!=null&&globalizer.equals("global")) {
+            if (globalizer != null && globalizer.equals("global")) {
                 globalScope.declareVariable(identifier, DataType.INT);
                 return DataType.INT;
             } else {
@@ -65,17 +65,17 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
 
     @Override
     public DataType visitDeclareStringVariable(LangParser.DeclareStringVariableContext ctx) {
-        String globalizer =null;
-        try{
+        String globalizer = null;
+        try {
             globalizer = ctx.isGlobal.getText();
-        }catch (NullPointerException npe){
+        } catch (NullPointerException npe) {
 
         }
 
         String identifier = ctx.identifier.getText();
         DataType value = visit(ctx.stringvalues());
         if (value == DataType.STRING) {
-            if (globalizer!=null && globalizer.equals("global")) {
+            if (globalizer != null && globalizer.equals("global")) {
                 globalScope.declareVariable(identifier, DataType.STRING);
                 return DataType.STRING;
             } else {
@@ -129,15 +129,15 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
         String methodIdentifier = ctx.methodIdentifier.getText();
         String params = null;
         Symbol lookupMethod = globalScope.lookupMethod(methodIdentifier);
-        DataType returnvalue =null;
+        DataType returnvalue = null;
         try {
             params = ctx.params().getText();
-        }catch (NullPointerException npe){
+        } catch (NullPointerException npe) {
 
         }
-        try{
+        try {
             returnvalue = visit(ctx.returnvalue);
-        }catch (NullPointerException npe){
+        } catch (NullPointerException npe) {
 
         }
 
@@ -146,7 +146,7 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
             if (methodType.equals("int")) {
                 if (returnvalue == DataType.INT) {
                     MethodType newMethod = new MethodType(DataType.INT);
-                    if(params!=null) {
+                    if (params != null) {
                         newMethod.addParameter(visit(ctx.params()));
                     }
                     for (int i = 0; i < ctx.params2().size(); i++) {
@@ -163,7 +163,7 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
             } else if (methodType.equals("string")) {
                 if (returnvalue == DataType.STRING) {
                     MethodType newMethod = new MethodType(DataType.STRING);
-                    if(params!=null) {
+                    if (params != null) {
                         newMethod.addParameter(visit(ctx.params()));
                     }
                     for (int i = 0; i < ctx.params2().size(); i++) {
@@ -178,9 +178,9 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
                 }
                 throw new EvaluateException("Return Type is not a String");
             } else if (methodType.equals("void")) {
-                if (ctx.returnvalue==null) {
+                if (ctx.returnvalue == null) {
                     MethodType newMethod = new MethodType(DataType.VOID);
-                    if(params!=null) {
+                    if (params != null) {
                         newMethod.addParameter(visit(ctx.params()));
                     }
                     for (int i = 0; i < ctx.params2().size(); i++) {
@@ -261,12 +261,40 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
     public DataType visitCallMethodExpr(LangParser.CallMethodExprContext ctx) {
         String methodName = ctx.methodIdentifier.getText();
         Symbol methodSymbol = globalScope.lookupMethod(methodName);
-        if(methodSymbol != null) {
+        if (methodSymbol != null) {
             MethodType calledMethod = (MethodType) methodSymbol.getType();
+            ArrayList<DataType> dataTypes = new ArrayList<>();
+            try {
+                dataTypes.add(visit(ctx.params3()));
+                for(int i = 0; i< ctx.params4().size(); i++) {
+                    dataTypes.add(visit(ctx.params4(i)));
+                }
+            } catch (NullPointerException npe) {
+
+            }
+            if(dataTypes.size() == calledMethod.getParameters().size()) {
+                for (int i = 0; i < dataTypes.size(); i++) {
+                    if (dataTypes.get(i) != calledMethod.getParameters().get(i)) {
+                        throw new EvaluateException("Parameters do not match");
+                    }
+                }
+            } else {
+                throw new EvaluateException("Parameters do not match");
+            }
             return calledMethod.getReturnType();
         } else {
             throw new EvaluateException("method does not exist");
         }
+    }
+
+    @Override
+    public DataType visitParams3(LangParser.Params3Context ctx) {
+        return visit(ctx.getChild(0));
+    }
+
+    @Override
+    public DataType visitParams4(LangParser.Params4Context ctx) {
+        return visit(ctx.getChild(0));
     }
 
     //mathExpression visitors
@@ -306,7 +334,17 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
 
     //Getters for the DataType control
     @Override
-    public DataType visitStringvalues(LangParser.StringvaluesContext ctx) {
+    public DataType visitStringLiteral(LangParser.StringLiteralContext ctx) {
+        return DataType.STRING;
+    }
+
+    @Override
+    public DataType visitStringVariable(LangParser.StringVariableContext ctx) {
+        return DataType.STRING;
+    }
+
+    @Override
+    public DataType visitStringRead(LangParser.StringReadContext ctx) {
         return DataType.STRING;
     }
 
