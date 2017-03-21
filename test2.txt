@@ -5,7 +5,7 @@
     \ ? (1 > 2) /
     ~int d IS 10;
     \ ? /
-    ~int a IS 10;
+    ~int a IS 5;
     \
 
     return 1;

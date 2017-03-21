@@ -56,11 +56,32 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStringVarModify(LangParser.StringVarModifyContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link LangParser#methodDecl}.
+	 * Visit a parse tree produced by the {@code voidMethodDecl}
+	 * labeled alternative in {@link LangParser#methodDecl}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitMethodDecl(LangParser.MethodDeclContext ctx);
+	T visitVoidMethodDecl(LangParser.VoidMethodDeclContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code intMethodDecl}
+	 * labeled alternative in {@link LangParser#methodDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIntMethodDecl(LangParser.IntMethodDeclContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code stringMethodDecl}
+	 * labeled alternative in {@link LangParser#methodDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStringMethodDecl(LangParser.StringMethodDeclContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link LangParser#callMethodExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCallMethodExpr(LangParser.CallMethodExprContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link LangParser#ifStm}.
 	 * @param ctx the parse tree
@@ -85,12 +106,6 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitWriteExpr(LangParser.WriteExprContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link LangParser#callMethodExpr}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitCallMethodExpr(LangParser.CallMethodExprContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link LangParser#readIntExpr}.
 	 * @param ctx the parse tree
@@ -139,27 +154,6 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAddSubstractExpression(LangParser.AddSubstractExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code intvariable}
-	 * labeled alternative in {@link LangParser#mathvalues}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIntvariable(LangParser.IntvariableContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code intlitteral}
-	 * labeled alternative in {@link LangParser#mathvalues}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIntlitteral(LangParser.IntlitteralContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code intread}
-	 * labeled alternative in {@link LangParser#mathvalues}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitIntread(LangParser.IntreadContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link LangParser#whileCondition}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -178,35 +172,57 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIfCondition(LangParser.IfConditionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link LangParser#params}.
+	 * Visit a parse tree produced by the {@code intParamMethodDecl}
+	 * labeled alternative in {@link LangParser#methodDeclParams}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitParams(LangParser.ParamsContext ctx);
+	T visitIntParamMethodDecl(LangParser.IntParamMethodDeclContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link LangParser#params2}.
+	 * Visit a parse tree produced by the {@code stringParamMethodDecl}
+	 * labeled alternative in {@link LangParser#methodDeclParams}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitParams2(LangParser.Params2Context ctx);
+	T visitStringParamMethodDecl(LangParser.StringParamMethodDeclContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link LangParser#variableName2}.
+	 * Visit a parse tree produced by the {@code intCallParamMethodCall}
+	 * labeled alternative in {@link LangParser#methodCallParams}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitVariableName2(LangParser.VariableName2Context ctx);
+	T visitIntCallParamMethodCall(LangParser.IntCallParamMethodCallContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link LangParser#params3}.
+	 * Visit a parse tree produced by the {@code stringCallParamMethodCall}
+	 * labeled alternative in {@link LangParser#methodCallParams}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitParams3(LangParser.Params3Context ctx);
+	T visitStringCallParamMethodCall(LangParser.StringCallParamMethodCallContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link LangParser#params4}.
+	 * Visit a parse tree produced by {@link LangParser#intCallParam}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitParams4(LangParser.Params4Context ctx);
+	T visitIntCallParam(LangParser.IntCallParamContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link LangParser#stringCallParam}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStringCallParam(LangParser.StringCallParamContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link LangParser#intParam}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIntParam(LangParser.IntParamContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link LangParser#stringParam}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStringParam(LangParser.StringParamContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link LangParser#dataType}.
 	 * @param ctx the parse tree
@@ -253,11 +269,26 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStringRead(LangParser.StringReadContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link LangParser#variableValue}.
+	 * Visit a parse tree produced by the {@code intvariable}
+	 * labeled alternative in {@link LangParser#mathvalues}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitVariableValue(LangParser.VariableValueContext ctx);
+	T visitIntvariable(LangParser.IntvariableContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code intlitteral}
+	 * labeled alternative in {@link LangParser#mathvalues}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIntlitteral(LangParser.IntlitteralContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code intread}
+	 * labeled alternative in {@link LangParser#mathvalues}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIntread(LangParser.IntreadContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link LangParser#opener}.
 	 * @param ctx the parse tree
@@ -270,10 +301,4 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitCloser(LangParser.CloserContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link LangParser#returnvalues}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitReturnvalues(LangParser.ReturnvaluesContext ctx);
 }

@@ -99,13 +99,49 @@ public class LangBaseListener implements LangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMethodDecl(LangParser.MethodDeclContext ctx) { }
+	@Override public void enterVoidMethodDecl(LangParser.VoidMethodDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMethodDecl(LangParser.MethodDeclContext ctx) { }
+	@Override public void exitVoidMethodDecl(LangParser.VoidMethodDeclContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIntMethodDecl(LangParser.IntMethodDeclContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIntMethodDecl(LangParser.IntMethodDeclContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterStringMethodDecl(LangParser.StringMethodDeclContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStringMethodDecl(LangParser.StringMethodDeclContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterCallMethodExpr(LangParser.CallMethodExprContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCallMethodExpr(LangParser.CallMethodExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -154,18 +190,6 @@ public class LangBaseListener implements LangListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitWriteExpr(LangParser.WriteExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterCallMethodExpr(LangParser.CallMethodExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitCallMethodExpr(LangParser.CallMethodExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -255,42 +279,6 @@ public class LangBaseListener implements LangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterIntvariable(LangParser.IntvariableContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitIntvariable(LangParser.IntvariableContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterIntlitteral(LangParser.IntlitteralContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitIntlitteral(LangParser.IntlitteralContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterIntread(LangParser.IntreadContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitIntread(LangParser.IntreadContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterWhileCondition(LangParser.WhileConditionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -327,61 +315,97 @@ public class LangBaseListener implements LangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParams(LangParser.ParamsContext ctx) { }
+	@Override public void enterIntParamMethodDecl(LangParser.IntParamMethodDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParams(LangParser.ParamsContext ctx) { }
+	@Override public void exitIntParamMethodDecl(LangParser.IntParamMethodDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParams2(LangParser.Params2Context ctx) { }
+	@Override public void enterStringParamMethodDecl(LangParser.StringParamMethodDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParams2(LangParser.Params2Context ctx) { }
+	@Override public void exitStringParamMethodDecl(LangParser.StringParamMethodDeclContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterVariableName2(LangParser.VariableName2Context ctx) { }
+	@Override public void enterIntCallParamMethodCall(LangParser.IntCallParamMethodCallContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitVariableName2(LangParser.VariableName2Context ctx) { }
+	@Override public void exitIntCallParamMethodCall(LangParser.IntCallParamMethodCallContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParams3(LangParser.Params3Context ctx) { }
+	@Override public void enterStringCallParamMethodCall(LangParser.StringCallParamMethodCallContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParams3(LangParser.Params3Context ctx) { }
+	@Override public void exitStringCallParamMethodCall(LangParser.StringCallParamMethodCallContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParams4(LangParser.Params4Context ctx) { }
+	@Override public void enterIntCallParam(LangParser.IntCallParamContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParams4(LangParser.Params4Context ctx) { }
+	@Override public void exitIntCallParam(LangParser.IntCallParamContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterStringCallParam(LangParser.StringCallParamContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStringCallParam(LangParser.StringCallParamContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIntParam(LangParser.IntParamContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIntParam(LangParser.IntParamContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterStringParam(LangParser.StringParamContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStringParam(LangParser.StringParamContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -471,13 +495,37 @@ public class LangBaseListener implements LangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterVariableValue(LangParser.VariableValueContext ctx) { }
+	@Override public void enterIntvariable(LangParser.IntvariableContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitVariableValue(LangParser.VariableValueContext ctx) { }
+	@Override public void exitIntvariable(LangParser.IntvariableContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIntlitteral(LangParser.IntlitteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIntlitteral(LangParser.IntlitteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIntread(LangParser.IntreadContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIntread(LangParser.IntreadContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -502,18 +550,6 @@ public class LangBaseListener implements LangListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitCloser(LangParser.CloserContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterReturnvalues(LangParser.ReturnvaluesContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitReturnvalues(LangParser.ReturnvaluesContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

@@ -13,16 +13,11 @@ import java.util.ArrayList;
  */
 public class Compiler {
 
-    public static void test(int a) {
-        a = a + 10;
-        System.out.println(a);
-    }
 
     public static void main(String[] args) {
-        test(1);
         try {
             // Create lexer and get a token stream
-            ANTLRInputStream inputStream = new ANTLRFileStream("test2.txt");
+            ANTLRInputStream inputStream = new ANTLRFileStream("test3.txt");
 
             LangLexer lexer = new LangLexer(inputStream);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
