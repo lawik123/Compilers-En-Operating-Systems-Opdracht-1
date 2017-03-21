@@ -1,14 +1,13 @@
 #test BEGIN
-~void ()test /
-
-    (20)myMethod;
-    return;
+~int (~int a)myMethod /
+    ~int b IS 10;
+    ~int c IS a + b;
+    return 1;
 \
 
-~int (~int a)myMethod /
-
-    a IS a + 10;
-    return 1;
+~int ()test /
+    (20)myMethod;
+    return 2;
 \
 
 END

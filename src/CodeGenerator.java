@@ -17,6 +17,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
     private String currentMethod;
     private HashMap<String, String> methodTypes = new HashMap<>();
+    private HashMap<String, MethodFrame> methodFrames = new HashMap<>();
     private HashMap<String, ArrayList<String>> parameterNames = new HashMap<>();
     private HashMap<String, String> returnTypes = new HashMap<>();
 
@@ -49,10 +50,8 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         code.addAll(visit(ctx.params3()));
         String dataTypes = methodTypes.get(ctx.methodIdentifier.getText());
         code.add("invokevirtual " + ctx.methodIdentifier.getText() + "(" + dataTypes + ")" + returnTypes.get(ctx.methodIdentifier.getText()));
-        currentMethodFrame = new MethodFrame();
-        for (int i = 0; i < parameterNames.get(currentMethod).size(); i++) {
-            currentMethodFrame.getJasminPosition().put(parameterNames.get(currentMethod).get(i), "" + i + "");
-        }
+
+
 
 
         return code;
@@ -75,6 +74,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     //declarations
     @Override
     public ArrayList<String> visitMethodDecl(LangParser.MethodDeclContext ctx) {
+        currentMethodFrame = new MethodFrame();
         ArrayList<String> code = new ArrayList<>();
         ArrayList<String> paramTypes = new ArrayList<>();
         currentMethod = ctx.methodIdentifier.getText();
@@ -93,6 +93,10 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
             params = params + paramTypes.get(i);
         }
         methodTypes.put(ctx.methodIdentifier.getText(), params);
+
+        for (int i = 0; i < parameterNames.get(currentMethod).size(); i++) {
+            currentMethodFrame.getJasminPosition().put(parameterNames.get(currentMethod).get(i), "" + i + "");
+        }
 
         //declare method
         switch (ctx.type.getText()) {
@@ -136,6 +140,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                 code.add(".end method");
                 break;
         }
+        methodFrames.put(ctx.methodIdentifier.getText(), currentMethodFrame);
         return code;
     }
 
@@ -144,9 +149,9 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         ArrayList<String> dataTypes = new ArrayList<>();
         parameterNames.get(currentMethod).add(ctx.variableName().getText());
         if (ctx.dataType().getText().equals("int")) {
-            dataTypes.add(", I");
+            dataTypes.add("I");
         } else {
-            dataTypes.add(", Str");
+            dataTypes.add("Str");
         }
         return dataTypes;
     }
@@ -156,9 +161,9 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         ArrayList<String> dataTypes = new ArrayList<>();
         parameterNames.get(currentMethod).add(ctx.variableName().getText());
         if (ctx.dataType().getText().equals("int")) {
-            dataTypes.add("I");
+            dataTypes.add(", I");
         } else {
-            dataTypes.add("Str");
+            dataTypes.add(", Str");
         }
         return dataTypes;
     }
