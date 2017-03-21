@@ -61,15 +61,29 @@ public interface LangListener extends ParseTreeListener {
 	 */
 	void exitDeclareStringVariable(LangParser.DeclareStringVariableContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link LangParser#varMod}.
+	 * Enter a parse tree produced by the {@code intVarModify}
+	 * labeled alternative in {@link LangParser#varMod}.
 	 * @param ctx the parse tree
 	 */
-	void enterVarMod(LangParser.VarModContext ctx);
+	void enterIntVarModify(LangParser.IntVarModifyContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link LangParser#varMod}.
+	 * Exit a parse tree produced by the {@code intVarModify}
+	 * labeled alternative in {@link LangParser#varMod}.
 	 * @param ctx the parse tree
 	 */
-	void exitVarMod(LangParser.VarModContext ctx);
+	void exitIntVarModify(LangParser.IntVarModifyContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code stringVarModify}
+	 * labeled alternative in {@link LangParser#varMod}.
+	 * @param ctx the parse tree
+	 */
+	void enterStringVarModify(LangParser.StringVarModifyContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stringVarModify}
+	 * labeled alternative in {@link LangParser#varMod}.
+	 * @param ctx the parse tree
+	 */
+	void exitStringVarModify(LangParser.StringVarModifyContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link LangParser#methodDecl}.
 	 * @param ctx the parse tree

@@ -92,7 +92,25 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
     }
 
     @Override
-    public DataType visitVarMod(LangParser.VarModContext ctx) {
+    public DataType visitIntVarModify(LangParser.IntVarModifyContext ctx) {
+        String identifier = ctx.identifier.getText();
+
+        //get the variable from the scope
+        Symbol variableSymbol = currentScope.lookupVariable(identifier);
+        //get the DataType from the variable
+        VariableType variableToModify = (VariableType) variableSymbol.getType();
+
+        DataType value = visit(ctx.value);
+        if (variableToModify.getDataType() == DataType.INT) {        //check variable DataType with values DataType
+            if (value == DataType.INT) {
+                return DataType.INT;
+            }
+        }
+        throw new EvaluateException("Incompatible types");
+    }
+
+    @Override
+    public DataType visitStringVarModify(LangParser.StringVarModifyContext ctx) {
         String identifier = ctx.identifier.getText();
 
         //get the variable from the scope
@@ -102,16 +120,12 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
 
         DataType value = visit(ctx.value);
 
-
-        if (variableToModify.getDataType() == DataType.INT) {        //check variable DataType with values DataType
-            if (value == DataType.INT) {
-                return DataType.INT;
-            }
-        } else if (variableToModify.getDataType() == DataType.STRING) {
+        if (variableToModify.getDataType() == DataType.STRING) {
             if (value == DataType.STRING) {
                 return DataType.STRING;
             }
         }
+
         throw new EvaluateException("Incompatible types");
     }
 
@@ -266,13 +280,13 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
             ArrayList<DataType> dataTypes = new ArrayList<>();
             try {
                 dataTypes.add(visit(ctx.params3()));
-                for(int i = 0; i< ctx.params4().size(); i++) {
+                for (int i = 0; i < ctx.params4().size(); i++) {
                     dataTypes.add(visit(ctx.params4(i)));
                 }
             } catch (NullPointerException npe) {
 
             }
-            if(dataTypes.size() == calledMethod.getParameters().size()) {
+            if (dataTypes.size() == calledMethod.getParameters().size()) {
                 for (int i = 0; i < dataTypes.size(); i++) {
                     if (dataTypes.get(i) != calledMethod.getParameters().get(i)) {
                         throw new EvaluateException("Parameters do not match");

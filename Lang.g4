@@ -19,7 +19,8 @@ nonGlobalExpr:ifStm
 //expressions
 varDecl:(isGlobal='global')? '~' type='int' identifier=variableName 'IS' value=mathExpr ';' #declareIntVariable|
 (isGlobal='global')? '~' type='string' identifier=variableName 'IS' value=stringvalues ';' #declareStringVariable;
-varMod: identifier=variableName 'IS' value=variableValue';';
+varMod: identifier=variableName 'IS' value=mathExpr';' #intVarModify |
+identifier=variableName 'IS' value=stringvalues';' #stringVarModify;
 methodDecl:'~' type=methodType '(' (params params2*)? ')' methodIdentifier=methodName opener nonGlobalExpr* 'return' (returnvalue=returnvalues)?';' closer;
 ifStm:'if' '(' ifCondition ')' opener ifBlock=nonGlobalExpr* closer (('?' '(' ifCondition ')' opener ifElseBlock=nonGlobalExpr* closer)* ('?' opener elseBlock=nonGlobalExpr* closer)?)?;
 whileStm: 'REPEAT' opener nonGlobalExpr* closer 'UNTIL' '(' whileCondition ')';

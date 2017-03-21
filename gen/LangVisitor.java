@@ -42,11 +42,19 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDeclareStringVariable(LangParser.DeclareStringVariableContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link LangParser#varMod}.
+	 * Visit a parse tree produced by the {@code intVarModify}
+	 * labeled alternative in {@link LangParser#varMod}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitVarMod(LangParser.VarModContext ctx);
+	T visitIntVarModify(LangParser.IntVarModifyContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code stringVarModify}
+	 * labeled alternative in {@link LangParser#varMod}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStringVarModify(LangParser.StringVarModifyContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link LangParser#methodDecl}.
 	 * @param ctx the parse tree

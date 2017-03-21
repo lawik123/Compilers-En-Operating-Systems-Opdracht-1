@@ -75,13 +75,25 @@ public class LangBaseListener implements LangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterVarMod(LangParser.VarModContext ctx) { }
+	@Override public void enterIntVarModify(LangParser.IntVarModifyContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitVarMod(LangParser.VarModContext ctx) { }
+	@Override public void exitIntVarModify(LangParser.IntVarModifyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterStringVarModify(LangParser.StringVarModifyContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStringVarModify(LangParser.StringVarModifyContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

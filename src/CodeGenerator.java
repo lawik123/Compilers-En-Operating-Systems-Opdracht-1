@@ -15,8 +15,8 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     private int forStmCounter = 0;
     private int conditionCounter = 0;
 
-    private HashMap<String,String> methodTypes = new HashMap<>();
-    private HashMap<String,String> returnTypes = new HashMap<>();
+    private HashMap<String, String> methodTypes = new HashMap<>();
+    private HashMap<String, String> returnTypes = new HashMap<>();
 
     private boolean hasElse;
 
@@ -41,7 +41,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     @Override
     public ArrayList<String> visitCallMethodExpr(LangParser.CallMethodExprContext ctx) {
         ArrayList<String> code = new ArrayList<>();
-        for(int i = ctx.params4().size(); i > 0; i--) {
+        for (int i = ctx.params4().size(); i > 0; i--) {
             code.addAll(visit(ctx.params4(i)));
         }
         code.addAll(visit(ctx.params3()));
@@ -191,8 +191,30 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         } else {
             currentMethodFrame.declareJasminPosition(identifier, currentMethodFrame.getJasminPosition().size());
             code.addAll(visit(ctx.stringvalues()));
-            code.add("istore " + globalFrame.getJasminPosition().size());
+            code.add("istore " + currentMethodFrame.getJasminPosition().size());
         }
+        return code;
+    }
+
+    @Override
+    public ArrayList<String> visitIntVarModify(LangParser.IntVarModifyContext ctx) {
+        ArrayList<String> code = new ArrayList<>();
+        currentMethodFrame.getJasminPosition().remove(ctx.identifier.getText());    //remove last position
+        code.add("iload " + currentMethodFrame.getJasminPosition().size());
+        currentMethodFrame.declareJasminPosition(ctx.identifier.getText(), currentMethodFrame.getJasminPosition().size());      //create new position
+        code.addAll(visit(ctx.mathExpr()));
+        code.add("istore " + currentMethodFrame.getJasminPosition().size());
+        return code;
+    }
+
+    @Override
+    public ArrayList<String> visitStringVarModify(LangParser.StringVarModifyContext ctx) {
+        ArrayList<String> code = new ArrayList<>();
+        currentMethodFrame.getJasminPosition().remove(ctx.identifier.getText());    //remove last position
+        code.add("iload " + currentMethodFrame.getJasminPosition().size());
+        currentMethodFrame.declareJasminPosition(ctx.identifier.getText(), currentMethodFrame.getJasminPosition().size());      //create new position
+        code.addAll(visit(ctx.stringvalues()));
+        code.add("Strstore " + currentMethodFrame.getJasminPosition().size());
         return code;
     }
 
@@ -282,9 +304,10 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
             code.add("forIDCrement_" + forStmCounter);
             if (ctx.idCrement.getText().equals("incr")) {
                 //todo variable insert
-                code.add("iinc variable 1");
+
+                code.add("iinc " + currentMethodFrame.lookupJasminPosition(ctx.idValue.getText()) + " 1");
             } else {
-                code.add("idec variable 1");
+                code.add("iinc " + currentMethodFrame.lookupJasminPosition(ctx.idValue.getText()) + " -1");
             }
         } else {        //program uses default increment on declared variable in for loop
             code.add("forIDCrement_" + forStmCounter);
