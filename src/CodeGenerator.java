@@ -38,6 +38,8 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         for (int i = 0; i < ctx.expression().size(); i++) {
             code.addAll(visit(ctx.expression(i)));
         }
+        code.add("return");
+        code.add(".end method");
         return code;
     }
 
@@ -50,7 +52,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         code.addAll(visit(ctx.params3()));
         String dataTypes = methodTypes.get(ctx.methodIdentifier.getText());
         code.add("invokevirtual " + ctx.methodIdentifier.getText() + "(" + dataTypes + ")" + returnTypes.get(ctx.methodIdentifier.getText()));
-
 
         return code;
     }
@@ -533,6 +534,16 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitStringLiteral(LangParser.StringLiteralContext ctx) {
         ArrayList<String> code = new ArrayList<>();
         code.add("ldc " + ctx.getText());
+        return code;
+    }
+
+
+    @Override
+    public ArrayList<String> visitWriteExpr(LangParser.WriteExprContext ctx) {
+        ArrayList<String> code = new ArrayList<>();
+        code.addAll(visit(ctx.children.get(0)));
+        code.add("getstatic java/lang/System/out Ljava/io/PrintStream;");
+        code.add("invokevirtual java/io/PrintStream/println(I)I ");
         return code;
     }
 

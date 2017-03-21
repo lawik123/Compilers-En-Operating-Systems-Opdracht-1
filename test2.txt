@@ -1,13 +1,15 @@
 #test BEGIN
 ~int (~int a)myMethod /
-    ~int b IS 10;
-    ~int c IS a + b;
-    return 1;
-\
-
-~int ()test /
-    (20)myMethod;
-    return 2;
+    if(1 < 2) /
+    ~int c IS 10;
+    WRITE(c)
+    \ ? (1 > 2) /
+    ~int d IS 10;
+    WRITE(d)
+    \ ? /
+    ~int a IS 10;
+    WRITE(a)
+    \
 \
 
 END
