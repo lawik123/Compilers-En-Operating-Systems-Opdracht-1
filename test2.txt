@@ -1,10 +1,13 @@
 #test BEGIN
+~void ()test /
 
-~int ()myMethod /
-    for(~int a IS 0; a < 10) /
-    ~string s IS "hallo"
+    (20)myMethod;
+    return;
+\
 
-    \
+~int (~int a)myMethod /
+
+    a IS a + 10;
     return 1;
 \
 

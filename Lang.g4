@@ -24,7 +24,7 @@ identifier=variableName 'IS' value=stringvalues';' #stringVarModify;
 methodDecl:'~' type=methodType '(' (params params2*)? ')' methodIdentifier=methodName opener nonGlobalExpr* 'return' (returnvalue=returnvalues)?';' closer;
 ifStm:'if' '(' ifCondition ')' opener ifBlock=nonGlobalExpr* closer (('?' '(' ifCondition ')' opener ifElseBlock=nonGlobalExpr* closer)* ('?' opener elseBlock=nonGlobalExpr* closer)?)?;
 whileStm: 'REPEAT' opener nonGlobalExpr* closer 'UNTIL' '(' whileCondition ')';
-forStm: 'for' '(' varDecl forCondition (';' idCrement=IDcrement '(' idValue=variableName ')')? ')' opener nonGlobalExpr* closer;
+forStm: 'for' '(' varDecl forCondition ';' idCrement=IDcrement '(' idValue=variableName ')' ')' opener nonGlobalExpr* closer;
 writeExpr: 'WRITE(' (mathExpr|stringvalues) ( '+' (mathExpr|stringvalues)*)? ');';
 callMethodExpr: '('(params3 params4*)?')'methodIdentifier=methodName ';';
 readIntExpr: 'READINT';

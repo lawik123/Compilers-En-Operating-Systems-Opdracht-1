@@ -32,4 +32,8 @@ public class MethodFrame {
     public Map<String, String> getJasminPosition() {
         return jasminPosition;
     }
+
+    public void setJasminPosition(Map<String, String> jasminPosition) {
+        this.jasminPosition = jasminPosition;
+    }
 }

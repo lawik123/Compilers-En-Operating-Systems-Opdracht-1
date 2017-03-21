@@ -15,7 +15,9 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     private int forStmCounter = 0;
     private int conditionCounter = 0;
 
+    private String currentMethod;
     private HashMap<String, String> methodTypes = new HashMap<>();
+    private HashMap<String, ArrayList<String>> parameterNames = new HashMap<>();
     private HashMap<String, String> returnTypes = new HashMap<>();
 
     private boolean hasElse;
@@ -47,8 +49,13 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         code.addAll(visit(ctx.params3()));
         String dataTypes = methodTypes.get(ctx.methodIdentifier.getText());
         code.add("invokevirtual " + ctx.methodIdentifier.getText() + "(" + dataTypes + ")" + returnTypes.get(ctx.methodIdentifier.getText()));
-        currentMethodFrame = new MethodFrame(globalFrame);
+        currentMethodFrame = new MethodFrame();
+        for (int i = 0; i < parameterNames.get(currentMethod).size(); i++) {
+            currentMethodFrame.getJasminPosition().put(parameterNames.get(currentMethod).get(i), "" + i + "");
+        }
 
+
+        return code;
     }
 
     @Override
@@ -70,6 +77,9 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitMethodDecl(LangParser.MethodDeclContext ctx) {
         ArrayList<String> code = new ArrayList<>();
         ArrayList<String> paramTypes = new ArrayList<>();
+        currentMethod = ctx.methodIdentifier.getText();
+        parameterNames.put(ctx.methodIdentifier.getText(), new ArrayList<>());
+
         try {
             paramTypes.addAll(visit(ctx.params()));
             for (int i = 0; i < ctx.params2().size(); i++) {
@@ -83,6 +93,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
             params = params + paramTypes.get(i);
         }
         methodTypes.put(ctx.methodIdentifier.getText(), params);
+
         //declare method
         switch (ctx.type.getText()) {
             case "int":
@@ -131,6 +142,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     @Override
     public ArrayList<String> visitParams(LangParser.ParamsContext ctx) {
         ArrayList<String> dataTypes = new ArrayList<>();
+        parameterNames.get(currentMethod).add(ctx.variableName().getText());
         if (ctx.dataType().getText().equals("int")) {
             dataTypes.add(", I");
         } else {
@@ -142,6 +154,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     @Override
     public ArrayList<String> visitParams2(LangParser.Params2Context ctx) {
         ArrayList<String> dataTypes = new ArrayList<>();
+        parameterNames.get(currentMethod).add(ctx.variableName().getText());
         if (ctx.dataType().getText().equals("int")) {
             dataTypes.add("I");
         } else {
@@ -300,20 +313,14 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         } catch (NullPointerException npe) {
 
         }
-        if (idValue != null) {      //user has defined specific increment or decrement
-            code.add("forIDCrement_" + forStmCounter);
-            if (ctx.idCrement.getText().equals("incr")) {
-                //todo variable insert
 
-                code.add("iinc " + currentMethodFrame.lookupJasminPosition(ctx.idValue.getText()) + " 1");
-            } else {
-                code.add("iinc " + currentMethodFrame.lookupJasminPosition(ctx.idValue.getText()) + " -1");
-            }
-        } else {        //program uses default increment on declared variable in for loop
-            code.add("forIDCrement_" + forStmCounter);
-            //todo variable insert
-            code.add("iinc variable 1");
+        code.add("forIDCrement_" + forStmCounter);
+        if (ctx.idCrement.getText().equals("incr")) {
+            code.add("iinc " + currentMethodFrame.lookupJasminPosition(ctx.idValue.getText()) + " 1");
+        } else {
+            code.add("iinc " + currentMethodFrame.lookupJasminPosition(ctx.idValue.getText()) + " -1");
         }
+
         code.add("forCondition_" + forStmCounter + ":");
         code.addAll(visit(ctx.forCondition()));
         code.add("endFor_" + forStmCounter + ":");
