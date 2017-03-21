@@ -2,10 +2,10 @@
 ~int (~int a)myMethod /
     if(1 < 2) /
     ~int c IS 10;
-    \ ? (1 > 2) /
-    ~int d IS 10;
-    \ ? /
-    ~int a IS 10;
+    \
+
+    if(2 < 3) /
+    ~int b IS 5;
     \
 
     return 1;

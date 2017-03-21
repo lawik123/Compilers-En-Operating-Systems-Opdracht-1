@@ -265,7 +265,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                 }
                 counter += ctx.ifElseBlock.children.size();
             }
-            if (i == ctx.ifCondition().size() - 1) {
+            if (i < ctx.ifCondition().size()) {
                 code.add("goto endif_" + (labelCount));
             }
             if (sizeElseChildren > 0 && i == ctx.ifCondition().size() - 1) {
