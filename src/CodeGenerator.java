@@ -52,8 +52,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         code.add("invokevirtual " + ctx.methodIdentifier.getText() + "(" + dataTypes + ")" + returnTypes.get(ctx.methodIdentifier.getText()));
 
 
-
-
         return code;
     }
 
@@ -125,13 +123,13 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         //end method and return
         switch (ctx.type.getText()) {
             case "int":
-                code.add(ctx.returnvalue.getText());
+                code.add("ldc " + ctx.returnvalue.getText());
                 code.add("ireturn");
                 code.add(".end method");
                 break;
 
             case "string":
-                code.add(ctx.returnvalue.getText());
+                code.add("ldc " + ctx.returnvalue.getText());
                 code.add("Strreturn");
                 code.add(".end method");
                 break;
@@ -186,7 +184,8 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         } else {
             currentMethodFrame.declareJasminPosition(identifier, currentMethodFrame.getJasminPosition().size());
             code.addAll(visit(ctx.mathExpr()));
-            code.add("istore " + globalFrame.getJasminPosition().size());
+            code.add("istore " + (currentMethodFrame.getJasminPosition().size() - 1));
+
         }
         return code;
     }
@@ -217,7 +216,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     @Override
     public ArrayList<String> visitIntVarModify(LangParser.IntVarModifyContext ctx) {
         ArrayList<String> code = new ArrayList<>();
-        currentMethodFrame.getJasminPosition().remove(ctx.identifier.getText());    //remove last position
         code.add("iload " + currentMethodFrame.getJasminPosition().size());
         currentMethodFrame.declareJasminPosition(ctx.identifier.getText(), currentMethodFrame.getJasminPosition().size());      //create new position
         code.addAll(visit(ctx.mathExpr()));
@@ -228,7 +226,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     @Override
     public ArrayList<String> visitStringVarModify(LangParser.StringVarModifyContext ctx) {
         ArrayList<String> code = new ArrayList<>();
-        currentMethodFrame.getJasminPosition().remove(ctx.identifier.getText());    //remove last position
         code.add("iload " + currentMethodFrame.getJasminPosition().size());
         currentMethodFrame.declareJasminPosition(ctx.identifier.getText(), currentMethodFrame.getJasminPosition().size());      //create new position
         code.addAll(visit(ctx.stringvalues()));
