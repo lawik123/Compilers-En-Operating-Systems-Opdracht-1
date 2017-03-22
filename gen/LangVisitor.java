@@ -242,6 +242,12 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMethodType(LangParser.MethodTypeContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link LangParser#nameClass}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNameClass(LangParser.NameClassContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link LangParser#methodName}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

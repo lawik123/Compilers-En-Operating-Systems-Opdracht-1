@@ -1,5 +1,5 @@
 grammar Lang;
-prog:'#'className=STRING 'BEGIN' expression* runMethod 'END';
+prog:'#'className=nameClass 'BEGIN' expression* runMethod 'END';
 
 expression: varDecl
 |methodDecl
@@ -80,6 +80,7 @@ dataType: 'int'|'string';
 methodType:'int'|'string'|'void';
 
 //names
+nameClass: CLASSNAME;
 methodName: STRING;
 variableName: STRING;
 
@@ -103,6 +104,7 @@ LOP:'<'|'<='|'>'|'>='|'=='|'!=';
 //datatype
 INT: '0'	|	[1-9][0-9]*;
 STRING: [a-z] [a-zA-Z0-9]*;
+CLASSNAME: [A-Z] [a-zA-Z0-9]*;
 STRINGVALUE: '"' [a-zA-Z0-9]* '"';
 
 //skippers

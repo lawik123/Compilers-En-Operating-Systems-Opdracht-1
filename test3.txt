@@ -1,4 +1,4 @@
-#test BEGIN
+#Test BEGIN
 
 ~int (~int a)myMethod /
     if(a < 2) /

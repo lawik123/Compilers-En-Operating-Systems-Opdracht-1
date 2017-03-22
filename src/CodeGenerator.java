@@ -18,6 +18,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     private int conditionCounter = 0;
 
     private String currentMethod;
+    private String className;
     private HashMap<String, String> methodTypes = new HashMap<>();
     private HashMap<String, MethodFrame> methodFrames = new HashMap<>();
     private HashMap<String, ArrayList<String>> parameterNames = new HashMap<>();
@@ -29,19 +30,24 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitProg(LangParser.ProgContext ctx) {
         globalFrame = new MethodFrame();
         ArrayList<String> code = new ArrayList<>();
-        code.add(".class public " + ctx.className.getText());
+        className = ctx.className.getText();
+        code.add(".class public " + className);
         code.add(".super java/lang/Object");
         code.add(".method public <init>()V\n" +
                 "\taload_0\n" +
                 "\tinvokenonvirtual java/lang/Object/<init>()V\n" +
                 "\treturn\n" +
                 ".end method");
+        code.add("\n");
         code.add(".method public static main([Ljava/lang/String;)V");
-        code.add("new " + ctx.className.getText());
+        code.add(".limit stack 99");
+        code.add(".limit locals 99");
+        code.add("new " + className);
         code.add("dup");
-        code.add("invokevirtual " + ctx.className.getText() + "/run()V");
+        code.add("invokevirtual " + className + "/run()V");
         code.add("return");
         code.add(".end method");
+        code.add("\n");
         for (int i = 0; i < ctx.expression().size(); i++) {
             code.addAll(visit(ctx.expression(i)));
         }
@@ -56,11 +62,14 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         currentMethodFrame = new MethodFrame();
         ArrayList<String> code = new ArrayList<>();
         code.add(".method public run()V");
+        code.add(".limit stack 99");
+        code.add(".limit locals 99");
         for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
             code.addAll(visit(ctx.nonGlobalExpr(i)));
         }
         code.add("return");
         code.add(".end method");
+        code.add("\n");
         methodFrames.put("run", currentMethodFrame);
         return code;
     }
@@ -176,6 +185,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
         code.add("return");
         code.add(".end method");
+        code.add("\n");
 
 
         methodFrames.put(ctx.methodIdentifier.getText(), currentMethodFrame);
@@ -195,7 +205,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                 paramTypes.addAll(visit(ctx.methodDeclParams(i)));
             }
         } catch (NullPointerException npe) {
-
         }
         String params = "";
         for (int i = 0; i < paramTypes.size(); i++) {
@@ -224,6 +233,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         code.add("ldc " + ctx.returnvalue.getText());
         code.add("ireturn");
         code.add(".end method");
+        code.add("\n");
         methodFrames.put(ctx.methodIdentifier.getText(), currentMethodFrame);
         return code;
     }
@@ -269,6 +279,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         code.add("ldc " + ctx.returnvalue.getText());
         code.add("areturn");
         code.add(".end method");
+        code.add("\n");
 
         methodFrames.put(ctx.methodIdentifier.getText(), currentMethodFrame);
         return code;
@@ -297,7 +308,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
             code.addAll(visit(ctx.methodCallParams(i - 1)));
         }
         String dataTypes = methodTypes.get(ctx.methodIdentifier.getText());
-        code.add("invokevirtual " + ctx.methodIdentifier.getText() + "(" + dataTypes + ")" + returnTypes.get(ctx.methodIdentifier.getText()));
+        code.add("invokevirtual " + className  + "/" + ctx.methodIdentifier.getText() + "(" + dataTypes + ")" + returnTypes.get(ctx.methodIdentifier.getText()));
 
         return code;
     }
@@ -652,6 +663,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     @Override
     public ArrayList<String> visitStringParam(LangParser.StringParamContext ctx) {
         ArrayList<String> code = new ArrayList<>();
+        code.add("Ljava/lang/String;");
         currentMethodFrame.getJasminPosition().put(ctx.variableName().getText(), String.valueOf(currentMethodFrame.getJasminPosition().size()));
         return code;
     }
@@ -689,6 +701,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     @Override
     public ArrayList<String> visitIntParam(LangParser.IntParamContext ctx) {
         ArrayList<String> code = new ArrayList<>();
+        code.add("I");
         currentMethodFrame.getJasminPosition().put(ctx.variableName().getText(), String.valueOf(currentMethodFrame.getJasminPosition().size()));
         return code;
     }
