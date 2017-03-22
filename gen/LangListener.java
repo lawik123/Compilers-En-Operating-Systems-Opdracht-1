@@ -121,6 +121,16 @@ public interface LangListener extends ParseTreeListener {
 	 */
 	void exitStringMethodDecl(LangParser.StringMethodDeclContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link LangParser#runMethod}.
+	 * @param ctx the parse tree
+	 */
+	void enterRunMethod(LangParser.RunMethodContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LangParser#runMethod}.
+	 * @param ctx the parse tree
+	 */
+	void exitRunMethod(LangParser.RunMethodContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link LangParser#callMethodExpr}.
 	 * @param ctx the parse tree
 	 */

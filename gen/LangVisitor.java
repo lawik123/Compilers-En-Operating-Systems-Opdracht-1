@@ -77,6 +77,12 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStringMethodDecl(LangParser.StringMethodDeclContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link LangParser#runMethod}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRunMethod(LangParser.RunMethodContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link LangParser#callMethodExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

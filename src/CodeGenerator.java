@@ -9,6 +9,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     //variables
     private MethodFrame currentMethodFrame;
     private MethodFrame globalFrame;
+
     private int labelCount = 1;
 
     private int ifStmConditionCounter = 0;
@@ -23,7 +24,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     private HashMap<String, String> returnTypes = new HashMap<>();
 
     private boolean hasElse;
-
 
     @Override
     public ArrayList<String> visitProg(LangParser.ProgContext ctx) {
@@ -40,8 +40,24 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         for (int i = 0; i < ctx.expression().size(); i++) {
             code.addAll(visit(ctx.expression(i)));
         }
+        code.addAll(visit(ctx.runMethod()));
         code.add("return");
         code.add(".end method");
+        return code;
+    }
+
+    //declare main method
+    @Override
+    public ArrayList<String> visitRunMethod(LangParser.RunMethodContext ctx) {
+        currentMethodFrame = new MethodFrame();
+        ArrayList<String> code = new ArrayList<>();
+        code.add(".method public run()V");
+        for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
+            code.addAll(visit(ctx.nonGlobalExpr(i)));
+        }
+        code.add("return");
+        code.add(".end method");
+        methodFrames.put("run", currentMethodFrame);
         return code;
     }
 
@@ -234,8 +250,8 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         }
 
 
-        code.add(".method public " + ctx.methodIdentifier.getText() + "(" + params + ")Str");
-        returnTypes.put(ctx.methodIdentifier.getText(), "Str");
+        code.add(".method public " + ctx.methodIdentifier.getText() + "(" + params + ")Ljava/lang/String;");
+        returnTypes.put(ctx.methodIdentifier.getText(), "Ljava/lang/String;");
 
         code.add(".limit stack 99");
         code.add(".limit locals 99");
@@ -247,7 +263,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         }
 
         code.add("ldc " + ctx.returnvalue.getText());
-        code.add("Strreturn");
+        code.add("areturn");
         code.add(".end method");
 
         methodFrames.put(ctx.methodIdentifier.getText(), currentMethodFrame);
@@ -281,6 +297,8 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
         return code;
     }
+
+
 
     //method call parameters
     @Override
@@ -596,12 +614,12 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     }
 
     //TODO needed???
-    //    @Override
-//    public ArrayList<String> visitMathValuesExpression(LangParser.MathValuesExpressionContext ctx) {
-//        ArrayList<String> code = new ArrayList<>();
-//        code.addAll(visit(ctx.value));
-//        return code;
-//    }
+        @Override
+    public ArrayList<String> visitMathValuesExpression(LangParser.MathValuesExpressionContext ctx) {
+        ArrayList<String> code = new ArrayList<>();
+        code.addAll(visit(ctx.value));
+        return code;
+    }
 
     //Getters for the values
     //String
@@ -615,7 +633,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     @Override
     public ArrayList<String> visitStringVariable(LangParser.StringVariableContext ctx) {
         ArrayList<String> code = new ArrayList<>();
-        code.add("Strload " + currentMethodFrame.lookupJasminPosition(ctx.getText()));
+        code.add("aload " + currentMethodFrame.lookupJasminPosition(ctx.getText()));
         return code;
     }
 
@@ -623,18 +641,22 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitStringRead(LangParser.StringReadContext ctx) {
         ArrayList<String> code = new ArrayList<>();
         code.add("getstatic java/lang/System/in Ljava/io/InputStream;");
-        code.add("invokevirtual java/io/InputStream/read()Str ");
+        code.add("invokevirtual java/io/InputStream/read()Ljava/lang/String;");
         return code;
     }
 
     @Override
     public ArrayList<String> visitStringParam(LangParser.StringParamContext ctx) {
-        return super.visitStringParam(ctx);
+        ArrayList<String> code = new ArrayList<>();
+        currentMethodFrame.getJasminPosition().put(ctx.variableName().getText(), String.valueOf(currentMethodFrame.getJasminPosition().size()));
+        return code;
     }
 
     @Override
     public ArrayList<String> visitStringCallParam(LangParser.StringCallParamContext ctx) {
-        return super.visitStringCallParam(ctx);
+        ArrayList<String> code = new ArrayList<>();
+        code.addAll(visit(ctx.stringvalues()));
+        return code;
     }
 
     //int
@@ -662,11 +684,15 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
     @Override
     public ArrayList<String> visitIntParam(LangParser.IntParamContext ctx) {
-        return super.visitIntParam(ctx);
+        ArrayList<String> code = new ArrayList<>();
+        currentMethodFrame.getJasminPosition().put(ctx.variableName().getText(), String.valueOf(currentMethodFrame.getJasminPosition().size()));
+        return code;
     }
 
     @Override
     public ArrayList<String> visitIntCallParam(LangParser.IntCallParamContext ctx) {
-        return super.visitIntCallParam(ctx);
+        ArrayList<String> code = new ArrayList<>();
+        code.addAll(visit(ctx.mathExpr()));
+        return code;
     }
 }

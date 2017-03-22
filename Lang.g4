@@ -1,5 +1,5 @@
 grammar Lang;
-prog:'#'className=STRING 'BEGIN' expression* 'END';
+prog:'#'className=STRING 'BEGIN' expression* runMethod 'END';
 
 expression: varDecl
 |methodDecl
@@ -28,6 +28,9 @@ varMod: identifier=variableName 'IS' value=mathExpr';'              #intVarModif
 methodDecl:'~void' '(' (methodDeclParams (',' methodDeclParams)*)? ')' methodIdentifier=methodName opener nonGlobalExpr* 'return;' closer                               #voidMethodDecl
 | '~int' '(' (methodDeclParams (',' methodDeclParams)*)?')' methodIdentifier=methodName opener nonGlobalExpr* 'return' (returnvalue=mathExpr)?';' closer                #intMethodDecl
 | '~string' '(' (methodDeclParams (',' methodDeclParams)*)? ')' methodIdentifier=methodName opener nonGlobalExpr* 'return' (returnvalue=stringvalues)?';' closer        #stringMethodDecl;
+
+//main method
+runMethod: '~void' '()run'  opener nonGlobalExpr* 'return;' closer;
 
 //call method
 callMethodExpr: '('(methodCallParams (',' methodCallParams)*)?')'methodIdentifier=methodName ';';
