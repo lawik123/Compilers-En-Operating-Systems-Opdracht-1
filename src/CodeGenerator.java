@@ -411,16 +411,16 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                     code.add("if_icmpqe else");
                     break;
                 case "<":
-                    code.add("if_icmpgt else");
+                    code.add("if_icmpge else");
                     break;
                 case "<=":
                     code.add("if_icmpge else");
                     break;
                 case ">":
-                    code.add("if_icmplt else");
+                    code.add("if_icmple else");
                     break;
                 case ">=":
-                    code.add("if_icmple else");
+                    code.add("if_icmplt else");
                     break;
             }
         } else if(ifStmConditionCounter == 1) {
@@ -432,16 +432,16 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                     code.add("if_icmpqe endif_" + labelCount);
                     break;
                 case "<":
-                    code.add("if_icmpgt endif_" + labelCount);
-                    break;
-                case "<=":
                     code.add("if_icmpge endif_" + labelCount);
                     break;
+                case "<=":
+                    code.add("if_icmpgt endif_" + labelCount);
+                    break;
                 case ">":
-                    code.add("if_icmplt endif_" + labelCount);
+                    code.add("if_icmple endif_" + labelCount);
                     break;
                 case ">=":
-                    code.add("if_icmple endif_" + labelCount);
+                    code.add("if_icmplt endif_" + labelCount);
                     break;
             }
         } else {
@@ -454,16 +454,16 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                     code.add("if_icmpqe then_" + conditionCounter);
                     break;
                 case "<":
-                    code.add("if_icmpgt then_" + conditionCounter);
-                    break;
-                case "<=":
                     code.add("if_icmpge then_" + conditionCounter);
                     break;
+                case "<=":
+                    code.add("if_icmpgt then_" + conditionCounter);
+                    break;
                 case ">":
-                    code.add("if_icmplt then_" + conditionCounter);
+                    code.add("if_icmple then_" + conditionCounter);
                     break;
                 case ">=":
-                    code.add("if_icmple then_" + conditionCounter);
+                    code.add("if_icmplt then_" + conditionCounter);
                     break;
             }
 
@@ -537,7 +537,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     @Override
     public ArrayList<String> visitWriteExpr(LangParser.WriteExprContext ctx) {
         ArrayList<String> code = new ArrayList<>();
-        code.addAll(visit(ctx.children.get(0)));
+        code.addAll(visit(ctx.children.get(1)));
         code.add("getstatic java/lang/System/out Ljava/io/PrintStream;");
         code.add("invokevirtual java/io/PrintStream/println(I)I ");
         return code;
