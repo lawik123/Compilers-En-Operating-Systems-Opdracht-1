@@ -37,12 +37,16 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                 "\treturn\n" +
                 ".end method");
         code.add(".method public static main([Ljava/lang/String;)V");
+        code.add("new " + ctx.className.getText());
+        code.add("dup");
+        code.add("invokevirtual " + ctx.className.getText() + "/run()V");
+        code.add("return");
+        code.add(".end method");
         for (int i = 0; i < ctx.expression().size(); i++) {
             code.addAll(visit(ctx.expression(i)));
         }
         code.addAll(visit(ctx.runMethod()));
-        code.add("return");
-        code.add(".end method");
+
         return code;
     }
 
@@ -290,7 +294,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitCallMethodExpr(LangParser.CallMethodExprContext ctx) {
         ArrayList<String> code = new ArrayList<>();
         for (int i = ctx.methodCallParams().size(); i > 0; i--) {
-            code.addAll(visit(ctx.methodCallParams(i)));
+            code.addAll(visit(ctx.methodCallParams(i - 1)));
         }
         String dataTypes = methodTypes.get(ctx.methodIdentifier.getText());
         code.add("invokevirtual " + ctx.methodIdentifier.getText() + "(" + dataTypes + ")" + returnTypes.get(ctx.methodIdentifier.getText()));
