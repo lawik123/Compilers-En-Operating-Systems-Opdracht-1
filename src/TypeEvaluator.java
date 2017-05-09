@@ -18,6 +18,22 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
         return super.visitProg(ctx);
     }
 
+    @Override
+    public DataType visitRunMethod(LangParser.RunMethodContext ctx) {
+        currentScope = globalScope.openScope();
+        Symbol lookupMethod = globalScope.lookupMethod("run");
+        if (lookupMethod == null) {
+            MethodType newMethod = new MethodType(DataType.VOID);
+            globalScope.declareMethod("run", newMethod);
+            for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
+                visit(ctx.nonGlobalExpr(i));
+            }
+            currentScope = currentScope.closeScope();
+            return DataType.VOID;
+        }
+        throw new EvaluateException("Method already exists");
+    }
+
     //variable declarations
     @Override
     public DataType visitDeclareIntVariable(LangParser.DeclareIntVariableContext ctx) {

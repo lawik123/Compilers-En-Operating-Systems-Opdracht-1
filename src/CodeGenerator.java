@@ -33,9 +33,10 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         className = ctx.className.getText();
         code.add(".class public " + className);
         code.add(".super java/lang/Object");
+        code.add("\n");
         code.add(".method public <init>()V\n" +
                 "\taload_0\n" +
-                "\tinvokenonvirtual java/lang/Object/<init>()V\n" +
+                "\tinvokespecial java/lang/Object/<init>()V\n" +
                 "\treturn\n" +
                 ".end method");
         code.add("\n");
@@ -44,6 +45,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         code.add(".limit locals 99");
         code.add("new " + className);
         code.add("dup");
+        code.add("invokespecial " + className + "/<init>()V");
         code.add("invokevirtual " + className + "/run()V");
         code.add("return");
         code.add(".end method");
@@ -64,6 +66,8 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         code.add(".method public run()V");
         code.add(".limit stack 99");
         code.add(".limit locals 99");
+        code.add("getstatic java/lang/System/out Ljava/io/PrintStream;");
+        code.add("aload 0");
         for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
             code.addAll(visit(ctx.nonGlobalExpr(i)));
         }
@@ -148,6 +152,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     @Override
     public ArrayList<String> visitVoidMethodDecl(LangParser.VoidMethodDeclContext ctx) {
         currentMethodFrame = new MethodFrame();
+        currentMethodFrame.getJasminPosition().put("placeholder", "0");
         ArrayList<String> code = new ArrayList<>();
         ArrayList<String> paramTypes = new ArrayList<>();
         currentMethod = ctx.methodIdentifier.getText();
@@ -176,7 +181,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
         code.add(".limit stack 99");
         code.add(".limit locals 99");
-        //TODO stack limits
+        code.add("getstatic java/lang/System/out Ljava/io/PrintStream;");
 
         //visit the method statements
         for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
@@ -222,7 +227,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
         code.add(".limit stack 99");
         code.add(".limit locals 99");
-        //TODO stack limits
+        code.add("getstatic java/lang/System/out Ljava/io/PrintStream;");
 
         //visit the method statements
         for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
@@ -269,7 +274,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
         code.add(".limit stack 99");
         code.add(".limit locals 99");
-        //TODO stack limits
+        code.add("getstatic java/lang/System/out Ljava/io/PrintStream;");
 
         //visit the method statements
         for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
@@ -308,11 +313,10 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
             code.addAll(visit(ctx.methodCallParams(i - 1)));
         }
         String dataTypes = methodTypes.get(ctx.methodIdentifier.getText());
-        code.add("invokevirtual " + className  + "/" + ctx.methodIdentifier.getText() + "(" + dataTypes + ")" + returnTypes.get(ctx.methodIdentifier.getText()));
+        code.add("invokevirtual " + className + "/" + ctx.methodIdentifier.getText() + "(" + dataTypes + ")" + returnTypes.get(ctx.methodIdentifier.getText()));
 
         return code;
     }
-
 
 
     //method call parameters
@@ -434,7 +438,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         for (int i = 0; i < ctx.mathExpr().size(); i++) {
             code.addAll(visit(ctx.mathExpr(i)));
         }
-
+        System.err.println(ifStmConditionCounter);
         if (ifStmConditionCounter == 1 && hasElse) {
             switch (lop) {
                 case "==":
@@ -456,7 +460,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                     code.add("if_icmplt else");
                     break;
             }
-        } else if(ifStmConditionCounter == 1) {
+        } else if (ifStmConditionCounter == 1) {
             switch (lop) {
                 case "==":
                     code.add("if_icmpne endif_" + labelCount);
@@ -499,6 +503,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                     code.add("if_icmplt then_" + conditionCounter);
                     break;
             }
+            ifStmConditionCounter--;
 
         }
         return code;
@@ -571,8 +576,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitWriteExpr(LangParser.WriteExprContext ctx) {
         ArrayList<String> code = new ArrayList<>();
         code.addAll(visit(ctx.children.get(1)));
-        code.add("getstatic java/lang/System/out Ljava/io/PrintStream;");
-        code.add("invokevirtual java/io/PrintStream/println(I)I ");
+        code.add("invokevirtual java/io/PrintStream/println(I)V ");
         return code;
     }
 
@@ -628,8 +632,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         return code;
     }
 
-    //TODO needed???
-        @Override
+    @Override
     public ArrayList<String> visitMathValuesExpression(LangParser.MathValuesExpressionContext ctx) {
         ArrayList<String> code = new ArrayList<>();
         code.addAll(visit(ctx.value));

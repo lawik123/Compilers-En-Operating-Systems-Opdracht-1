@@ -58,9 +58,9 @@ mathExpr: '(' mathExpr ')'                                                      
 
 
 //condition form
-whileCondition: identifierLeft=mathExpr lop=LOP identifierRight=mathExpr;
-forCondition: identifierLeft=mathExpr lop=LOP identifierRight=mathExpr;
-ifCondition: identifierLeft=mathExpr lop=LOP identifierRight=mathExpr;
+whileCondition: identifierLeft=mathExpr lop=LOP identifierRight=mathExpr (('||' | '&&') whileCondition)*;
+forCondition: identifierLeft=mathExpr lop=LOP identifierRight=mathExpr (('||' | '&&') forCondition)*;
+ifCondition: identifierLeft=mathExpr lop=LOP identifierRight=mathExpr (('||' | '&&') ifCondition)*;
 
 //parameters
 methodDeclParams: intParam          #intParamMethodDecl

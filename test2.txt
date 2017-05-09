@@ -1,14 +1,21 @@
-#test BEGIN
+#Test BEGIN
 ~int (~int a)myMethod /
     if(1 < 2) /
     ~int c IS 10;
-    \ ? (1 > 2) /
+    \ ? (1 > 2 && 1 > 3) /
     ~int d IS 10;
     \ ? /
     ~int a IS 5;
     \
 
     return 1;
+\
+
+~void ()run /
+    ~int a IS 20;
+    (a)myMethod;
+
+    return;
 \
 
 END

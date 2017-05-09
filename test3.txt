@@ -1,19 +1,14 @@
 #Test BEGIN
 
-~int (~int a)myMethod /
-    if(a < 2) /
-    ~int c IS 10;
-    \
-
-    if(2 < a) /
-    ~int b IS 5;
-    \
-
-    return 1;
+~void (~int a)myMethod /
+    WRITE(a);
+    return;
 \
 
 ~void ()run /
-    (20)myMethod;
+    ~int a IS 20;
+    (a)myMethod;
+
     return;
 \
 
