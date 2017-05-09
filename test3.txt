@@ -1,13 +1,8 @@
 #Test BEGIN
 
-~void (~int a)myMethod /
-    WRITE(a);
-    return;
-\
 
 ~void ()run /
-    ~int a IS 20;
-    (a)myMethod;
+    WRITE("pietje" + 1 + "1");
 
     return;
 \

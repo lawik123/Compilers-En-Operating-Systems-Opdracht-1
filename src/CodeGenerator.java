@@ -1,4 +1,3 @@
-import javax.xml.crypto.Data;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -12,7 +11,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
     private int labelCount = 1;
 
-    private int ifStmConditionCounter = 0;
+    private int ifStmCounter = 0;
     private int whileStmCounter = 0;
     private int forStmCounter = 0;
     private int conditionCounter = 0;
@@ -66,8 +65,15 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         code.add(".method public run()V");
         code.add(".limit stack 99");
         code.add(".limit locals 99");
-        code.add("getstatic java/lang/System/out Ljava/io/PrintStream;");
         code.add("aload 0");
+        code.add("getstatic java/lang/System/out Ljava/io/PrintStream;");
+        code.add("new java/util/Scanner");
+        code.add("dup");
+        code.add("getstatic java/lang/System/in Ljava/io/InputStream;");
+        code.add("invokespecial java/util/Scanner/<init>(Ljava/io/InputStream;)V");
+        code.add("astore 1");
+        currentMethodFrame.declareJasminPosition("Aload0", currentMethodFrame.getJasminPosition().size());
+        currentMethodFrame.declareJasminPosition("Scanner", currentMethodFrame.getJasminPosition().size());
         for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
             code.addAll(visit(ctx.nonGlobalExpr(i)));
         }
@@ -117,16 +123,16 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         if (globalizer != null) {
             globalFrame.declareJasminPosition(identifier, globalFrame.getJasminPosition().size());
             code.addAll(visit(ctx.stringvalues()));
-            code.add("istore " + globalFrame.getJasminPosition().size());
+            code.add("astore " + globalFrame.getJasminPosition().size());
         } else {
             currentMethodFrame.declareJasminPosition(identifier, currentMethodFrame.getJasminPosition().size());
             code.addAll(visit(ctx.stringvalues()));
-            code.add("istore " + currentMethodFrame.getJasminPosition().size());
+            code.add("astore " + currentMethodFrame.getJasminPosition().size());
         }
         return code;
     }
 
-    //variable modifications    //TODO!!!
+    //variable modifications
     @Override
     public ArrayList<String> visitIntVarModify(LangParser.IntVarModifyContext ctx) {
         ArrayList<String> code = new ArrayList<>();
@@ -182,6 +188,12 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         code.add(".limit stack 99");
         code.add(".limit locals 99");
         code.add("getstatic java/lang/System/out Ljava/io/PrintStream;");
+        code.add("new java/util/Scanner");
+        code.add("dup");
+        code.add("getstatic java/lang/System/in Ljava/io/InputStream;");
+        code.add("invokespecial java/util/Scanner/<init>(Ljava/io/InputStream;)V");
+        code.add("astore " + currentMethodFrame.getJasminPosition().size());
+        currentMethodFrame.declareJasminPosition("Scanner", currentMethodFrame.getJasminPosition().size());
 
         //visit the method statements
         for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
@@ -228,6 +240,12 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         code.add(".limit stack 99");
         code.add(".limit locals 99");
         code.add("getstatic java/lang/System/out Ljava/io/PrintStream;");
+        code.add("new java/util/Scanner");
+        code.add("dup");
+        code.add("getstatic java/lang/System/in Ljava/io/InputStream;");
+        code.add("invokespecial java/util/Scanner/<init>(Ljava/io/InputStream;)V");
+        code.add("astore " + currentMethodFrame.getJasminPosition().size());
+        currentMethodFrame.declareJasminPosition("Scanner", currentMethodFrame.getJasminPosition().size());
 
         //visit the method statements
         for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
@@ -275,6 +293,12 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         code.add(".limit stack 99");
         code.add(".limit locals 99");
         code.add("getstatic java/lang/System/out Ljava/io/PrintStream;");
+        code.add("new java/util/Scanner");
+        code.add("dup");
+        code.add("getstatic java/lang/System/in Ljava/io/InputStream;");
+        code.add("invokespecial java/util/Scanner/<init>(Ljava/io/InputStream;)V");
+        code.add("astore " + currentMethodFrame.getJasminPosition().size());
+        currentMethodFrame.declareJasminPosition("Scanner", currentMethodFrame.getJasminPosition().size());
 
         //visit the method statements
         for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
@@ -339,7 +363,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitIfStm(LangParser.IfStmContext ctx) {
         ArrayList<String> code = new ArrayList<>();
         int sizeElseChildren = 0;
-        ifStmConditionCounter = ctx.ifCondition().size();
+        ifStmCounter = ctx.ifCondition().size();
         try {
             //else block
             sizeElseChildren = ctx.elseBlock.children.size();
@@ -351,6 +375,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         int counter = 0;
         for (int i = 0; i < ctx.ifCondition().size(); i++) {
             if (i == 0) {
+
                 code.addAll(visit(ctx.ifCondition(i)));
                 code.add("then: ");
                 for (int y = 0; y < ctx.ifBlock.children.size(); y++) {      //if block
@@ -438,73 +463,82 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         for (int i = 0; i < ctx.mathExpr().size(); i++) {
             code.addAll(visit(ctx.mathExpr(i)));
         }
-        System.err.println(ifStmConditionCounter);
-        if (ifStmConditionCounter == 1 && hasElse) {
-            switch (lop) {
-                case "==":
-                    code.add("if_icmpne else");
-                    break;
-                case "!=":
-                    code.add("if_icmpqe else");
-                    break;
-                case "<":
-                    code.add("if_icmpge else");
-                    break;
-                case "<=":
-                    code.add("if_icmpge else");
-                    break;
-                case ">":
-                    code.add("if_icmple else");
-                    break;
-                case ">=":
-                    code.add("if_icmplt else");
-                    break;
+        if(ctx.ifCondition().size() > 0) {
+            for(int i = 0; i < ctx.ifCondition().size(); i ++) {
+                code.addAll(visit(ctx.ifCondition(i)));
             }
-        } else if (ifStmConditionCounter == 1) {
-            switch (lop) {
-                case "==":
-                    code.add("if_icmpne endif_" + labelCount);
-                    break;
-                case "!=":
-                    code.add("if_icmpqe endif_" + labelCount);
-                    break;
-                case "<":
-                    code.add("if_icmpge endif_" + labelCount);
-                    break;
-                case "<=":
-                    code.add("if_icmpgt endif_" + labelCount);
-                    break;
-                case ">":
-                    code.add("if_icmple endif_" + labelCount);
-                    break;
-                case ">=":
-                    code.add("if_icmplt endif_" + labelCount);
-                    break;
-            }
-        } else {
-            conditionCounter++;
-            switch (lop) {
-                case "==":
-                    code.add("if_icmpne then_" + conditionCounter);
-                    break;
-                case "!=":
-                    code.add("if_icmpqe then_" + conditionCounter);
-                    break;
-                case "<":
-                    code.add("if_icmpge then_" + conditionCounter);
-                    break;
-                case "<=":
-                    code.add("if_icmpgt then_" + conditionCounter);
-                    break;
-                case ">":
-                    code.add("if_icmple then_" + conditionCounter);
-                    break;
-                case ">=":
-                    code.add("if_icmplt then_" + conditionCounter);
-                    break;
-            }
-            ifStmConditionCounter--;
+        }
 
+        if(ctx.ifCondition().size() > 0) {
+
+        } else {
+            if (ifStmCounter == 1 && hasElse) {
+                switch (lop) {
+                    case "==":
+                        code.add("if_icmpne else");
+                        break;
+                    case "!=":
+                        code.add("if_icmpqe else");
+                        break;
+                    case "<":
+                        code.add("if_icmpge else");
+                        break;
+                    case "<=":
+                        code.add("if_icmpgt else");
+                        break;
+                    case ">":
+                        code.add("if_icmple else");
+                        break;
+                    case ">=":
+                        code.add("if_icmplt else");
+                        break;
+                }
+            } else if (ifStmCounter == 1) {
+                switch (lop) {
+                    case "==":
+                        code.add("if_icmpne endif_" + labelCount);
+                        break;
+                    case "!=":
+                        code.add("if_icmpqe endif_" + labelCount);
+                        break;
+                    case "<":
+                        code.add("if_icmpge endif_" + labelCount);
+                        break;
+                    case "<=":
+                        code.add("if_icmpgt endif_" + labelCount);
+                        break;
+                    case ">":
+                        code.add("if_icmple endif_" + labelCount);
+                        break;
+                    case ">=":
+                        code.add("if_icmplt endif_" + labelCount);
+                        break;
+                }
+            } else {
+                conditionCounter++;
+                switch (lop) {
+                    case "==":
+                        code.add("if_icmpne then_" + conditionCounter);
+                        break;
+                    case "!=":
+                        code.add("if_icmpqe then_" + conditionCounter);
+                        break;
+                    case "<":
+                        code.add("if_icmpge then_" + conditionCounter);
+                        break;
+                    case "<=":
+                        code.add("if_icmpgt then_" + conditionCounter);
+                        break;
+                    case ">":
+                        code.add("if_icmple then_" + conditionCounter);
+                        break;
+                    case ">=":
+                        code.add("if_icmplt then_" + conditionCounter);
+                        break;
+                }
+                ifStmCounter--;
+
+            }
         }
         return code;
     }
@@ -513,6 +547,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitWhileCondition(LangParser.WhileConditionContext ctx) {
         ArrayList<String> code = new ArrayList<>();
         String lop = ctx.lop.getText();
+        String andOR = ctx.andOR.getText();
         for (int i = 0; i < ctx.mathExpr().size(); i++) {
             code.addAll(visit(ctx.mathExpr(i)));
         }
@@ -575,8 +610,30 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     @Override
     public ArrayList<String> visitWriteExpr(LangParser.WriteExprContext ctx) {
         ArrayList<String> code = new ArrayList<>();
-        code.addAll(visit(ctx.children.get(1)));
-        code.add("invokevirtual java/io/PrintStream/println(I)V ");
+        code.add("new java/lang/StringBuilder\n" +
+                "dup\n" +
+                "invokespecial java/lang/StringBuilder/<init>()V");
+        for(int i = 0; i < ctx.writevalues().size(); i++) {
+            code.addAll(visit(ctx.writevalues(i)));
+        }
+        code.add("invokevirtual java/lang/StringBuilder/toString()Ljava/lang/String;\n" +
+                "invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V");
+        return code;
+    }
+
+    @Override
+    public ArrayList<String> visitWriteMath(LangParser.WriteMathContext ctx) {
+        ArrayList<String> code = new ArrayList<>();
+        code.addAll(visit(ctx.mathExpr()));
+        code.add("invokevirtual java/lang/StringBuilder/append(I)Ljava/lang/StringBuilder;");
+        return code;
+    }
+
+    @Override
+    public ArrayList<String> visitWriteString(LangParser.WriteStringContext ctx) {
+        ArrayList<String> code = new ArrayList<>();
+        code.addAll(visit(ctx.stringvalues()));
+        code.add("invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;");
         return code;
     }
 
@@ -658,8 +715,8 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     @Override
     public ArrayList<String> visitStringRead(LangParser.StringReadContext ctx) {
         ArrayList<String> code = new ArrayList<>();
-        code.add("getstatic java/lang/System/in Ljava/io/InputStream;");
-        code.add("invokevirtual java/io/InputStream/read()Ljava/lang/String;");
+        code.add("aload " + currentMethodFrame.lookupJasminPosition("Scanner"));
+        code.add("invokevirtual java/util/Scanner/nextLine()Ljava/lang/String;");
         return code;
     }
 
@@ -696,8 +753,8 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     @Override
     public ArrayList<String> visitIntread(LangParser.IntreadContext ctx) {
         ArrayList<String> code = new ArrayList<>();
-        code.add("getstatic java/lang/System/in Ljava/io/InputStream;");
-        code.add("invokevirtual java/io/InputStream/read()I ");
+        code.add("aload " + currentMethodFrame.lookupJasminPosition("Scanner"));
+        code.add("invokevirtual java/util/Scanner/nextInt()I");
         return code;
     }
 

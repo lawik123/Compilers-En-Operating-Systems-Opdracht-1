@@ -113,6 +113,20 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitWriteExpr(LangParser.WriteExprContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code writeMath}
+	 * labeled alternative in {@link LangParser#writevalues}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWriteMath(LangParser.WriteMathContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code writeString}
+	 * labeled alternative in {@link LangParser#writevalues}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWriteString(LangParser.WriteStringContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link LangParser#readIntExpr}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

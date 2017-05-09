@@ -14,6 +14,7 @@ nonGlobalExpr:ifStm
             |varMod
             |varDecl
             |callMethodExpr
+            | condition
             ;
 
 //variable declarations
@@ -41,7 +42,9 @@ whileStm: 'REPEAT' opener nonGlobalExpr* closer 'UNTIL' '(' whileCondition ')';
 forStm: 'for' '(' varDecl forCondition ';' idCrement=IDcrement '(' idValue=variableName ')' ')' opener nonGlobalExpr* closer;
 
 //user input/output
-writeExpr: 'WRITE(' (mathExpr|stringvalues) ( '+' (mathExpr|stringvalues)*)? ');';
+writeExpr: 'WRITE(' (writevalues) ( '+' writevalues)* ');';
+writevalues: mathExpr       #writeMath
+|stringvalues               #writeString;
 readIntExpr: 'READINT';
 readStringExpr: 'READSTRING';
 
@@ -58,9 +61,14 @@ mathExpr: '(' mathExpr ')'                                                      
 
 
 //condition form
-whileCondition: identifierLeft=mathExpr lop=LOP identifierRight=mathExpr (('||' | '&&') whileCondition)*;
-forCondition: identifierLeft=mathExpr lop=LOP identifierRight=mathExpr (('||' | '&&') forCondition)*;
-ifCondition: identifierLeft=mathExpr lop=LOP identifierRight=mathExpr (('||' | '&&') ifCondition)*;
+whileCondition: identifierLeft=mathExpr lop=LOP identifierRight=mathExpr (andOR=('||' | '&&') whileCondition)*;
+forCondition: identifierLeft=mathExpr lop=LOP identifierRight=mathExpr (andOR=('||' | '&&') forCondition)*;
+ifCondition: identifierLeft=mathExpr lop=LOP identifierRight=mathExpr (andOR=('||' | '&&') ifCondition)*;
+
+boolean: identifierLeft=mathExpr lop=LOP identifierRight=mathExpr;
+condition: '(' condition ')'
+| leftCondition=condition andOR=('||' | '&&') rightCondtion=condition
+| boolean;
 
 //parameters
 methodDeclParams: intParam          #intParamMethodDecl

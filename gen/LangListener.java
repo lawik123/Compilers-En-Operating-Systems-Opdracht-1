@@ -181,6 +181,30 @@ public interface LangListener extends ParseTreeListener {
 	 */
 	void exitWriteExpr(LangParser.WriteExprContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code writeMath}
+	 * labeled alternative in {@link LangParser#writevalues}.
+	 * @param ctx the parse tree
+	 */
+	void enterWriteMath(LangParser.WriteMathContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code writeMath}
+	 * labeled alternative in {@link LangParser#writevalues}.
+	 * @param ctx the parse tree
+	 */
+	void exitWriteMath(LangParser.WriteMathContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code writeString}
+	 * labeled alternative in {@link LangParser#writevalues}.
+	 * @param ctx the parse tree
+	 */
+	void enterWriteString(LangParser.WriteStringContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code writeString}
+	 * labeled alternative in {@link LangParser#writevalues}.
+	 * @param ctx the parse tree
+	 */
+	void exitWriteString(LangParser.WriteStringContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link LangParser#readIntExpr}.
 	 * @param ctx the parse tree
 	 */
