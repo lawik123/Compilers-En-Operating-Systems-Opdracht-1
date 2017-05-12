@@ -315,37 +315,49 @@ public class LangBaseListener implements LangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterWhileCondition(LangParser.WhileConditionContext ctx) { }
+	@Override public void enterMathComparison(LangParser.MathComparisonContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitWhileCondition(LangParser.WhileConditionContext ctx) { }
+	@Override public void exitMathComparison(LangParser.MathComparisonContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterForCondition(LangParser.ForConditionContext ctx) { }
+	@Override public void enterConditionValue(LangParser.ConditionValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitForCondition(LangParser.ForConditionContext ctx) { }
+	@Override public void exitConditionValue(LangParser.ConditionValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterIfCondition(LangParser.IfConditionContext ctx) { }
+	@Override public void enterParenthesisCondtion(LangParser.ParenthesisCondtionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitIfCondition(LangParser.IfConditionContext ctx) { }
+	@Override public void exitParenthesisCondtion(LangParser.ParenthesisCondtionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterMultipleCondition(LangParser.MultipleConditionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMultipleCondition(LangParser.MultipleConditionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

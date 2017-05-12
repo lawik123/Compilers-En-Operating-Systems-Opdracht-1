@@ -191,21 +191,28 @@ public class LangBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements L
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitWhileCondition(LangParser.WhileConditionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitMathComparison(LangParser.MathComparisonContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitForCondition(LangParser.ForConditionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitConditionValue(LangParser.ConditionValueContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitIfCondition(LangParser.IfConditionContext ctx) { return visitChildren(ctx); }
+	@Override public T visitParenthesisCondtion(LangParser.ParenthesisCondtionContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitMultipleCondition(LangParser.MultipleConditionContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

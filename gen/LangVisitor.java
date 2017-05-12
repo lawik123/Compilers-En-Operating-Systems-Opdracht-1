@@ -174,23 +174,32 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAddSubstractExpression(LangParser.AddSubstractExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link LangParser#whileCondition}.
+	 * Visit a parse tree produced by {@link LangParser#mathComparison}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitWhileCondition(LangParser.WhileConditionContext ctx);
+	T visitMathComparison(LangParser.MathComparisonContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link LangParser#forCondition}.
+	 * Visit a parse tree produced by the {@code conditionValue}
+	 * labeled alternative in {@link LangParser#condition}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitForCondition(LangParser.ForConditionContext ctx);
+	T visitConditionValue(LangParser.ConditionValueContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link LangParser#ifCondition}.
+	 * Visit a parse tree produced by the {@code parenthesisCondtion}
+	 * labeled alternative in {@link LangParser#condition}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitIfCondition(LangParser.IfConditionContext ctx);
+	T visitParenthesisCondtion(LangParser.ParenthesisCondtionContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code multipleCondition}
+	 * labeled alternative in {@link LangParser#condition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMultipleCondition(LangParser.MultipleConditionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code intParamMethodDecl}
 	 * labeled alternative in {@link LangParser#methodDeclParams}.

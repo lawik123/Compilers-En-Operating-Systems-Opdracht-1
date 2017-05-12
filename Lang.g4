@@ -14,7 +14,6 @@ nonGlobalExpr:ifStm
             |varMod
             |varDecl
             |callMethodExpr
-            | condition
             ;
 
 //variable declarations
@@ -37,9 +36,9 @@ runMethod: '~void' '()run'  opener nonGlobalExpr* 'return;' closer;
 callMethodExpr: '('(methodCallParams (',' methodCallParams)*)?')'methodIdentifier=methodName ';';
 
 //statements
-ifStm:'if' '(' ifCondition ')' opener ifBlock=nonGlobalExpr* closer (('?' '(' ifCondition ')' opener ifElseBlock=nonGlobalExpr* closer)* ('?' opener elseBlock=nonGlobalExpr* closer)?)?;
-whileStm: 'REPEAT' opener nonGlobalExpr* closer 'UNTIL' '(' whileCondition ')';
-forStm: 'for' '(' varDecl forCondition ';' idCrement=IDcrement '(' idValue=variableName ')' ')' opener nonGlobalExpr* closer;
+ifStm:'if' '(' condition ')' opener ifBlock=nonGlobalExpr* closer (('?' '(' condition ')' opener ifElseBlock=nonGlobalExpr* closer)* ('?' opener elseBlock=nonGlobalExpr* closer)?)?;
+whileStm: 'REPEAT' opener nonGlobalExpr* closer 'UNTIL' '(' condition ')';
+forStm: 'for' '(' varDecl condition ';' idCrement=IDcrement '(' idValue=variableName ')' ')' opener nonGlobalExpr* closer;
 
 //user input/output
 writeExpr: 'WRITE(' (writevalues) ( '+' writevalues)* ');';
@@ -61,14 +60,10 @@ mathExpr: '(' mathExpr ')'                                                      
 
 
 //condition form
-whileCondition: identifierLeft=mathExpr lop=LOP identifierRight=mathExpr (andOR=('||' | '&&') whileCondition)*;
-forCondition: identifierLeft=mathExpr lop=LOP identifierRight=mathExpr (andOR=('||' | '&&') forCondition)*;
-ifCondition: identifierLeft=mathExpr lop=LOP identifierRight=mathExpr (andOR=('||' | '&&') ifCondition)*;
-
-boolean: identifierLeft=mathExpr lop=LOP identifierRight=mathExpr;
-condition: '(' condition ')'
-| leftCondition=condition andOR=('||' | '&&') rightCondtion=condition
-| boolean;
+mathComparison: identifierLeft=mathExpr lop=LOP identifierRight=mathExpr;
+condition: '(' condition ')'        #parenthesisCondtion
+| leftCondition=condition andOR=('||' | '&&') rightCondtion=condition       #multipleCondition
+| mathComparison        #conditionValue;
 
 //parameters
 methodDeclParams: intParam          #intParamMethodDecl

@@ -285,35 +285,51 @@ public interface LangListener extends ParseTreeListener {
 	 */
 	void exitAddSubstractExpression(LangParser.AddSubstractExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link LangParser#whileCondition}.
+	 * Enter a parse tree produced by {@link LangParser#mathComparison}.
 	 * @param ctx the parse tree
 	 */
-	void enterWhileCondition(LangParser.WhileConditionContext ctx);
+	void enterMathComparison(LangParser.MathComparisonContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link LangParser#whileCondition}.
+	 * Exit a parse tree produced by {@link LangParser#mathComparison}.
 	 * @param ctx the parse tree
 	 */
-	void exitWhileCondition(LangParser.WhileConditionContext ctx);
+	void exitMathComparison(LangParser.MathComparisonContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link LangParser#forCondition}.
+	 * Enter a parse tree produced by the {@code conditionValue}
+	 * labeled alternative in {@link LangParser#condition}.
 	 * @param ctx the parse tree
 	 */
-	void enterForCondition(LangParser.ForConditionContext ctx);
+	void enterConditionValue(LangParser.ConditionValueContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link LangParser#forCondition}.
+	 * Exit a parse tree produced by the {@code conditionValue}
+	 * labeled alternative in {@link LangParser#condition}.
 	 * @param ctx the parse tree
 	 */
-	void exitForCondition(LangParser.ForConditionContext ctx);
+	void exitConditionValue(LangParser.ConditionValueContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link LangParser#ifCondition}.
+	 * Enter a parse tree produced by the {@code parenthesisCondtion}
+	 * labeled alternative in {@link LangParser#condition}.
 	 * @param ctx the parse tree
 	 */
-	void enterIfCondition(LangParser.IfConditionContext ctx);
+	void enterParenthesisCondtion(LangParser.ParenthesisCondtionContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link LangParser#ifCondition}.
+	 * Exit a parse tree produced by the {@code parenthesisCondtion}
+	 * labeled alternative in {@link LangParser#condition}.
 	 * @param ctx the parse tree
 	 */
-	void exitIfCondition(LangParser.IfConditionContext ctx);
+	void exitParenthesisCondtion(LangParser.ParenthesisCondtionContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code multipleCondition}
+	 * labeled alternative in {@link LangParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void enterMultipleCondition(LangParser.MultipleConditionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code multipleCondition}
+	 * labeled alternative in {@link LangParser#condition}.
+	 * @param ctx the parse tree
+	 */
+	void exitMultipleCondition(LangParser.MultipleConditionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code intParamMethodDecl}
 	 * labeled alternative in {@link LangParser#methodDeclParams}.

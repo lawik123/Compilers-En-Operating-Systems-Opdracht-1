@@ -16,6 +16,8 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     private int forStmCounter = 0;
     private int conditionCounter = 0;
 
+    private boolean isOr;
+
     private String currentMethod;
     private String className;
     private HashMap<String, String> methodTypes = new HashMap<>();
@@ -363,7 +365,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitIfStm(LangParser.IfStmContext ctx) {
         ArrayList<String> code = new ArrayList<>();
         int sizeElseChildren = 0;
-        ifStmCounter = ctx.ifCondition().size();
+        ifStmCounter = ctx.condition().size();
         try {
             //else block
             sizeElseChildren = ctx.elseBlock.children.size();
@@ -373,10 +375,11 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         }
 
         int counter = 0;
-        for (int i = 0; i < ctx.ifCondition().size(); i++) {
-            if (i == 0) {
+        for (int i = 0; i < ctx.condition().size(); i++) {
 
-                code.addAll(visit(ctx.ifCondition(i)));
+            if (i == 0) {
+                code.addAll(visit(ctx.condition(i)));
+
                 code.add("then: ");
                 for (int y = 0; y < ctx.ifBlock.children.size(); y++) {      //if block
                     code.addAll(visit(ctx.nonGlobalExpr(y)));
@@ -456,152 +459,60 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     }
 
     //statement conditions
+
+
     @Override
-    public ArrayList<String> visitIfCondition(LangParser.IfConditionContext ctx) {
+    public ArrayList<String> visitConditionValue(LangParser.ConditionValueContext ctx) {
         ArrayList<String> code = new ArrayList<>();
-        String lop = ctx.lop.getText();
-        for (int i = 0; i < ctx.mathExpr().size(); i++) {
-            code.addAll(visit(ctx.mathExpr(i)));
-        }
-        if(ctx.ifCondition().size() > 0) {
-            for(int i = 0; i < ctx.ifCondition().size(); i ++) {
-                code.addAll(visit(ctx.ifCondition(i)));
-            }
+        String lop = ctx.mathComparison().lop.getText();
+        for (int i = 0; i < ctx.mathComparison().mathExpr().size(); i++) {
+            code.addAll(visit(ctx.mathComparison().mathExpr(i)));
         }
 
-        if(ctx.ifCondition().size() > 0) {
-
-        } else {
-            if (ifStmCounter == 1 && hasElse) {
-                switch (lop) {
-                    case "==":
-                        code.add("if_icmpne else");
-                        break;
-                    case "!=":
-                        code.add("if_icmpqe else");
-                        break;
-                    case "<":
-                        code.add("if_icmpge else");
-                        break;
-                    case "<=":
-                        code.add("if_icmpgt else");
-                        break;
-                    case ">":
-                        code.add("if_icmple else");
-                        break;
-                    case ">=":
-                        code.add("if_icmplt else");
-                        break;
-                }
-            } else if (ifStmCounter == 1) {
-                switch (lop) {
-                    case "==":
-                        code.add("if_icmpne endif_" + labelCount);
-                        break;
-                    case "!=":
-                        code.add("if_icmpqe endif_" + labelCount);
-                        break;
-                    case "<":
-                        code.add("if_icmpge endif_" + labelCount);
-                        break;
-                    case "<=":
-                        code.add("if_icmpgt endif_" + labelCount);
-                        break;
-                    case ">":
-                        code.add("if_icmple endif_" + labelCount);
-                        break;
-                    case ">=":
-                        code.add("if_icmplt endif_" + labelCount);
-                        break;
-                }
-            } else {
-                conditionCounter++;
-                switch (lop) {
-                    case "==":
-                        code.add("if_icmpne then_" + conditionCounter);
-                        break;
-                    case "!=":
-                        code.add("if_icmpqe then_" + conditionCounter);
-                        break;
-                    case "<":
-                        code.add("if_icmpge then_" + conditionCounter);
-                        break;
-                    case "<=":
-                        code.add("if_icmpgt then_" + conditionCounter);
-                        break;
-                    case ">":
-                        code.add("if_icmple then_" + conditionCounter);
-                        break;
-                    case ">=":
-                        code.add("if_icmplt then_" + conditionCounter);
-                        break;
-                }
-                ifStmCounter--;
-
-            }
+        switch (lop) {
+            case "==":
+                code.add("if_icmpeq");
+                break;
+            case "!=":
+                code.add("if_icmpne");
+                break;
+            case "<":
+                code.add("if_icmplt");
+                break;
+            case "<=":
+                code.add("if_icmple");
+                break;
+            case ">":
+                code.add("if_icmpgt");
+                break;
+            case ">=":
+                code.add("if_icmpge");
+                break;
         }
         return code;
     }
 
     @Override
-    public ArrayList<String> visitWhileCondition(LangParser.WhileConditionContext ctx) {
+    public ArrayList<String> visitParenthesisCondtion(LangParser.ParenthesisCondtionContext ctx) {
         ArrayList<String> code = new ArrayList<>();
-        String lop = ctx.lop.getText();
+    }
+
+    @Override
+    public ArrayList<String> visitMultipleCondition(LangParser.MultipleConditionContext ctx) {
+        ArrayList<String> code = new ArrayList<>();
         String andOR = ctx.andOR.getText();
-        for (int i = 0; i < ctx.mathExpr().size(); i++) {
-            code.addAll(visit(ctx.mathExpr(i)));
-        }
-
-        switch (lop) {
-            case "==":
-                code.add("if_icmpqe beginWhile_" + whileStmCounter);
-                break;
-            case "!=":
-                code.add("if_icmpne beginWhile_" + whileStmCounter);
-                break;
-            case "<":
-                code.add("if_icmplt beginWhile_" + whileStmCounter);
-                break;
-            case "<=":
-                code.add("if_icmple beginWhile_" + whileStmCounter);
-                break;
-            case ">":
-                code.add("if_icmpgt beginWhile_" + whileStmCounter);
-                break;
-            case ">=":
-                code.add("if_icmpge beginWhile_" + whileStmCounter);
-                break;
-        }
-        return code;
-    }
-
-    @Override
-    public ArrayList<String> visitForCondition(LangParser.ForConditionContext ctx) {
-        ArrayList<String> code = new ArrayList<>();
-        String lop = ctx.lop.getText();
-        for (int i = 0; i < ctx.mathExpr().size(); i++) {
-            code.addAll(visit(ctx.mathExpr(i)));
-        }
-
-        switch (lop) {
-            case "==":
-                code.add("if_icmpqe beginFor_" + forStmCounter);
-                break;
-            case "!=":
-                code.add("if_icmpne beginFor_" + forStmCounter);
-                break;
-            case "<":
-                code.add("if_icmplt beginFor_" + forStmCounter);
-                break;
-            case "<=":
-                code.add("if_icmple beginFor_" + forStmCounter);
-                break;
-            case ">":
-                code.add("if_icmpgt beginFor_" + forStmCounter);
-                break;
-            case ">=":
-                code.add("if_icmpge beginFor_" + forStmCounter);
-                break;
+        if(andOR.equals("||")) {
+            code.addAll(visit(ctx.leftCondition));
+            code.set(code.size()-1, code.get(code.size()-1) + " then_" + " "); //todo ifstm oounter)
+            code.addAll(visit(ctx.rightCondtion));
+            code.set(code.size()-1, code.get(code.size()-1) + " then_" + " "); //todo ifstm oounter)
+        } else {
+            code.addAll(visit(ctx.leftCondition));
+            code.set(code.size()-1, code.get(code.size()-1) + " secondCondition_" + " "); //todo ifstm oounter)
+            code.add("goto endif_");
+            code.add("secondCondition_");
+            code.addAll(visit(ctx.rightCondtion));
+            code.set(code.size()-1, code.get(code.size()-1) + " then_" + " "); //todo ifstm oounter)
         }
         return code;
     }
