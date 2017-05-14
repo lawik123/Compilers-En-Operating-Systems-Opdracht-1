@@ -410,35 +410,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                 conditionCounter = i + 1;
                 code.add(ifLabels.get(i) + ":");
                 code.addAll(visit(ctx.condition(i)));
-                if(isOr) {
-                    code.set(code.size() - 1, code.get(code.size() - 1).replaceAll("code_block_" + conditionCounter, ifLabels.get(conditionCounter)));
-                    String lop = code.get(code.size()-1).substring(7,9);
-                    switch (lop){
-                        case "eq":
-                            code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "ne"));
-                            break;
-                        case "ne":
-                            code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "eq"));
-                            break;
-                        case "lt":
-                            code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "ge"));
-                            break;
-                        case "le":
-                            code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "gt"));
-                            break;
-                        case "gt":
-                            code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "le"));
-                            break;
-                        case "ge":
-                            code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "lt"));
-                            break;
-
-                    }
-
-
-                    isOr=false;
-                }
-                code.add("code_block_" + (i+1) + ":");
+                code.add("code_block_" + (i + 1) + ":");
                 for (int y = 0; y < ctx.ifElseBlock.children.size(); y++) {
                     code.addAll(visit(ctx.nonGlobalExpr(y + counter)));
                 }
@@ -453,7 +425,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                     code.addAll(visit(ctx.nonGlobalExpr(y + counter)));
                 }
             }
-
         }
 
         String label = "endif_" + (labelCount++);
@@ -514,12 +485,12 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
     @Override
     public ArrayList<String> visitConditionValue(LangParser.ConditionValueContext ctx) {
+        System.err.println("check");
         ArrayList<String> code = new ArrayList<>();
         String lop = ctx.mathComparison().lop.getText();
         for (int i = 0; i < ctx.mathComparison().mathExpr().size(); i++) {
             code.addAll(visit(ctx.mathComparison().mathExpr(i)));
         }
-        if (!isOr) {
             switch (lop) {
                 case "==":
                     code.add("if_icmpne");
@@ -540,57 +511,110 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                     code.add("if_icmplt");
                     break;
             }
-        } else {
+        return code;
+    }
+
+    @Override
+    public ArrayList<String> visitParenthesisCondition(LangParser.ParenthesisConditionContext ctx) {
+        ArrayList<String> code = new ArrayList<>();
+        code.addAll(visit(ctx.condition()));
+        return code;
+    }
+
+    @Override
+    public ArrayList<String> visitOrCondition(LangParser.OrConditionContext ctx) {
+        ArrayList<String> code = new ArrayList<>();
+        isOr = true;
+        code.addAll(visit(ctx.leftCondition));
+        code.set(code.size() - 1, code.get(code.size() - 1) + " code_block_" + conditionCounter);
+        if(!ctx.rightCondtion.getText().contains("||")) {
+            String lop = code.get(code.size() - 1).substring(7, 9);
             switch (lop) {
-                case "==":
-                    code.add("if_icmpeq");
+                case "eq":
+                    code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "ne"));
                     break;
-                case "!=":
-                    code.add("if_icmpne");
+                case "ne":
+                    code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "eq"));
                     break;
-                case "<":
-                    code.add("if_icmplt");
+                case "lt":
+                    code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "ge"));
                     break;
-                case "<=":
-                    code.add("if_icmple");
+                case "le":
+                    code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "gt"));
                     break;
-                case ">":
-                    code.add("if_icmpgt");
+                case "gt":
+                    code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "le"));
                     break;
-                case ">=":
-                    code.add("if_icmpge");
+                case "ge":
+                    code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "lt"));
+                    break;
+
+            }
+        }
+        code.addAll(visit(ctx.rightCondtion));
+        if(!ctx.rightCondtion.getText().contains("&&") && !ctx.rightCondtion.getText().contains("||")) {
+            code.set(code.size() - 1, code.get(code.size() - 1) + " code_block_" + conditionCounter);
+            String lop = code.get(code.size() - 1).substring(7, 9);
+            switch (lop) {
+                case "eq":
+                    code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "ne"));
+                    break;
+                case "ne":
+                    code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "eq"));
+                    break;
+                case "lt":
+                    code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "ge"));
+                    break;
+                case "le":
+                    code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "gt"));
+                    break;
+                case "gt":
+                    code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "le"));
+                    break;
+                case "ge":
+                    code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "lt"));
                     break;
             }
         }
+
+
         return code;
     }
 
     @Override
-    public ArrayList<String> visitParenthesisCondtion(LangParser.ParenthesisCondtionContext ctx) {
+    public ArrayList<String> visitAndCondition(LangParser.AndConditionContext ctx) {
         ArrayList<String> code = new ArrayList<>();
-        return code;
-    }
-
-    @Override
-    public ArrayList<String> visitMultipleCondition(LangParser.MultipleConditionContext ctx) {
-        ArrayList<String> code = new ArrayList<>();
-        String andOR = ctx.andOR.getText();
-        if (andOR.equals("||")) {
-            isOr = true;
-            code.addAll(visit(ctx.leftCondition));
-            if (!code.get(code.size() - 1).contains(" code_block_"+ (conditionCounter))) {
-                code.set(code.size() - 1, code.get(code.size() - 1) + " code_block_" + conditionCounter); //todo ifstm oounter)
+        code.addAll(visit(ctx.leftCondition));
+        if (!code.get(code.size() - 1).contains(ifLabels.get(conditionCounter))) {
+            code.set(code.size() - 1, code.get(code.size() - 1) + " " + ifLabels.get(conditionCounter));
+        }
+        code.addAll(visit(ctx.rightCondition));
+        if(!ctx.rightCondition.getText().contains("&&") && !ctx.rightCondition.getText().contains("||")) {
+            code.set(code.size() - 1, code.get(code.size() - 1) + " " + ifLabels.get(conditionCounter));
+        }
+        if(ctx.rightCondition.getText().contains("||")) {
+            String lop = code.get(code.size() - 1).substring(7, 9);
+            switch (lop) {
+                case "eq":
+                    code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "ne"));
+                    break;
+                case "ne":
+                    code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "eq"));
+                    break;
+                case "lt":
+                    code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "ge"));
+                    break;
+                case "le":
+                    code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "gt"));
+                    break;
+                case "gt":
+                    code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "le"));
+                    break;
+                case "ge":
+                    code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "lt"));
+                    break;
             }
-            code.addAll(visit(ctx.rightCondtion));
-            code.set(code.size() - 1, code.get(code.size() - 1) + " code_block_" + conditionCounter); //todo ifstm oounter)
-
-        } else {
-            code.addAll(visit(ctx.leftCondition));
-            if (!code.get(code.size() - 1).contains(ifLabels.get(conditionCounter))) {
-                code.set(code.size() - 1, code.get(code.size() - 1) + " " + ifLabels.get(conditionCounter)); //todo ifstm oounter)
-            }
-            code.addAll(visit(ctx.rightCondtion));
-            code.set(code.size() - 1, code.get(code.size() - 1) + " " + ifLabels.get(conditionCounter)); //todo ifstm oounter)
+            code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(code.get(code.size()-1).substring(10), ifLabels.get(conditionCounter)));
         }
         return code;
     }

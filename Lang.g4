@@ -61,9 +61,13 @@ mathExpr: '(' mathExpr ')'                                                      
 
 //condition form
 mathComparison: identifierLeft=mathExpr lop=LOP identifierRight=mathExpr;
-condition: '(' condition ')'                                                #parenthesisCondtion
-| leftCondition=condition andOR=('||' | '&&') rightCondtion=condition       #multipleCondition
-| mathComparison                                                            #conditionValue;
+condition: leftCondition=condition OR rightCondtion=condition                       #orCondition
+| leftCondition=condition AND rightCondition=condition                              #andCondition
+| '(' condition ')'                                                                 #parenthesisCondition
+| mathComparison                                                                    #conditionValue;
+
+OR: '||';
+AND: '&&';
 
 //parameters
 methodDeclParams: intParam          #intParamMethodDecl
