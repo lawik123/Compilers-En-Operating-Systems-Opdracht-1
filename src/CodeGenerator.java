@@ -610,7 +610,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         if(ctx.nConditionMore().size()>0){
             ArrayList<String> labels = new ArrayList<>();
             for(int i =0; i<ctx.nConditionMore().size();i++){
-                if(ctx.nConditionMore(i).andOR.getText().equals("||")) {
+                if(i<ctx.nConditionMore().size()-1&&ctx.nConditionMore(i).andOR.getText().equals("&&")&&ctx.nConditionMore(i+1).andOR.getText().equals("||")) {
                     labels.add(conditionCounter+"_label_" + i);
                 }else if(i==ctx.nConditionMore().size()-1){
                     labels.add(ifLabels.get(conditionCounter));
@@ -941,6 +941,34 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
 
                         }
+                    }else if(i == ctx.nConditionMore().size()-1){
+                        for (int y = 0; y < ctx.nConditionMore(i).mathComparison().mathExpr().size(); y++) {
+                            code.addAll(visit(ctx.nConditionMore(i).mathComparison().mathExpr(y)));
+                        }
+                        switch (cop) {
+                            case "==":
+                                code.add("if_icmpne");
+                                break;
+                            case "!=":
+                                code.add("if_icmpeq");
+                                break;
+                            case "<":
+                                code.add("if_icmpge");
+                                break;
+                            case "<=":
+                                code.add("if_icmpgt");
+                                break;
+                            case ">":
+                                code.add("if_icmple");
+                                break;
+                            case ">=":
+                                code.add("if_icmplt");
+                                break;
+                        }
+
+                        code.set(code.size() - 1, code.get(code.size() - 1) + " " + ifLabels.get(conditionCounter));
+
+
                     }
 
                 }
