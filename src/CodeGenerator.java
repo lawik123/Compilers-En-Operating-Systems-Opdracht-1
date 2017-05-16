@@ -608,6 +608,14 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         }
 
         if(ctx.nConditionMore().size()>0){
+            ArrayList<String> labels = new ArrayList<>();
+            for(int i =0; i<ctx.nConditionMore().size();i++){
+                if(ctx.nConditionMore(i).andOR.getText().equals("||")) {
+                    labels.add(conditionCounter+"_label_" + i);
+                }else if(i==ctx.nConditionMore().size()-1){
+                    labels.add(ifLabels.get(conditionCounter));
+                }
+            }
             for(int i=0;i<ctx.nConditionMore().size();i++) {
                 String currentAndOr = ctx.nConditionMore(i).andOR.getText();
                 String cop = ctx.nConditionMore(i).mathComparison().lop.getText();
@@ -740,7 +748,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                                         break;
                                 }
 
-                                code.set(code.size() - 1, code.get(code.size() - 1) + " " + ifLabels.get(conditionCounter));
+                                code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.get(0));
                             }
 
 
@@ -768,7 +776,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                                     break;
                             }
 
-                            code.set(code.size() - 1, code.get(code.size() - 1) + " " + "label_"+(i+1));
+                            code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.get(0));
 
                         }else if(currentAndOr.equals("&&")&&nextAndOr.equals("||")){
                             if(i==0) {
@@ -793,7 +801,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                                         break;
                                 }
 
-                                code.set(code.size() - 1, code.get(code.size() - 1) + " " + "label_"+(i+1));
+                                code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.get(0));
                             }
 
 
@@ -822,7 +830,8 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                             }
 
                             code.set(code.size() - 1, code.get(code.size() - 1) + " " + "code_block_"+conditionCounter);
-                            code.add("label_"+i+":");
+                            code.add(labels.get(0)+":");
+                            labels.remove(0);
 
                         }else if(currentAndOr.equals("||")&&nextAndOr.equals("||")){
                             if(i==0) {
@@ -928,8 +937,8 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                                     break;
                             }
 
-                            code.set(code.size() - 1, code.get(code.size() - 1) + " " + "label_"+(i+1));
-                            code.add("label_"+i+":");
+                            code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.get(0));
+
 
                         }
                     }
