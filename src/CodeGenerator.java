@@ -367,7 +367,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitIfStm(LangParser.IfStmContext ctx) {
         ArrayList<String> code = new ArrayList<>();
         int sizeElseChildren = 0;
-        ifStmCounter = ctx.condition().size();
+        ifStmCounter = ctx.nCondition().size();
         try {
             //else block
             sizeElseChildren = ctx.elseBlock.children.size();
@@ -393,61 +393,61 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
 
         int counter = 0;
-        for (int i = 0; i < ctx.condition().size(); i++) {
+        for (int i = 0; i < ctx.nCondition().size(); i++) {
 
             if (i == 0) {
                 conditionCounter = 1;
-                code.addAll(visit(ctx.condition(i)));
-                if (ctx.condition(i).children.size() == 1) {
-                    code.set(code.size() - 1, code.get(code.size() - 1) + " " + ifLabels.get(conditionCounter));
-                }
+                code.addAll(visit(ctx.nCondition(i)));
+//                if (ctx.condition(i).children.size() == 1) {
+//                    code.set(code.size() - 1, code.get(code.size() - 1) + " " + ifLabels.get(conditionCounter));
+//                }
                 code.add("code_block: ");
                 for (int y = 0; y < ctx.ifBlock.children.size(); y++) {      //if block
                     code.addAll(visit(ctx.nonGlobalExpr(y)));
                 }
                 counter = ctx.ifBlock.children.size();
-            } else if (i < ctx.condition().size()) {     //if else block
+            } else if (i < ctx.nCondition().size()) {     //if else block
                 conditionCounter = i + 1;
                 code.add(ifLabels.get(i) + ":");
-                code.addAll(visit(ctx.condition(i)));
-                if(isOr) {
-                    code.set(code.size() - 1, code.get(code.size() - 1).replaceAll("code_block_" + conditionCounter, ifLabels.get(conditionCounter)));
-                    String lop = code.get(code.size()-1).substring(7,9);
-                    switch (lop){
-                        case "eq":
-                            code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "ne"));
-                            break;
-                        case "ne":
-                            code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "eq"));
-                            break;
-                        case "lt":
-                            code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "ge"));
-                            break;
-                        case "le":
-                            code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "gt"));
-                            break;
-                        case "gt":
-                            code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "le"));
-                            break;
-                        case "ge":
-                            code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "lt"));
-                            break;
-
-                    }
-
-
-                    isOr=false;
-                }
+                code.addAll(visit(ctx.nCondition(i)));
+//                if(isOr) {
+//                    code.set(code.size() - 1, code.get(code.size() - 1).replaceAll("code_block_" + conditionCounter, ifLabels.get(conditionCounter)));
+//                    String lop = code.get(code.size()-1).substring(7,9);
+//                    switch (lop){
+//                        case "eq":
+//                            code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "ne"));
+//                            break;
+//                        case "ne":
+//                            code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "eq"));
+//                            break;
+//                        case "lt":
+//                            code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "ge"));
+//                            break;
+//                        case "le":
+//                            code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "gt"));
+//                            break;
+//                        case "gt":
+//                            code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "le"));
+//                            break;
+//                        case "ge":
+//                            code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lop, "lt"));
+//                            break;
+//
+//                    }
+//
+//
+//                    isOr=false;
+//                }
                 code.add("code_block_" + (i+1) + ":");
                 for (int y = 0; y < ctx.ifElseBlock.children.size(); y++) {
                     code.addAll(visit(ctx.nonGlobalExpr(y + counter)));
                 }
                 counter += ctx.ifElseBlock.children.size();
             }
-            if (i < ctx.condition().size()) {
+            if (i < ctx.nCondition().size()) {
                 code.add("goto endif_" + (labelCount));
             }
-            if (sizeElseChildren > 0 && i == ctx.condition().size() - 1) {
+            if (sizeElseChildren > 0 && i == ctx.nCondition().size() - 1) {
                 code.add("ELSE: ");
                 for (int y = 0; y < sizeElseChildren; y++) {
                     code.addAll(visit(ctx.nonGlobalExpr(y + counter)));
@@ -519,6 +519,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         for (int i = 0; i < ctx.mathComparison().mathExpr().size(); i++) {
             code.addAll(visit(ctx.mathComparison().mathExpr(i)));
         }
+
         if (!isOr) {
             switch (lop) {
                 case "==":
@@ -575,6 +576,8 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitMultipleCondition(LangParser.MultipleConditionContext ctx) {
         ArrayList<String> code = new ArrayList<>();
         String andOR = ctx.andOR.getText();
+        System.err.println("left:"+ctx.leftCondition.getText());
+        System.err.println("right:"+ctx.rightCondtion.getText());
         if (andOR.equals("||")) {
             isOr = true;
             code.addAll(visit(ctx.leftCondition));
@@ -587,12 +590,396 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         } else {
             code.addAll(visit(ctx.leftCondition));
             if (!code.get(code.size() - 1).contains(ifLabels.get(conditionCounter))) {
-                code.set(code.size() - 1, code.get(code.size() - 1) + " " + ifLabels.get(conditionCounter)); //todo ifstm oounter)
+
+                code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(" code_block_"+conditionCounter," " + ifLabels.get(conditionCounter))); //todo ifstm oounter)
             }
             code.addAll(visit(ctx.rightCondtion));
             code.set(code.size() - 1, code.get(code.size() - 1) + " " + ifLabels.get(conditionCounter)); //todo ifstm oounter)
         }
         return code;
+    }
+
+    @Override
+    public ArrayList<String> visitNCondition(LangParser.NConditionContext ctx) {
+        ArrayList<String> code = new ArrayList<>();
+        String lop = ctx.mathComparison().lop.getText();
+        for (int i = 0; i < ctx.mathComparison().mathExpr().size(); i++) {
+            code.addAll(visit(ctx.mathComparison().mathExpr(i)));
+        }
+
+        if(ctx.nConditionMore().size()>0){
+            for(int i=0;i<ctx.nConditionMore().size();i++) {
+                String currentAndOr = ctx.nConditionMore(i).andOR.getText();
+                String cop = ctx.nConditionMore(i).mathComparison().lop.getText();
+
+                if (ctx.nConditionMore().size() == 1) {
+                    if (currentAndOr.equals("&&")) {
+                        switch (lop) {
+                            case "==":
+                                code.add("if_icmpne");
+                                break;
+                            case "!=":
+                                code.add("if_icmpeq");
+                                break;
+                            case "<":
+                                code.add("if_icmpge");
+                                break;
+                            case "<=":
+                                code.add("if_icmpgt");
+                                break;
+                            case ">":
+                                code.add("if_icmple");
+                                break;
+                            case ">=":
+                                code.add("if_icmplt");
+                                break;
+                        }
+
+                        code.set(code.size() - 1, code.get(code.size() - 1) + " " + ifLabels.get(conditionCounter));
+
+
+                        for (int y = 0; y < ctx.nConditionMore(i).mathComparison().mathExpr().size(); y++) {
+                            code.addAll(visit(ctx.nConditionMore(i).mathComparison().mathExpr(y)));
+                        }
+                        switch (cop) {
+                            case "==":
+                                code.add("if_icmpne");
+                                break;
+                            case "!=":
+                                code.add("if_icmpeq");
+                                break;
+                            case "<":
+                                code.add("if_icmpge");
+                                break;
+                            case "<=":
+                                code.add("if_icmpgt");
+                                break;
+                            case ">":
+                                code.add("if_icmple");
+                                break;
+                            case ">=":
+                                code.add("if_icmplt");
+                                break;
+                        }
+
+                        code.set(code.size() - 1, code.get(code.size() - 1) + " " + ifLabels.get(conditionCounter));
+                    } else {
+                        switch (lop) {
+                            case "==":
+                                code.add("if_icmpeq");
+                                break;
+                            case "!=":
+                                code.add("if_icmpne");
+                                break;
+                            case "<":
+                                code.add("if_icmple");
+                                break;
+                            case "<=":
+                                code.add("if_icmplt");
+                                break;
+                            case ">":
+                                code.add("if_icmpgt");
+                                break;
+                            case ">=":
+                                code.add("if_icmpge");
+                                break;
+                        }
+
+                        code.set(code.size() - 1, code.get(code.size() - 1) + " " + "code_block_" + conditionCounter);
+
+                        for (int y = 0; y < ctx.nConditionMore(i).mathComparison().mathExpr().size(); y++) {
+                            code.addAll(visit(ctx.nConditionMore(i).mathComparison().mathExpr(y)));
+                        }
+                        switch (cop) {
+                            case "==":
+                                code.add("if_icmpeq");
+                                break;
+                            case "!=":
+                                code.add("if_icmpne");
+                                break;
+                            case "<":
+                                code.add("if_icmplt");
+                                break;
+                            case "<=":
+                                code.add("if_icmple");
+                                break;
+                            case ">":
+                                code.add("if_icmpgt");
+                                break;
+                            case ">=":
+                                code.add("if_icmpge");
+                                break;
+                        }
+
+                        code.set(code.size() - 1, code.get(code.size() - 1) + " " + "code_block_" + conditionCounter);
+                    }
+
+                }else{
+                    if (i < ctx.nConditionMore().size()-1) {
+                        String nextAndOr = ctx.nConditionMore(i + 1).andOR.getText();
+                        if(currentAndOr.equals("&&")&&nextAndOr.equals("&&")){
+                            if(i==0) {
+                                switch (lop) {
+                                    case "==":
+                                        code.add("if_icmpne");
+                                        break;
+                                    case "!=":
+                                        code.add("if_icmpeq");
+                                        break;
+                                    case "<":
+                                        code.add("if_icmpge");
+                                        break;
+                                    case "<=":
+                                        code.add("if_icmpgt");
+                                        break;
+                                    case ">":
+                                        code.add("if_icmple");
+                                        break;
+                                    case ">=":
+                                        code.add("if_icmplt");
+                                        break;
+                                }
+
+                                code.set(code.size() - 1, code.get(code.size() - 1) + " " + ifLabels.get(conditionCounter));
+                            }
+
+
+                            for (int y = 0; y < ctx.nConditionMore(i).mathComparison().mathExpr().size(); y++) {
+                                code.addAll(visit(ctx.nConditionMore(i).mathComparison().mathExpr(y)));
+                            }
+                            switch (cop) {
+                                case "==":
+                                    code.add("if_icmpne");
+                                    break;
+                                case "!=":
+                                    code.add("if_icmpeq");
+                                    break;
+                                case "<":
+                                    code.add("if_icmpge");
+                                    break;
+                                case "<=":
+                                    code.add("if_icmpgt");
+                                    break;
+                                case ">":
+                                    code.add("if_icmple");
+                                    break;
+                                case ">=":
+                                    code.add("if_icmplt");
+                                    break;
+                            }
+
+                            code.set(code.size() - 1, code.get(code.size() - 1) + " " + "label_"+(i+1));
+
+                        }else if(currentAndOr.equals("&&")&&nextAndOr.equals("||")){
+                            if(i==0) {
+                                switch (lop) {
+                                    case "==":
+                                        code.add("if_icmpne");
+                                        break;
+                                    case "!=":
+                                        code.add("if_icmpeq");
+                                        break;
+                                    case "<":
+                                        code.add("if_icmpge");
+                                        break;
+                                    case "<=":
+                                        code.add("if_icmpgt");
+                                        break;
+                                    case ">":
+                                        code.add("if_icmple");
+                                        break;
+                                    case ">=":
+                                        code.add("if_icmplt");
+                                        break;
+                                }
+
+                                code.set(code.size() - 1, code.get(code.size() - 1) + " " + "label_"+(i+1));
+                            }
+
+
+                            for (int y = 0; y < ctx.nConditionMore(i).mathComparison().mathExpr().size(); y++) {
+                                code.addAll(visit(ctx.nConditionMore(i).mathComparison().mathExpr(y)));
+                            }
+                            switch (cop) {
+                                case "==":
+                                    code.add("if_icmpeq");
+                                    break;
+                                case "!=":
+                                    code.add("if_icmpne");
+                                    break;
+                                case "<":
+                                    code.add("if_icmplt");
+                                    break;
+                                case "<=":
+                                    code.add("if_icmple");
+                                    break;
+                                case ">":
+                                    code.add("if_icmpgt");
+                                    break;
+                                case ">=":
+                                    code.add("if_icmpge");
+                                    break;
+                            }
+
+                            code.set(code.size() - 1, code.get(code.size() - 1) + " " + "code_block_"+conditionCounter);
+                            code.add("label_"+i+":");
+
+                        }else if(currentAndOr.equals("||")&&nextAndOr.equals("||")){
+                            if(i==0) {
+                                switch (lop) {
+                                    case "==":
+                                        code.add("if_icmpeq");
+                                        break;
+                                    case "!=":
+                                        code.add("if_icmpne");
+                                        break;
+                                    case "<":
+                                        code.add("if_icmplt");
+                                        break;
+                                    case "<=":
+                                        code.add("if_icmple");
+                                        break;
+                                    case ">":
+                                        code.add("if_icmpgt");
+                                        break;
+                                    case ">=":
+                                        code.add("if_icmpge");
+                                        break;
+                                }
+
+                                code.set(code.size() - 1, code.get(code.size() - 1) + " " + "code_block_"+conditionCounter);
+                            }
+
+
+                            for (int y = 0; y < ctx.nConditionMore(i).mathComparison().mathExpr().size(); y++) {
+                                code.addAll(visit(ctx.nConditionMore(i).mathComparison().mathExpr(y)));
+                            }
+                            switch (cop) {
+                                case "==":
+                                    code.add("if_icmpeq");
+                                    break;
+                                case "!=":
+                                    code.add("if_icmpne");
+                                    break;
+                                case "<":
+                                    code.add("if_icmplt");
+                                    break;
+                                case "<=":
+                                    code.add("if_icmple");
+                                    break;
+                                case ">":
+                                    code.add("if_icmpgt");
+                                    break;
+                                case ">=":
+                                    code.add("if_icmpge");
+                                    break;
+                            }
+
+                            code.set(code.size() - 1, code.get(code.size() - 1) + " " + "code_block_"+conditionCounter);
+
+                        }else if(currentAndOr.equals("||")&&nextAndOr.equals("&&")){
+                            if(i==0) {
+                                switch (lop) {
+                                    case "==":
+                                        code.add("if_icmpeq");
+                                        break;
+                                    case "!=":
+                                        code.add("if_icmpne");
+                                        break;
+                                    case "<":
+                                        code.add("if_icmplt");
+                                        break;
+                                    case "<=":
+                                        code.add("if_icmple");
+                                        break;
+                                    case ">":
+                                        code.add("if_icmpgt");
+                                        break;
+                                    case ">=":
+                                        code.add("if_icmpge");
+                                        break;
+                                }
+
+                                code.set(code.size() - 1, code.get(code.size() - 1) + " " + "code_block_"+conditionCounter);
+                            }
+
+
+                            for (int y = 0; y < ctx.nConditionMore(i).mathComparison().mathExpr().size(); y++) {
+                                code.addAll(visit(ctx.nConditionMore(i).mathComparison().mathExpr(y)));
+                            }
+                            switch (cop) {
+                                case "==":
+                                    code.add("if_icmpne");
+                                    break;
+                                case "!=":
+                                    code.add("if_icmpeq");
+                                    break;
+                                case "<":
+                                    code.add("if_icmpge");
+                                    break;
+                                case "<=":
+                                    code.add("if_icmpgt");
+                                    break;
+                                case ">":
+                                    code.add("if_icmple");
+                                    break;
+                                case ">=":
+                                    code.add("if_icmplt");
+                                    break;
+                            }
+
+                            code.set(code.size() - 1, code.get(code.size() - 1) + " " + "label_"+(i+1));
+                            code.add("label_"+i+":");
+
+                        }
+                    }
+
+                }
+            }
+
+        }else {
+            switch (lop) {
+                case "==":
+                    code.add("if_icmpne");
+                    break;
+                case "!=":
+                    code.add("if_icmpeq");
+                    break;
+                case "<":
+                    code.add("if_icmpge");
+                    break;
+                case "<=":
+                    code.add("if_icmpgt");
+                    break;
+                case ">":
+                    code.add("if_icmple");
+                    break;
+                case ">=":
+                    code.add("if_icmplt");
+                    break;
+            }
+
+            code.set(code.size()-1,code.get(code.size()-1)+" "+ifLabels.get(conditionCounter));
+
+        }
+
+        return code;
+    }
+
+    @Override
+    public ArrayList<String> visitNConditionMore(LangParser.NConditionMoreContext ctx) {
+        ArrayList<String> code = new ArrayList<>();
+        String lop = ctx.mathComparison().lop.getText();
+        String andOR = ctx.andOR.getText();
+//        for (int i = 0; i < ctx.mathComparison().mathExpr().size(); i++) {
+//            code.addAll(visit(ctx.mathComparison().mathExpr(i)));
+//        }
+
+
+
+
+        return code;
+
     }
 
     //write expression

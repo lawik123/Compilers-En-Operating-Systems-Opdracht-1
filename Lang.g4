@@ -36,7 +36,7 @@ runMethod: '~void' '()run'  opener nonGlobalExpr* 'return;' closer;
 callMethodExpr: '('(methodCallParams (',' methodCallParams)*)?')'methodIdentifier=methodName ';';
 
 //statements
-ifStm:'if' '(' condition ')' opener ifBlock=nonGlobalExpr* closer (('?' '(' condition ')' opener ifElseBlock=nonGlobalExpr* closer)* ('?' opener elseBlock=nonGlobalExpr* closer)?)?;
+ifStm:'if' '(' nCondition ')' opener ifBlock=nonGlobalExpr* closer (('?' '(' nCondition ')' opener ifElseBlock=nonGlobalExpr* closer)* ('?' opener elseBlock=nonGlobalExpr* closer)?)?;
 whileStm: 'REPEAT' opener nonGlobalExpr* closer 'UNTIL' '(' condition ')';
 forStm: 'for' '(' varDecl condition ';' idCrement=IDcrement '(' idValue=variableName ')' ')' opener nonGlobalExpr* closer;
 
@@ -63,8 +63,12 @@ mathExpr: '(' mathExpr ')'                                                      
 mathComparison: identifierLeft=mathExpr lop=LOP identifierRight=mathExpr;
 condition: '(' condition ')'                                                #parenthesisCondtion
 | leftCondition=condition andOR=('||' | '&&') rightCondtion=condition       #multipleCondition
-| mathComparison                                                            #conditionValue;
+| mathComparison
 
+                                                        #conditionValue;
+
+nCondition: first=mathComparison more=nConditionMore*;
+nConditionMore: (andOR=('||' | '&&') mathComparison);
 //parameters
 methodDeclParams: intParam          #intParamMethodDecl
 | stringParam                       #stringParamMethodDecl;
