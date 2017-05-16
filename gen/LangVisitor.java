@@ -1,4 +1,4 @@
-// Generated from D:/school/jaar2/kwartiel3/Compilers&OperatingSystems/Compilers-En-Operating-Systems-Opdracht-1\Lang.g4 by ANTLR 4.6
+// Generated from D:/School projecten/Compilers\Lang.g4 by ANTLR 4.7
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -200,6 +200,18 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitMultipleCondition(LangParser.MultipleConditionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link LangParser#nCondition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNCondition(LangParser.NConditionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link LangParser#nConditionMore}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNConditionMore(LangParser.NConditionMoreContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code intParamMethodDecl}
 	 * labeled alternative in {@link LangParser#methodDeclParams}.

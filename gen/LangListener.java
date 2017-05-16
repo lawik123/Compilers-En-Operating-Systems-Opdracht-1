@@ -1,4 +1,4 @@
-// Generated from D:/school/jaar2/kwartiel3/Compilers&OperatingSystems/Compilers-En-Operating-Systems-Opdracht-1\Lang.g4 by ANTLR 4.6
+// Generated from D:/School projecten/Compilers\Lang.g4 by ANTLR 4.7
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -330,6 +330,26 @@ public interface LangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitMultipleCondition(LangParser.MultipleConditionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link LangParser#nCondition}.
+	 * @param ctx the parse tree
+	 */
+	void enterNCondition(LangParser.NConditionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LangParser#nCondition}.
+	 * @param ctx the parse tree
+	 */
+	void exitNCondition(LangParser.NConditionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link LangParser#nConditionMore}.
+	 * @param ctx the parse tree
+	 */
+	void enterNConditionMore(LangParser.NConditionMoreContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LangParser#nConditionMore}.
+	 * @param ctx the parse tree
+	 */
+	void exitNConditionMore(LangParser.NConditionMoreContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code intParamMethodDecl}
 	 * labeled alternative in {@link LangParser#methodDeclParams}.
