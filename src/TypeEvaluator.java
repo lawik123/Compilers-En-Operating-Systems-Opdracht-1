@@ -34,49 +34,51 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
         throw new EvaluateException("Method already exists");
     }
 
-    //variable declarations
     @Override
-    public DataType visitDeclareIntVariable(LangParser.DeclareIntVariableContext ctx) {
-        String globalizer = null;
-        try {
-            globalizer = ctx.isGlobal.getText();
-        } catch (NullPointerException npe) {
-
-        }
-
+    public DataType visitDeclareIntGlobalVariable(LangParser.DeclareIntGlobalVariableContext ctx) {
         String identifier = ctx.identifier.getText();
         DataType value = visit(ctx.mathExpr());
         if (value == DataType.INT) {
-            if (globalizer != null && globalizer.equals("global")) {
-                globalScope.declareVariable(identifier, DataType.INT);
-                return DataType.INT;
-            } else {
-                currentScope.declareVariable(identifier, DataType.INT);
-                return DataType.INT;
-            }
+            globalScope.declareVariable(identifier, DataType.INT);
+            return DataType.INT;
+
+        }
+        throw new EvaluateException("value is not an int");
+    }
+
+    @Override
+    public DataType visitDeclareStringGlobalVariable(LangParser.DeclareStringGlobalVariableContext ctx) {
+        String identifier = ctx.identifier.getText();
+        DataType value = visit(ctx.stringvalues());
+        if (value == DataType.STRING) {
+            globalScope.declareVariable(identifier, DataType.STRING);
+            return DataType.STRING;
+
+        }
+        throw new EvaluateException("value is not a string");
+    }
+
+    //variable declarations
+    @Override
+    public DataType visitDeclareIntVariable(LangParser.DeclareIntVariableContext ctx) {
+        String identifier = ctx.identifier.getText();
+        DataType value = visit(ctx.mathExpr());
+        if (value == DataType.INT) {
+            currentScope.declareVariable(identifier, DataType.INT);
+            return DataType.INT;
+
         }
         throw new EvaluateException("value is not an int");
     }
 
     @Override
     public DataType visitDeclareStringVariable(LangParser.DeclareStringVariableContext ctx) {
-        String globalizer = null;
-        try {
-            globalizer = ctx.isGlobal.getText();
-        } catch (NullPointerException npe) {
-
-        }
-
         String identifier = ctx.identifier.getText();
         DataType value = visit(ctx.stringvalues());
         if (value == DataType.STRING) {
-            if (globalizer != null && globalizer.equals("global")) {
-                globalScope.declareVariable(identifier, DataType.STRING);
-                return DataType.STRING;
-            } else {
-                currentScope.declareVariable(identifier, DataType.STRING);
-                return DataType.STRING;
-            }
+            currentScope.declareVariable(identifier, DataType.STRING);
+            return DataType.STRING;
+
         }
         throw new EvaluateException("value is not a string");
     }

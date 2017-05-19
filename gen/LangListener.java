@@ -37,6 +37,30 @@ public interface LangListener extends ParseTreeListener {
 	 */
 	void exitNonGlobalExpr(LangParser.NonGlobalExprContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code declareIntGlobalVariable}
+	 * labeled alternative in {@link LangParser#varGlobalDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeclareIntGlobalVariable(LangParser.DeclareIntGlobalVariableContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code declareIntGlobalVariable}
+	 * labeled alternative in {@link LangParser#varGlobalDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeclareIntGlobalVariable(LangParser.DeclareIntGlobalVariableContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code declareStringGlobalVariable}
+	 * labeled alternative in {@link LangParser#varGlobalDecl}.
+	 * @param ctx the parse tree
+	 */
+	void enterDeclareStringGlobalVariable(LangParser.DeclareStringGlobalVariableContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code declareStringGlobalVariable}
+	 * labeled alternative in {@link LangParser#varGlobalDecl}.
+	 * @param ctx the parse tree
+	 */
+	void exitDeclareStringGlobalVariable(LangParser.DeclareStringGlobalVariableContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code declareIntVariable}
 	 * labeled alternative in {@link LangParser#varDecl}.
 	 * @param ctx the parse tree
@@ -330,6 +354,26 @@ public interface LangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitMultipleCondition(LangParser.MultipleConditionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link LangParser#nCondition}.
+	 * @param ctx the parse tree
+	 */
+	void enterNCondition(LangParser.NConditionContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LangParser#nCondition}.
+	 * @param ctx the parse tree
+	 */
+	void exitNCondition(LangParser.NConditionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link LangParser#nConditionMore}.
+	 * @param ctx the parse tree
+	 */
+	void enterNConditionMore(LangParser.NConditionMoreContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LangParser#nConditionMore}.
+	 * @param ctx the parse tree
+	 */
+	void exitNConditionMore(LangParser.NConditionMoreContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code intParamMethodDecl}
 	 * labeled alternative in {@link LangParser#methodDeclParams}.

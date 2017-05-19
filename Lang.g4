@@ -1,8 +1,7 @@
 grammar Lang;
-prog:'#'className=nameClass 'BEGIN' expression* runMethod 'END';
+prog:'#'className=nameClass 'BEGIN' varGlobalDecl* expression* runMethod 'END';
 
-expression: varDecl
-|methodDecl
+expression: methodDecl
 |varMod
 |mathExpr
 ;
@@ -16,9 +15,13 @@ nonGlobalExpr:ifStm
             |callMethodExpr
             ;
 
+//variable global declarations
+varGlobalDecl:(isGlobal='global') '~int' identifier=variableName 'IS' value=mathExpr ';'         #declareIntGlobalVariable|
+(isGlobal='global') '~string' identifier=variableName 'IS' value=stringvalues ';'          #declareStringGlobalVariable;
+
 //variable declarations
-varDecl:(isGlobal='global')? '~int' identifier=variableName 'IS' value=mathExpr ';'         #declareIntVariable|
-(isGlobal='global')? '~string' identifier=variableName 'IS' value=stringvalues ';'          #declareStringVariable;
+varDecl:'~int' identifier=variableName 'IS' value=mathExpr ';'         #declareIntVariable|
+'~string' identifier=variableName 'IS' value=stringvalues ';'          #declareStringVariable;
 
 //variable modifications
 varMod: identifier=variableName 'IS' value=mathExpr';'              #intVarModify

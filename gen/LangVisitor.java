@@ -28,6 +28,20 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNonGlobalExpr(LangParser.NonGlobalExprContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code declareIntGlobalVariable}
+	 * labeled alternative in {@link LangParser#varGlobalDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeclareIntGlobalVariable(LangParser.DeclareIntGlobalVariableContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code declareStringGlobalVariable}
+	 * labeled alternative in {@link LangParser#varGlobalDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeclareStringGlobalVariable(LangParser.DeclareStringGlobalVariableContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code declareIntVariable}
 	 * labeled alternative in {@link LangParser#varDecl}.
 	 * @param ctx the parse tree
@@ -200,6 +214,18 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitMultipleCondition(LangParser.MultipleConditionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link LangParser#nCondition}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNCondition(LangParser.NConditionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link LangParser#nConditionMore}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNConditionMore(LangParser.NConditionMoreContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code intParamMethodDecl}
 	 * labeled alternative in {@link LangParser#methodDeclParams}.

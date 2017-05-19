@@ -16,6 +16,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     private int forStmCounter = 0;
     private int conditionCounter = 0;
     private ArrayList<String> ifLabels = new ArrayList<>();
+    private ArrayList<String> globalDeclarations = new ArrayList<>();
 
     private boolean isOr;
 
@@ -36,11 +37,17 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         code.add(".class public " + className);
         code.add(".super java/lang/Object");
         code.add("\n");
-        code.add(".method public <init>()V\n" +
-                "\taload_0\n" +
-                "\tinvokespecial java/lang/Object/<init>()V\n" +
-                "\treturn\n" +
-                ".end method");
+        if (ctx.varGlobalDecl().size() > 0) {
+            for (int i = 0; i < ctx.varGlobalDecl().size(); i++) {
+                code.addAll(visit(ctx.varGlobalDecl(i)));
+            }
+        }
+        code.add(".method public <init>()V");
+        code.add("aload_0");
+        code.add("invokespecial java/lang/Object/<init>()V");
+        code.addAll(globalDeclarations);
+        code.add("return");
+        code.add(".end method");
         code.add("\n");
         code.add(".method public static main([Ljava/lang/String;)V");
         code.add(".limit stack 99");
@@ -63,7 +70,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     //declare main method
     @Override
     public ArrayList<String> visitRunMethod(LangParser.RunMethodContext ctx) {
-        currentMethodFrame = new MethodFrame();
+        currentMethodFrame = new MethodFrame(globalFrame);
         ArrayList<String> code = new ArrayList<>();
         code.add(".method public run()V");
         code.add(".limit stack 99");
@@ -87,52 +94,58 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         return code;
     }
 
+    //global variable declarations
+
+
+    @Override
+    public ArrayList<String> visitDeclareIntGlobalVariable(LangParser.DeclareIntGlobalVariableContext ctx) {
+        ArrayList<String> code = new ArrayList<>();
+        String identifier = ctx.identifier.getText();
+
+        globalFrame.declareGlobalJasminVariable(identifier, className + "/" + identifier + " " + "I");
+        globalDeclarations.add("aload 0");
+        globalDeclarations.addAll(visit(ctx.mathExpr()));
+        globalDeclarations.add("putfield " + className + "/" + identifier + " " + "I");
+
+        code.add(".field " + identifier + " I");
+
+        return code;
+    }
+
+    @Override
+    public ArrayList<String> visitDeclareStringGlobalVariable(LangParser.DeclareStringGlobalVariableContext ctx) {
+        ArrayList<String> code = new ArrayList<>();
+        String identifier = ctx.identifier.getText();
+
+        globalFrame.declareGlobalJasminVariable(identifier, className + "/" + identifier + " " + "I");
+        globalDeclarations.add("aload 0");
+        globalDeclarations.addAll(visit(ctx.stringvalues()));
+        globalDeclarations.add("putfield " + className + "/" + identifier + " " + "Ljava/lang/String;");
+
+        code.add(".field " + identifier + " Ljava/lang/String;");
+
+        return code;
+    }
 
     //variable declarations
     @Override
     public ArrayList<String> visitDeclareIntVariable(LangParser.DeclareIntVariableContext ctx) {
         ArrayList<String> code = new ArrayList<>();
-        String globalizer = null;
-        try {
-            globalizer = ctx.isGlobal.getText();
-        } catch (NullPointerException npe) {
-
-        }
-
         String identifier = ctx.identifier.getText();
-        if (globalizer != null) {
-            globalFrame.declareJasminPosition(identifier, globalFrame.getJasminPosition().size());
-            code.addAll(visit(ctx.mathExpr()));
-            code.add("istore " + globalFrame.getJasminPosition().size());
-        } else {
-            currentMethodFrame.declareJasminPosition(identifier, currentMethodFrame.getJasminPosition().size());
-            code.addAll(visit(ctx.mathExpr()));
-            code.add("istore " + (currentMethodFrame.getJasminPosition().size() - 1));
+        currentMethodFrame.declareJasminPosition(identifier, currentMethodFrame.getJasminPosition().size());
+        code.addAll(visit(ctx.mathExpr()));
+        code.add("istore " + (currentMethodFrame.getJasminPosition().size() - 1));
 
-        }
         return code;
     }
 
     @Override
     public ArrayList<String> visitDeclareStringVariable(LangParser.DeclareStringVariableContext ctx) {
         ArrayList<String> code = new ArrayList<>();
-        String globalizer = null;
-        try {
-            globalizer = ctx.isGlobal.getText();
-        } catch (NullPointerException npe) {
-
-        }
-
         String identifier = ctx.identifier.getText();
-        if (globalizer != null) {
-            globalFrame.declareJasminPosition(identifier, globalFrame.getJasminPosition().size());
-            code.addAll(visit(ctx.stringvalues()));
-            code.add("astore " + globalFrame.getJasminPosition().size());
-        } else {
-            currentMethodFrame.declareJasminPosition(identifier, currentMethodFrame.getJasminPosition().size());
-            code.addAll(visit(ctx.stringvalues()));
-            code.add("astore " + currentMethodFrame.getJasminPosition().size());
-        }
+        currentMethodFrame.declareJasminPosition(identifier, currentMethodFrame.getJasminPosition().size());
+        code.addAll(visit(ctx.stringvalues()));
+        code.add("astore " + currentMethodFrame.getJasminPosition().size());
         return code;
     }
 
@@ -140,28 +153,41 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     @Override
     public ArrayList<String> visitIntVarModify(LangParser.IntVarModifyContext ctx) {
         ArrayList<String> code = new ArrayList<>();
-        code.add("iload " + currentMethodFrame.getJasminPosition().size());
-        currentMethodFrame.declareJasminPosition(ctx.identifier.getText(), currentMethodFrame.getJasminPosition().size());      //create new position
-        code.addAll(visit(ctx.mathExpr()));
-        code.add("istore " + currentMethodFrame.getJasminPosition().size());
-        return code;
+        if(globalFrame.lookupGlobalCode(ctx.identifier.getText()).isEmpty()) {
+            code.add("iload " + currentMethodFrame.getJasminPosition().size());
+            currentMethodFrame.declareJasminPosition(ctx.identifier.getText(), currentMethodFrame.getJasminPosition().size());      //create new position
+            code.addAll(visit(ctx.mathExpr()));
+            code.add("istore " + currentMethodFrame.getJasminPosition().size());
+            return code;
+        } else {
+            code.add("aload 0");
+            code.addAll(visit(ctx.mathExpr()));
+            code.add("putfield" + className + "/" + ctx.identifier.getText() + " I");
+            return code;
+        }
     }
 
     @Override
     public ArrayList<String> visitStringVarModify(LangParser.StringVarModifyContext ctx) {
         ArrayList<String> code = new ArrayList<>();
-        code.add("iload " + currentMethodFrame.getJasminPosition().size());
-        currentMethodFrame.declareJasminPosition(ctx.identifier.getText(), currentMethodFrame.getJasminPosition().size());      //create new position
-        code.addAll(visit(ctx.stringvalues()));
-        code.add("Strstore " + currentMethodFrame.getJasminPosition().size());
-        return code;
+        if(globalFrame.lookupGlobalCode(ctx.identifier.getText()).isEmpty()) {
+            code.add("aload " + currentMethodFrame.getJasminPosition().size());
+            currentMethodFrame.declareJasminPosition(ctx.identifier.getText(), currentMethodFrame.getJasminPosition().size());      //create new position
+            code.addAll(visit(ctx.stringvalues()));
+            code.add("astore " + currentMethodFrame.getJasminPosition().size());
+            return code;
+        } else {
+            code.add("aload 0");
+            code.addAll(visit(ctx.stringvalues()));
+            code.add("putfield" + className + "/" + ctx.identifier.getText() + " Ljava/lang/String;");
+            return code;
+        }
     }
 
     //method declarations
-
     @Override
     public ArrayList<String> visitVoidMethodDecl(LangParser.VoidMethodDeclContext ctx) {
-        currentMethodFrame = new MethodFrame();
+        currentMethodFrame = new MethodFrame(globalFrame);
         currentMethodFrame.getJasminPosition().put("placeholder", "0");
         ArrayList<String> code = new ArrayList<>();
         ArrayList<String> paramTypes = new ArrayList<>();
@@ -215,7 +241,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
     @Override
     public ArrayList<String> visitIntMethodDecl(LangParser.IntMethodDeclContext ctx) {
-        currentMethodFrame = new MethodFrame();
+        currentMethodFrame = new MethodFrame(globalFrame);
         ArrayList<String> code = new ArrayList<>();
         ArrayList<String> paramTypes = new ArrayList<>();
         currentMethod = ctx.methodIdentifier.getText();
@@ -267,7 +293,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
     @Override
     public ArrayList<String> visitStringMethodDecl(LangParser.StringMethodDeclContext ctx) {
-        currentMethodFrame = new MethodFrame();
+        currentMethodFrame = new MethodFrame(globalFrame);
         ArrayList<String> code = new ArrayList<>();
         ArrayList<String> paramTypes = new ArrayList<>();
         currentMethod = ctx.methodIdentifier.getText();
@@ -492,7 +518,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
             code.addAll(visit(ctx.mathComparison().mathExpr(i)));
         }
 
-        if(ctx.nConditionMore().size()>0){
+        if (ctx.nConditionMore().size() > 0) {
             ArrayList<String> labels = new ArrayList<>();
             for(int i =0; i<ctx.nConditionMore().size();i++){
                 if(i<ctx.nConditionMore().size()-1&&ctx.nConditionMore(i).andOR.getText().equals("&&")&&ctx.nConditionMore(i+1).andOR.getText().equals("||")) {
@@ -501,7 +527,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                     labels.add(ifLabels.get(conditionCounter));
                 }
             }
-            for(int i=0;i<ctx.nConditionMore().size();i++) {
+            for (int i = 0; i < ctx.nConditionMore().size(); i++) {
                 String currentAndOr = ctx.nConditionMore(i).andOR.getText();
                 String cop = ctx.nConditionMore(i).mathComparison().lop.getText();
 
@@ -607,11 +633,11 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                         code.set(code.size() - 1, code.get(code.size() - 1) + " " + ifStmCounter+"_"+ "code_block_" + conditionCounter);
                     }
 
-                }else{
-                    if (i < ctx.nConditionMore().size()-1) {
+                } else {
+                    if (i < ctx.nConditionMore().size() - 1) {
                         String nextAndOr = ctx.nConditionMore(i + 1).andOR.getText();
-                        if(currentAndOr.equals("&&")&&nextAndOr.equals("&&")){
-                            if(i==0) {
+                        if (currentAndOr.equals("&&") && nextAndOr.equals("&&")) {
+                            if (i == 0) {
                                 switch (lop) {
                                     case "==":
                                         code.add("if_icmpne");
@@ -663,8 +689,8 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
                             code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.get(0));
 
-                        }else if(currentAndOr.equals("&&")&&nextAndOr.equals("||")){
-                            if(i==0) {
+                        } else if (currentAndOr.equals("&&") && nextAndOr.equals("||")) {
+                            if (i == 0) {
                                 switch (lop) {
                                     case "==":
                                         code.add("if_icmpne");
@@ -718,8 +744,8 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                             code.add(labels.get(0)+":");
                             labels.remove(0);
 
-                        }else if(currentAndOr.equals("||")&&nextAndOr.equals("||")){
-                            if(i==0) {
+                        } else if (currentAndOr.equals("||") && nextAndOr.equals("||")) {
+                            if (i == 0) {
                                 switch (lop) {
                                     case "==":
                                         code.add("if_icmpeq");
@@ -771,8 +797,8 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
                             code.set(code.size() - 1, code.get(code.size() - 1) + " " + ifStmCounter+"_"+ "code_block_"+conditionCounter);
 
-                        }else if(currentAndOr.equals("||")&&nextAndOr.equals("&&")){
-                            if(i==0) {
+                        } else if (currentAndOr.equals("||") && nextAndOr.equals("&&")) {
+                            if (i == 0) {
                                 switch (lop) {
                                     case "==":
                                         code.add("if_icmpeq");
@@ -826,7 +852,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
 
                         }
-                    }else if(i == ctx.nConditionMore().size()-1){
+                    } else if (i == ctx.nConditionMore().size() - 1) {
                         for (int y = 0; y < ctx.nConditionMore(i).mathComparison().mathExpr().size(); y++) {
                             code.addAll(visit(ctx.nConditionMore(i).mathComparison().mathExpr(y)));
                         }
@@ -859,7 +885,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                 }
             }
 
-        }else {
+        } else {
             switch (lop) {
                 case "==":
                     code.add("if_icmpne");
@@ -881,7 +907,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                     break;
             }
 
-            code.set(code.size()-1,code.get(code.size()-1)+" "+ifLabels.get(conditionCounter));
+            code.set(code.size() - 1, code.get(code.size() - 1) + " " + ifLabels.get(conditionCounter));
 
         }
 
@@ -990,7 +1016,12 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     @Override
     public ArrayList<String> visitStringVariable(LangParser.StringVariableContext ctx) {
         ArrayList<String> code = new ArrayList<>();
-        code.add("aload " + currentMethodFrame.lookupJasminPosition(ctx.getText()));
+        if(globalFrame.lookupGlobalCode(ctx.getText()).isEmpty()) {
+            code.add("aload " + currentMethodFrame.lookupJasminPosition(ctx.getText()));
+        } else {
+            code.add("aload 0");
+            code.add("getfield" + globalFrame.lookupGlobalCode(ctx.getText()));
+        }
         return code;
     }
 
@@ -1028,7 +1059,12 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     @Override
     public ArrayList<String> visitIntvariable(LangParser.IntvariableContext ctx) {
         ArrayList<String> code = new ArrayList<>();
-        code.add("iload " + currentMethodFrame.lookupJasminPosition(ctx.getText()));
+        if(globalFrame.lookupGlobalCode(ctx.getText()).isEmpty()) {
+            code.add("iload " + currentMethodFrame.lookupJasminPosition(ctx.getText()));
+        } else {
+            code.add("aload 0");
+            code.add("getfield" + globalFrame.lookupGlobalCode(ctx.getText()));
+        }
         return code;
     }
 
