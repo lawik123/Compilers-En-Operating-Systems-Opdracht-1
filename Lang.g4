@@ -37,8 +37,8 @@ callMethodExpr: '('(methodCallParams (',' methodCallParams)*)?')'methodIdentifie
 
 //statements
 ifStm:'if' '(' nCondition ')' opener ifBlock=nonGlobalExpr* closer (('?' '(' nCondition ')' opener ifElseBlock=nonGlobalExpr* closer)* ('?' opener elseBlock=nonGlobalExpr* closer)?)?;
-whileStm: 'REPEAT' opener nonGlobalExpr* closer 'UNTIL' '(' condition ')';
-forStm: 'for' '(' varDecl condition ';' idCrement=IDcrement '(' idValue=variableName ')' ')' opener nonGlobalExpr* closer;
+whileStm: 'REPEAT' opener nonGlobalExpr* closer 'UNTIL' '(' nCondition ')';
+forStm: 'for' '(' varDecl nCondition ';' idCrement=IDcrement '(' idValue=variableName ')' ')' opener nonGlobalExpr* closer;
 
 //user input/output
 writeExpr: 'WRITE(' (writevalues) ( '+' writevalues)* ');';
@@ -61,11 +61,7 @@ mathExpr: '(' mathExpr ')'                                                      
 
 //condition form
 mathComparison: identifierLeft=mathExpr lop=LOP identifierRight=mathExpr;
-condition: '(' condition ')'                                                #parenthesisCondtion
-| leftCondition=condition andOR=('||' | '&&') rightCondtion=condition       #multipleCondition
-| mathComparison
 
-                                                        #conditionValue;
 
 nCondition: first=mathComparison more=nConditionMore*;
 nConditionMore: (andOR=('||' | '&&') mathComparison);
