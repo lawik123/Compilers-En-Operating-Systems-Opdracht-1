@@ -39,9 +39,9 @@ runMethod: '~void' '()run'  opener nonGlobalExpr* 'return;' closer;
 callMethodExpr: '('(methodCallParams (',' methodCallParams)*)?')'methodIdentifier=methodName ';';
 
 //statements
-ifStm:'if' '(' nCondition ')' opener ifBlock=nonGlobalExpr* closer (('?' '(' nCondition ')' opener ifElseBlock=nonGlobalExpr* closer)* ('?' opener elseBlock=nonGlobalExpr* closer)?)?;
-whileStm: 'REPEAT' opener nonGlobalExpr* closer 'UNTIL' '(' nCondition ')';
-forStm: 'for' '(' varDecl nCondition ';' idCrement=IDcrement '(' idValue=variableName ')' ')' opener nonGlobalExpr* closer;
+ifStm:'if' '(' ifCondition ')' opener ifBlock=nonGlobalExpr* closer (('?' '(' ifCondition ')' opener ifElseBlock=nonGlobalExpr* closer)* ('?' opener elseBlock=nonGlobalExpr* closer)?)?;
+whileStm: 'REPEAT' opener nonGlobalExpr* closer 'UNTIL' '(' ifCondition ')';
+forStm: 'for' '(' varDecl forCondition ';' idCrement=IDcrement '(' idValue=variableName ')' ')' opener nonGlobalExpr* closer;
 
 //user input/output
 writeExpr: 'WRITE(' (writevalues) ( '+' writevalues)* ');';
@@ -66,8 +66,12 @@ mathExpr: '(' mathExpr ')'                                                      
 mathComparison: identifierLeft=mathExpr lop=LOP identifierRight=mathExpr;
 
 
-nCondition: first=mathComparison more=nConditionMore*;
-nConditionMore: (andOR=('||' | '&&') mathComparison);
+ifCondition: first=mathComparison more=ifConditionMore*;
+ifConditionMore: (andOR=('||' | '&&') mathComparison);
+
+forCondition: first=mathComparison more=forConditionMore*;
+forConditionMore: (andOR=('||' | '&&') mathComparison);
+
 //parameters
 methodDeclParams: intParam          #intParamMethodDecl
 | stringParam                       #stringParamMethodDecl;
