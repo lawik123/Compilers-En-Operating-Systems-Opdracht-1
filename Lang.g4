@@ -1,8 +1,7 @@
 grammar Lang;
-prog:'#'className=nameClass 'BEGIN' expression* runMethod 'END';
+prog:'#'className=nameClass 'BEGIN' varGlobalDecl* expression* runMethod 'END';
 
-expression: varDecl
-|methodDecl
+expression: methodDecl
 |varMod
 |mathExpr
 ;
@@ -16,9 +15,13 @@ nonGlobalExpr:ifStm
             |callMethodExpr
             ;
 
+//variable global declarations
+varGlobalDecl:(isGlobal='global') '~int' identifier=variableName 'IS' value=mathExpr ';'         #declareIntGlobalVariable|
+(isGlobal='global') '~string' identifier=variableName 'IS' value=stringvalues ';'          #declareStringGlobalVariable;
+
 //variable declarations
-varDecl:(isGlobal='global')? '~int' identifier=variableName 'IS' value=mathExpr ';'         #declareIntVariable|
-(isGlobal='global')? '~string' identifier=variableName 'IS' value=stringvalues ';'          #declareStringVariable;
+varDecl:'~int' identifier=variableName 'IS' value=mathExpr ';'         #declareIntVariable|
+'~string' identifier=variableName 'IS' value=stringvalues ';'          #declareStringVariable;
 
 //variable modifications
 varMod: identifier=variableName 'IS' value=mathExpr';'              #intVarModify
@@ -36,9 +39,9 @@ runMethod: '~void' '()run'  opener nonGlobalExpr* 'return;' closer;
 callMethodExpr: '('(methodCallParams (',' methodCallParams)*)?')'methodIdentifier=methodName ';';
 
 //statements
-ifStm:'if' '(' nCondition ')' opener ifBlock=nonGlobalExpr* closer (('?' '(' nCondition ')' opener ifElseBlock=nonGlobalExpr* closer)* ('?' opener elseBlock=nonGlobalExpr* closer)?)?;
-whileStm: 'REPEAT' opener nonGlobalExpr* closer 'UNTIL' '(' condition ')';
-forStm: 'for' '(' varDecl condition ';' idCrement=IDcrement '(' idValue=variableName ')' ')' opener nonGlobalExpr* closer;
+ifStm:'if' '(' ifCondition ')' opener ifBlock=nonGlobalExpr* closer (('?' '(' ifCondition ')' opener ifElseBlock=nonGlobalExpr* closer)* ('?' opener elseBlock=nonGlobalExpr* closer)?)?;
+whileStm: 'REPEAT' opener nonGlobalExpr* closer 'UNTIL' '(' ifCondition ')';
+forStm: 'for' '(' varDecl forCondition ';' idCrement=IDcrement '(' idValue=variableName ')' ')' opener nonGlobalExpr* closer;
 
 //user input/output
 writeExpr: 'WRITE(' (writevalues) ( '+' writevalues)* ');';
@@ -61,14 +64,14 @@ mathExpr: '(' mathExpr ')'                                                      
 
 //condition form
 mathComparison: identifierLeft=mathExpr lop=LOP identifierRight=mathExpr;
-condition: '(' condition ')'                                                #parenthesisCondtion
-| leftCondition=condition andOR=('||' | '&&') rightCondtion=condition       #multipleCondition
-| mathComparison
 
-                                                        #conditionValue;
 
-nCondition: first=mathComparison more=nConditionMore*;
-nConditionMore: (andOR=('||' | '&&') mathComparison);
+ifCondition: first=mathComparison more=ifConditionMore*;
+ifConditionMore: (andOR=('||' | '&&') mathComparison);
+
+forCondition: first=mathComparison more=forConditionMore*;
+forConditionMore: (andOR=('||' | '&&') mathComparison);
+
 //parameters
 methodDeclParams: intParam          #intParamMethodDecl
 | stringParam                       #stringParamMethodDecl;

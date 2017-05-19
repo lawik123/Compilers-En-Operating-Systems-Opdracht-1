@@ -51,6 +51,30 @@ public class LangBaseListener implements LangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterDeclareIntGlobalVariable(LangParser.DeclareIntGlobalVariableContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDeclareIntGlobalVariable(LangParser.DeclareIntGlobalVariableContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDeclareStringGlobalVariable(LangParser.DeclareStringGlobalVariableContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDeclareStringGlobalVariable(LangParser.DeclareStringGlobalVariableContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterDeclareIntVariable(LangParser.DeclareIntVariableContext ctx) { }
 	/**
 	 * {@inheritDoc}

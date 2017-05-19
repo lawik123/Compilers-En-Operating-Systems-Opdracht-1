@@ -6,10 +6,14 @@ import java.util.Map;
  */
 public class Scope {
 
+    //attributes
     private Scope parentScope = null;
     private Map<String, Symbol> symbolTable;
 
-
+    /**
+     * constructor for a scope
+     * @param parentScope the scope where the new made scope is a child of.
+     */
     public Scope(Scope parentScope) {
         this.parentScope = parentScope;
         this.symbolTable = new HashMap<String, Symbol>();
@@ -23,6 +27,12 @@ public class Scope {
         this.symbolTable = new HashMap<String, Symbol>();
     }
 
+    /**
+     * method for declaration of a variable
+     * @param key the name of the variable
+     * @param dataType the type of the variable
+     * @return the symbol which contains the new made variable
+     */
     public Symbol declareVariable(String key, DataType dataType) {
         Symbol var = lookupVariable(key);
         if (var == null) {
@@ -37,6 +47,12 @@ public class Scope {
     }
 
 
+    /**
+     * method for declaration of a method
+     * @param key the name of the method
+     * @param newM the type of the method
+     * @return the created symbol which contains the new made method
+     */
     public Symbol declareMethod(String key, MethodType newM) {
 
         Symbol newMethod = new Symbol(key, newM);
@@ -48,9 +64,8 @@ public class Scope {
 
     /**
      * looks up a variable within the Scope and all his parentscopes
-     *
-     * @param key
-     * @return
+     * @param key the name of the value
+     * @return the Symbol which contains the variable
      */
     public Symbol lookupVariable(String key) {
         Symbol variable = symbolTable.get(key);
@@ -69,7 +84,11 @@ public class Scope {
     }
 
 
-
+    /**
+     * lookup the method by name
+     * @param key the name of the method
+     * @return the Symbol which contains the method
+     */
     public Symbol lookupMethod(String key) {
         return symbolTable.get(key);
     }
@@ -84,7 +103,6 @@ public class Scope {
 
 
     //Getters
-
     private Scope getParentScope() {
         return parentScope;
     }

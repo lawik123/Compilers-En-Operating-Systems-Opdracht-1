@@ -1,35 +1,21 @@
-#test BEGIN
+#Test BEGIN
 
-global ~int a IS 2;
-global ~string b IS "hallo";
 
-~void ()newMethod /
-REPEAT /
+~void (~int a)newMethod /
+
 for(~int x IS 1; x < 10; incr(x)) /
-~string read IS READSTRING;
+WRITE("pietje");
 \
-\UNTIL(1 < 2)
 
-
-for(~int y IS 2; y < 20; incr(x)) /
-a IS y * 2;
-\
 return;
 \
 
-~int ()run /
-~int c IS 6;
-a IS 6;
+~void ()run /
+~int a IS 5;
+(a)newMethod;
+WRITE("pietje");
 
-if(1<2) /
-c IS 4;
-\ ? (a < c) /
-()newMethod;
-\ ? /
-WRITE(b);
-\
-
-return 1;
+return;
 \
 
 END

@@ -28,6 +28,20 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNonGlobalExpr(LangParser.NonGlobalExprContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code declareIntGlobalVariable}
+	 * labeled alternative in {@link LangParser#varGlobalDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeclareIntGlobalVariable(LangParser.DeclareIntGlobalVariableContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code declareStringGlobalVariable}
+	 * labeled alternative in {@link LangParser#varGlobalDecl}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDeclareStringGlobalVariable(LangParser.DeclareStringGlobalVariableContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code declareIntVariable}
 	 * labeled alternative in {@link LangParser#varDecl}.
 	 * @param ctx the parse tree
