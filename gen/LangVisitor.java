@@ -194,38 +194,29 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMathComparison(LangParser.MathComparisonContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code conditionValue}
-	 * labeled alternative in {@link LangParser#condition}.
+	 * Visit a parse tree produced by {@link LangParser#ifCondition}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitConditionValue(LangParser.ConditionValueContext ctx);
+	T visitIfCondition(LangParser.IfConditionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code parenthesisCondtion}
-	 * labeled alternative in {@link LangParser#condition}.
+	 * Visit a parse tree produced by {@link LangParser#ifConditionMore}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitParenthesisCondtion(LangParser.ParenthesisCondtionContext ctx);
+	T visitIfConditionMore(LangParser.IfConditionMoreContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code multipleCondition}
-	 * labeled alternative in {@link LangParser#condition}.
+	 * Visit a parse tree produced by {@link LangParser#forCondition}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitMultipleCondition(LangParser.MultipleConditionContext ctx);
+	T visitForCondition(LangParser.ForConditionContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link LangParser#nCondition}.
+	 * Visit a parse tree produced by {@link LangParser#forConditionMore}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitNCondition(LangParser.NConditionContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link LangParser#nConditionMore}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitNConditionMore(LangParser.NConditionMoreContext ctx);
+	T visitForConditionMore(LangParser.ForConditionMoreContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code intParamMethodDecl}
 	 * labeled alternative in {@link LangParser#methodDeclParams}.

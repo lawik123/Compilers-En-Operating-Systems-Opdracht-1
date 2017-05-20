@@ -351,61 +351,49 @@ public class LangBaseListener implements LangListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterConditionValue(LangParser.ConditionValueContext ctx) { }
+	@Override public void enterIfCondition(LangParser.IfConditionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitConditionValue(LangParser.ConditionValueContext ctx) { }
+	@Override public void exitIfCondition(LangParser.IfConditionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterParenthesisCondtion(LangParser.ParenthesisCondtionContext ctx) { }
+	@Override public void enterIfConditionMore(LangParser.IfConditionMoreContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitParenthesisCondtion(LangParser.ParenthesisCondtionContext ctx) { }
+	@Override public void exitIfConditionMore(LangParser.IfConditionMoreContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterMultipleCondition(LangParser.MultipleConditionContext ctx) { }
+	@Override public void enterForCondition(LangParser.ForConditionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitMultipleCondition(LangParser.MultipleConditionContext ctx) { }
+	@Override public void exitForCondition(LangParser.ForConditionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterNCondition(LangParser.NConditionContext ctx) { }
+	@Override public void enterForConditionMore(LangParser.ForConditionMoreContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitNCondition(LangParser.NConditionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterNConditionMore(LangParser.NConditionMoreContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitNConditionMore(LangParser.NConditionMoreContext ctx) { }
+	@Override public void exitForConditionMore(LangParser.ForConditionMoreContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

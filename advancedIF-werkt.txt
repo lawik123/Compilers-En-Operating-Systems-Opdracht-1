@@ -1,0 +1,16 @@
+#Test BEGIN
+
+~void ()run /
+    ~int a IS 2;
+    ~int b IS a + 2;
+    if(a > b && b == 4 || a == 2 && b != 4) /
+    WRITE(b);
+    \ ?(b != 4) /
+    WRITE(a);
+    \ ? /
+    WRITE("pietje" + a + b);
+    \
+    return;
+\
+
+END
