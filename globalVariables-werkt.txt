@@ -22,12 +22,12 @@
 
 ~void ()myMethod /
     ()method2;
+    WRITE(helloWorld);
     return;
 \
 
 ~void ()run /
     ()myMethod;
-    WRITE(helloWorld);
     return;
 \
 

@@ -7,25 +7,29 @@ import java.util.Map;
 public class MethodFrame {
     //attributes
     private Map<String, String> jasminPosition;
+    private Map<String, String> variableTypes;
     private Map<String, String> jasminGlobalcode;
     private MethodFrame globalFrame;
 
     public MethodFrame(MethodFrame globalFrame) {
         this.jasminPosition = new HashMap<String, String>();
         this.globalFrame = globalFrame;
+        this.variableTypes = new HashMap<String, String>();
     }
 
     public MethodFrame() {
         this.jasminGlobalcode = new HashMap<String, String>();
+        this.variableTypes = new HashMap<String, String>();
     }
 
-    public void declareJasminPosition(String key, int position) {
+    public void declareJasminPosition(String key, int position, String type) {
         jasminPosition.put(key, String.valueOf(position));
+        variableTypes.put(key, type);
     }
 
-    public void declareGlobalJasminVariable(String key, String jasmincode) {
+    public void declareGlobalJasminVariable(String key, String jasmincode, String type) {
         jasminGlobalcode.put(key, jasmincode);
-
+        variableTypes.put(key, type);
     }
 
     public String lookupJasminPosition(String key) {
@@ -39,6 +43,21 @@ public class MethodFrame {
     public String lookupGlobalCode(String key) {
         if(jasminGlobalcode.containsKey(key)){
             return jasminGlobalcode.get(key);
+        }
+        return "";
+    }
+
+    public String lookupType(String key) {
+        if(variableTypes.containsKey(key)) {
+            return variableTypes.get(key);
+        } else {
+            return globalFrame.lookupGlobalType(key);
+        }
+    }
+
+    public String lookupGlobalType(String key) {
+        if(variableTypes.containsKey(key)) {
+            return variableTypes.get(key);
         }
         return "";
     }
