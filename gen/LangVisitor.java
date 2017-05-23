@@ -200,6 +200,13 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAddSubstractExpression(LangParser.AddSubstractExpressionContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code restExpression}
+	 * labeled alternative in {@link LangParser#mathExpr}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitRestExpression(LangParser.RestExpressionContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link LangParser#mathComparison}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -333,6 +340,13 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitStringRead(LangParser.StringReadContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code stringCallMethod}
+	 * labeled alternative in {@link LangParser#stringvalues}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStringCallMethod(LangParser.StringCallMethodContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code intvariable}
 	 * labeled alternative in {@link LangParser#mathvalues}.
 	 * @param ctx the parse tree
@@ -353,6 +367,13 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitIntread(LangParser.IntreadContext ctx);
+	/**
+	 * Visit a parse tree produced by the {@code intCallMethod}
+	 * labeled alternative in {@link LangParser#mathvalues}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIntCallMethod(LangParser.IntCallMethodContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link LangParser#opener}.
 	 * @param ctx the parse tree

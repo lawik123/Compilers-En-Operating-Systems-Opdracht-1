@@ -60,6 +60,7 @@ mathExpr: '(' mathExpr ')'                                                      
                     | '-' mathExpr                                                       #minusFirstMathExpression
                     |	leftExpr=mathExpr	op=('*'	|	':')	rightExpr=mathExpr       #multiplyDivideExpression
                     |	leftExpr=mathExpr	op=('+'	|	'-')	rightExpr=mathExpr       #addSubstractExpression
+                    |	leftExpr=mathExpr	op='%'	rightExpr=mathExpr                   #restExpression
           		    |   value=mathvalues                                                 #mathValuesExpression
            			;
 
@@ -100,11 +101,13 @@ variableName: STRING;
 //values
 stringvalues: STRINGVALUE           #stringLiteral
 | variableName                      #stringVariable
-| readStringExpr                    #stringRead;
+| readStringExpr                    #stringRead
+| callMethodExpr                    #stringCallMethod;
 
 mathvalues:  variableName           #intvariable
 |INT                                #intlitteral
-| readIntExpr                       #intread;
+| readIntExpr                       #intread
+|callMethodExpr                     #intCallMethod;
 
 //openers and closers
 opener: '/';

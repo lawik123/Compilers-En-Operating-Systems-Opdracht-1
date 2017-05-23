@@ -15,48 +15,50 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
     @Override
     public DataType visitProg(LangParser.ProgContext ctx) {
         globalScope = new Scope();
-        for (int i = 0; i < ctx.methodnames().getChildCount(); i++) {
-            String[] split = ctx.methodnames().getChild(i).getText().split("/");
-            String[] split2 = split[0].split("\\)");
-            String[] split3 = split[0].split("\\(");
-            Symbol lookUpMethod = globalScope.lookupMethod(split2[1]);
-            if (lookUpMethod == null) {
-                MethodType newMethod = null;
-                switch (split3[0]) {
-                    case "~void":
-                        newMethod = new MethodType(DataType.VOID);
-                        break;
-                    case "~int":
-                        newMethod = new MethodType(DataType.INT);
-                        break;
-                    case "~string":
-                        newMethod = new MethodType(DataType.STRING);
-                        break;
-                }
-                try {
-                    String child = "";
-                    int counter = 2;
-                    while (!child.equals(")")) {
-                        child = ctx.methodnames().getChild(i).getChild(counter).getText();
-                        if (!child.equals(",")) {
-                            if (child.contains("~int")) {
-
-                                newMethod.addParameter(DataType.INT);
-                            } else if (child.contains("~string")) {
-                                newMethod.addParameter(DataType.STRING);
-                            }
-                        }
-                        counter++;
+        if(ctx.methodnames()!=null) {
+            for (int i = 0; i < ctx.methodnames().getChildCount(); i++) {
+                String[] split = ctx.methodnames().getChild(i).getText().split("/");
+                String[] split2 = split[0].split("\\)");
+                String[] split3 = split[0].split("\\(");
+                Symbol lookUpMethod = globalScope.lookupMethod(split2[1]);
+                if (lookUpMethod == null) {
+                    MethodType newMethod = null;
+                    switch (split3[0]) {
+                        case "~void":
+                            newMethod = new MethodType(DataType.VOID);
+                            break;
+                        case "~int":
+                            newMethod = new MethodType(DataType.INT);
+                            break;
+                        case "~string":
+                            newMethod = new MethodType(DataType.STRING);
+                            break;
                     }
+                    try {
+                        String child = "";
+                        int counter = 2;
+                        while (!child.equals(")")) {
+                            child = ctx.methodnames().getChild(i).getChild(counter).getText();
+                            if (!child.equals(",")) {
+                                if (child.contains("~int")) {
 
-                } catch (NullPointerException npe) {
+                                    newMethod.addParameter(DataType.INT);
+                                } else if (child.contains("~string")) {
+                                    newMethod.addParameter(DataType.STRING);
+                                }
+                            }
+                            counter++;
+                        }
 
+                    } catch (NullPointerException npe) {
+
+                    }
+                    globalScope.declareMethod(split2[1], newMethod);
+                } else {
+                    throw new EvaluateException("Method already exists");
                 }
-                globalScope.declareMethod(split2[1], newMethod);
-            } else {
-                throw new EvaluateException("Method already exists");
-            }
 
+            }
         }
         return super.visitProg(ctx);
     }
@@ -317,6 +319,17 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
     }
 
     //mathExpression visitors
+
+    @Override
+    public DataType visitRestExpression(LangParser.RestExpressionContext ctx) {
+        DataType left = visit(ctx.leftExpr);
+        DataType right = visit(ctx.rightExpr);
+        if (left == DataType.INT && right == DataType.INT) {
+            return DataType.INT;
+        }
+        throw new EvaluateException("Incompatible types");
+    }
+
     @Override
     public DataType visitMinusFirstMathExpression(LangParser.MinusFirstMathExpressionContext ctx) {
         DataType expression = visit(ctx.mathExpr());
@@ -369,6 +382,13 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
     }
 
     @Override
+    public DataType visitStringCallMethod(LangParser.StringCallMethodContext ctx) {
+        Symbol symbol = globalScope.lookupMethod(ctx.callMethodExpr().methodIdentifier.getText());
+        MethodType methodType = (MethodType) symbol.getType();
+        return methodType.getReturnType();
+    }
+
+    @Override
     public DataType visitStringParam(LangParser.StringParamContext ctx) {
         return DataType.STRING;
     }
@@ -392,6 +412,13 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
     @Override
     public DataType visitIntlitteral(LangParser.IntlitteralContext ctx) {
         return DataType.INT;
+    }
+
+    @Override
+    public DataType visitIntCallMethod(LangParser.IntCallMethodContext ctx) {
+        Symbol symbol = globalScope.lookupMethod(ctx.callMethodExpr().methodIdentifier.getText());
+        MethodType methodType = (MethodType) symbol.getType();
+        return methodType.getReturnType();
     }
 
     @Override

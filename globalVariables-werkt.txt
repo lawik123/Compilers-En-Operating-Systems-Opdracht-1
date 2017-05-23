@@ -1,6 +1,6 @@
 #Test BEGIN
 
-    global ~int d IS 3;
+    global ~int a IS 3;
     global ~string helloWorld IS "Hello";
 
 

@@ -1,6 +1,6 @@
 #Test BEGIN
 
-~void ()run /
+~void ()myMethod/
     ~int a IS 2;
     ~int b IS a + 2;
     if(a > b && b == 4 || a == 2 && b != 4) /
@@ -10,6 +10,11 @@
     \ ? /
     WRITE("pietje" + a + b);
     \
+    return;
+\
+
+~void ()run /
+    ()myMethod;
     return;
 \
 

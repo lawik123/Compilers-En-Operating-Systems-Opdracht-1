@@ -1,15 +1,14 @@
 #Test BEGIN
 global ~string a IS "helloglobal";
-~void (~string a,~int c)method2 /
-    ~int d IS 1;
-    d IS d+1;
-    WRITE(d);
+
+~void ()myMethod /
+    ~string a IS ()myMethod2;;
+    WRITE(a);
     return;
 \
 
-~void ()myMethod /
-    ("hello",33)method2;
-    return;
+~string ()myMethod2 /
+    return "hello";
 \
 
 ~void ()run /

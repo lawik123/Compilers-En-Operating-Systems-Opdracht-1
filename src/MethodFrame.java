@@ -24,15 +24,11 @@ public class MethodFrame {
 
     public void declareJasminPosition(String key, int position, String type) {
         jasminPosition.put(key, String.valueOf(position));
-        System.err.println("key: " + key);
-        System.err.println("Type: " + type);
         variableTypes.put(key, type);
     }
 
     public void declareGlobalJasminVariable(String key, String jasmincode, String type) {
         jasminGlobalcode.put(key, jasmincode);
-        System.err.println("key: " + key);
-        System.err.println("Type: " + type);
         variableTypes.put(key, type);
     }
 
@@ -42,6 +38,13 @@ public class MethodFrame {
         } else {
             return globalFrame.lookupGlobalCode(key);
         }
+    }
+
+    public String lookupJasminPositionNonGlobal(String key) {
+        if(jasminPosition.containsKey(key)) {
+            return jasminPosition.get(key);
+        }
+        return "";
     }
 
     public String lookupGlobalCode(String key) {

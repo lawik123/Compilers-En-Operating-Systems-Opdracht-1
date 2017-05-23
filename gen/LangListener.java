@@ -329,6 +329,18 @@ public interface LangListener extends ParseTreeListener {
 	 */
 	void exitAddSubstractExpression(LangParser.AddSubstractExpressionContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code restExpression}
+	 * labeled alternative in {@link LangParser#mathExpr}.
+	 * @param ctx the parse tree
+	 */
+	void enterRestExpression(LangParser.RestExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code restExpression}
+	 * labeled alternative in {@link LangParser#mathExpr}.
+	 * @param ctx the parse tree
+	 */
+	void exitRestExpression(LangParser.RestExpressionContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link LangParser#mathComparison}.
 	 * @param ctx the parse tree
 	 */
@@ -553,6 +565,18 @@ public interface LangListener extends ParseTreeListener {
 	 */
 	void exitStringRead(LangParser.StringReadContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code stringCallMethod}
+	 * labeled alternative in {@link LangParser#stringvalues}.
+	 * @param ctx the parse tree
+	 */
+	void enterStringCallMethod(LangParser.StringCallMethodContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code stringCallMethod}
+	 * labeled alternative in {@link LangParser#stringvalues}.
+	 * @param ctx the parse tree
+	 */
+	void exitStringCallMethod(LangParser.StringCallMethodContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code intvariable}
 	 * labeled alternative in {@link LangParser#mathvalues}.
 	 * @param ctx the parse tree
@@ -588,6 +612,18 @@ public interface LangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitIntread(LangParser.IntreadContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code intCallMethod}
+	 * labeled alternative in {@link LangParser#mathvalues}.
+	 * @param ctx the parse tree
+	 */
+	void enterIntCallMethod(LangParser.IntCallMethodContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code intCallMethod}
+	 * labeled alternative in {@link LangParser#mathvalues}.
+	 * @param ctx the parse tree
+	 */
+	void exitIntCallMethod(LangParser.IntCallMethodContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link LangParser#opener}.
 	 * @param ctx the parse tree
