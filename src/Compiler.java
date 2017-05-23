@@ -17,7 +17,7 @@ public class Compiler {
     public static void main(String[] args) {
         try {
             // Create lexer and get a token stream
-            ANTLRInputStream inputStream = new ANTLRFileStream("globalVariables-werkt.txt");
+            ANTLRInputStream inputStream = new ANTLRFileStream("test.txt");
 
             LangLexer lexer = new LangLexer(inputStream);
             CommonTokenStream tokens = new CommonTokenStream(lexer);

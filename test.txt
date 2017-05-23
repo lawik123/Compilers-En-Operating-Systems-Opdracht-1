@@ -1,0 +1,18 @@
+#Test BEGIN
+
+~void (~int a)method2 /
+    WRITE(a);
+    return;
+\
+
+~void ()myMethod /
+    (22)method2;
+    return;
+\
+
+~void ()run /
+    ()myMethod;
+    return;
+\
+
+END

@@ -17,11 +17,12 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
         globalScope = new Scope();
         for (int i = 0; i < ctx.methodnames().getChildCount(); i++) {
             String[] split = ctx.methodnames().getChild(i).getText().split("/");
-            String[] split2 = split[0].split("\\(");
-            Symbol lookUpMethod = globalScope.lookupMethod(split2[1].substring(1));
+            String[] split2 = split[0].split("\\)");
+            String[] split3 = split[0].split("\\(");
+            Symbol lookUpMethod = globalScope.lookupMethod(split2[1]);
             if (lookUpMethod == null) {
                 MethodType newMethod = null;
-                switch (split2[0]) {
+                switch (split3[0]) {
                     case "~void":
                         newMethod = new MethodType(DataType.VOID);
                         break;
@@ -32,7 +33,26 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
                         newMethod = new MethodType(DataType.STRING);
                         break;
                 }
-                globalScope.declareMethod(split2[1].substring(1), newMethod);
+                try {
+                    String child = "";
+                    int counter = 2;
+                    while (!child.equals(")")) {
+                        child = ctx.methodnames().getChild(i).getChild(counter).getText();
+                        if (!child.equals(",")) {
+                            if (child.contains("~int")) {
+
+                                newMethod.addParameter(DataType.INT);
+                            } else if (child.contains("~string")) {
+                                newMethod.addParameter(DataType.STRING);
+                            }
+                        }
+                        counter++;
+                    }
+
+                } catch (NullPointerException npe) {
+
+                }
+                globalScope.declareMethod(split2[1], newMethod);
             } else {
                 throw new EvaluateException("Method already exists");
             }
@@ -152,9 +172,9 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
         String methodIdentifier = ctx.methodIdentifier.getText();
         Symbol method = globalScope.lookupMethod(methodIdentifier);
         MethodType methodType = (MethodType) method.getType();
-        for (int i = 0; i < ctx.methodDeclParams().size(); i++) {
-            methodType.addParameter(visit(ctx.methodDeclParams(i)));
-        }
+//        for (int i = 0; i < ctx.methodDeclParams().size(); i++) {
+//            methodType.addParameter(visit(ctx.methodDeclParams(i)));
+//        }
         for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
             visit(ctx.nonGlobalExpr(i));
         }
@@ -176,9 +196,9 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
         }
         if (returnvalue == DataType.INT) {
             MethodType newMethod = (MethodType) lookupMethod.getType();
-            for (int i = 0; i < ctx.methodDeclParams().size(); i++) {
-                newMethod.addParameter(visit(ctx.methodDeclParams(i)));
-            }
+//            for (int i = 0; i < ctx.methodDeclParams().size(); i++) {
+//                newMethod.addParameter(visit(ctx.methodDeclParams(i)));
+//            }
 
             for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
                 visit(ctx.nonGlobalExpr(i));
@@ -202,9 +222,9 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
         }
         if (returnvalue == DataType.STRING) {
             MethodType newMethod = (MethodType) lookupMethod.getType();
-            for (int i = 0; i < ctx.methodDeclParams().size(); i++) {
-                newMethod.addParameter(visit(ctx.methodDeclParams(i)));
-            }
+//            for (int i = 0; i < ctx.methodDeclParams().size(); i++) {
+//                newMethod.addParameter(visit(ctx.methodDeclParams(i)));
+//            }
 
             for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
                 visit(ctx.nonGlobalExpr(i));
@@ -234,11 +254,11 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
         Symbol methodSymbol = globalScope.lookupMethod(methodName);
         if (methodSymbol != null) {
             MethodType calledMethod = (MethodType) methodSymbol.getType();
+
             ArrayList<DataType> dataTypes = new ArrayList<>();
             for (int i = 0; i < ctx.methodCallParams().size(); i++) {
                 dataTypes.add(visit(ctx.methodCallParams(i)));
             }
-
             if (dataTypes.size() == calledMethod.getParameters().size()) {
                 for (int i = 0; i < dataTypes.size(); i++) {
                     if (dataTypes.get(i) != calledMethod.getParameters().get(i)) {

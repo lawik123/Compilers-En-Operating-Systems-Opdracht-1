@@ -24,11 +24,15 @@ public class MethodFrame {
 
     public void declareJasminPosition(String key, int position, String type) {
         jasminPosition.put(key, String.valueOf(position));
+        System.err.println("key: " + key);
+        System.err.println("Type: " + type);
         variableTypes.put(key, type);
     }
 
     public void declareGlobalJasminVariable(String key, String jasmincode, String type) {
         jasminGlobalcode.put(key, jasmincode);
+        System.err.println("key: " + key);
+        System.err.println("Type: " + type);
         variableTypes.put(key, type);
     }
 
@@ -64,6 +68,10 @@ public class MethodFrame {
 
     public Map<String, String> getJasminPosition() {
         return jasminPosition;
+    }
+
+    public Map<String, String> getVariableTypes() {
+        return variableTypes;
     }
 
     public void setJasminPosition(Map<String, String> jasminPosition) {

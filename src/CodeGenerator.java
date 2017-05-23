@@ -33,6 +33,64 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         globalFrame = new MethodFrame();
         ArrayList<String> code = new ArrayList<>();
         className = ctx.className.getText();
+        for (int i = 0; i < ctx.methodnames().getChildCount(); i++) {
+            currentMethodFrame = new MethodFrame(globalFrame);
+            currentMethodFrame.getJasminPosition().put("placeholder", "0");
+            String[] split = ctx.methodnames().getChild(i).getText().split("/");
+            String[] split2 = split[0].split("\\)");
+            String[] split3 = split[0].split("\\(");
+
+            ArrayList<String> paramTypes = new ArrayList<>();
+            currentMethod = split2[1];
+            parameterNames.put(currentMethod, new ArrayList<>());
+
+            try {
+                String child = "";
+                int counter = 2;
+                while (!child.equals(")")) {
+                    child = ctx.methodnames().getChild(i).getChild(counter).getText();
+                    if (!child.equals(",")) {
+                        if (child.contains("~int")) {
+                            paramTypes.add("I");
+                            currentMethodFrame.getJasminPosition().put(child.substring(4), String.valueOf(currentMethodFrame.getJasminPosition().size()));
+                        } else if (child.contains("~string")) {
+                            paramTypes.add("Ljava/lang/String;");
+                            currentMethodFrame.getJasminPosition().put(child.substring(7), String.valueOf(currentMethodFrame.getJasminPosition().size()));
+                        }
+                    }
+                    counter++;
+                }
+//                for (int y = 2; y < ctx.methodnames().getChild(i).getChild(y).; y++) {
+//                    paramTypes.addAll(visit(ctx.methodDeclParams(y)));
+//                }
+            } catch (NullPointerException npe) {
+
+            }
+
+            String params = "";
+            for (int x = 0; x < paramTypes.size(); x++) {
+                params = params + paramTypes.get(x);
+            }
+            methodTypes.put(currentMethod, params);
+
+//            for (int i = 0; i < parameterNames.get(currentMethod).size(); i++) {
+//                currentMethodFrame.getJasminPosition().put(parameterNames.get(currentMethod).get(i), "" + i + "");
+//            }
+
+            switch (split3[0]) {
+                case "~void":
+                    returnTypes.put(currentMethod, "V");
+                    break;
+                case "~int":
+                    returnTypes.put(currentMethod, "I");
+                    break;
+                case "~string":
+                    returnTypes.put(currentMethod, "Ljava/lang/String;");
+                    break;
+            }
+            methodFrames.put(currentMethod, currentMethodFrame);
+        }
+
         code.add(".class public " + className);
         code.add(".super java/lang/Object");
         code.add("\n");
@@ -105,8 +163,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitDeclareStringGlobalVariable(LangParser.DeclareStringGlobalVariableContext ctx) {
         ArrayList<String> code = new ArrayList<>();
         String identifier = ctx.identifier.getText();
-        System.err.println("im in");
-
         globalFrame.declareGlobalJasminVariable(identifier, className + "/" + identifier + " " + "Ljava/lang/String;", "Ljava/lang/String;");
         globalDeclarations.add("aload 0");
         globalDeclarations.addAll(visit(ctx.stringvalues()));
@@ -183,7 +239,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     @Override
     public ArrayList<String> visitMethodnames(LangParser.MethodnamesContext ctx) {
         ArrayList<String> code = new ArrayList<>();
-        for(int i =0;i<ctx.getChildCount();i++){
+        for (int i = 0; i < ctx.getChildCount(); i++) {
             code.addAll(visit(ctx.getChild(i)));
         }
         return code;
@@ -191,33 +247,10 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
     @Override
     public ArrayList<String> visitVoidMethodDecl(LangParser.VoidMethodDeclContext ctx) {
-        currentMethodFrame = new MethodFrame(globalFrame);
-        currentMethodFrame.getJasminPosition().put("placeholder", "0");
+        currentMethodFrame = methodFrames.get(ctx.methodIdentifier.getText());
         ArrayList<String> code = new ArrayList<>();
-        ArrayList<String> paramTypes = new ArrayList<>();
-        currentMethod = ctx.methodIdentifier.getText();
-        parameterNames.put(ctx.methodIdentifier.getText(), new ArrayList<>());
 
-        try {
-            for (int i = 0; i < ctx.methodDeclParams().size(); i++) {
-                paramTypes.addAll(visit(ctx.methodDeclParams(i)));
-            }
-        } catch (NullPointerException npe) {
-
-        }
-        String params = "";
-        for (int i = 0; i < paramTypes.size(); i++) {
-            params = params + paramTypes.get(i);
-        }
-        methodTypes.put(ctx.methodIdentifier.getText(), params);
-
-        for (int i = 0; i < parameterNames.get(currentMethod).size(); i++) {
-            currentMethodFrame.getJasminPosition().put(parameterNames.get(currentMethod).get(i), "" + i + "");
-        }
-
-        code.add(".method public " + ctx.methodIdentifier.getText() + "(" + params + ")V");
-        returnTypes.put(ctx.methodIdentifier.getText(), "V");
-
+        code.add(".method public " + ctx.methodIdentifier.getText() + "(" + methodTypes.get(ctx.methodIdentifier.getText()) + ")V");
 
         code.add(".limit stack 99");
         code.add(".limit locals 99");
@@ -231,38 +264,15 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         code.add(".end method");
         code.add("\n");
 
-
-        methodFrames.put(ctx.methodIdentifier.getText(), currentMethodFrame);
         return code;
     }
 
     @Override
     public ArrayList<String> visitIntMethodDecl(LangParser.IntMethodDeclContext ctx) {
-        currentMethodFrame = new MethodFrame(globalFrame);
+        currentMethodFrame = methodFrames.get(ctx.methodIdentifier.getText());
         ArrayList<String> code = new ArrayList<>();
-        ArrayList<String> paramTypes = new ArrayList<>();
-        currentMethod = ctx.methodIdentifier.getText();
-        parameterNames.put(ctx.methodIdentifier.getText(), new ArrayList<>());
 
-        try {
-            for (int i = 0; i < ctx.methodDeclParams().size(); i++) {
-                paramTypes.addAll(visit(ctx.methodDeclParams(i)));
-            }
-        } catch (NullPointerException npe) {
-        }
-        String params = "";
-        for (int i = 0; i < paramTypes.size(); i++) {
-            params = params + paramTypes.get(i);
-        }
-        methodTypes.put(ctx.methodIdentifier.getText(), params);
-
-        for (int i = 0; i < parameterNames.get(currentMethod).size(); i++) {
-            currentMethodFrame.getJasminPosition().put(parameterNames.get(currentMethod).get(i), "" + i + "");
-        }
-
-
-        code.add(".method public " + ctx.methodIdentifier.getText() + "(" + params + ")I");
-        returnTypes.put(ctx.methodIdentifier.getText(), "I");
+        code.add(".method public " + ctx.methodIdentifier.getText() + "(" + methodTypes.get(ctx.methodIdentifier.getText()) + ")I");
 
         code.add(".limit stack 99");
         code.add(".limit locals 99");
@@ -279,43 +289,19 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
             code.addAll(visit(ctx.nonGlobalExpr(i)));
         }
 
-
         code.add("ldc " + ctx.returnvalue.getText());
         code.add("ireturn");
         code.add(".end method");
         code.add("\n");
-        methodFrames.put(ctx.methodIdentifier.getText(), currentMethodFrame);
         return code;
     }
 
     @Override
     public ArrayList<String> visitStringMethodDecl(LangParser.StringMethodDeclContext ctx) {
-        currentMethodFrame = new MethodFrame(globalFrame);
+        currentMethodFrame = methodFrames.get(ctx.methodIdentifier.getText());
         ArrayList<String> code = new ArrayList<>();
-        ArrayList<String> paramTypes = new ArrayList<>();
-        currentMethod = ctx.methodIdentifier.getText();
-        parameterNames.put(ctx.methodIdentifier.getText(), new ArrayList<>());
 
-        try {
-            for (int i = 0; i < ctx.methodDeclParams().size(); i++) {
-                paramTypes.addAll(visit(ctx.methodDeclParams(i)));
-            }
-        } catch (NullPointerException npe) {
-
-        }
-        String params = "";
-        for (int i = 0; i < paramTypes.size(); i++) {
-            params = params + paramTypes.get(i);
-        }
-        methodTypes.put(ctx.methodIdentifier.getText(), params);
-
-        for (int i = 0; i < parameterNames.get(currentMethod).size(); i++) {
-            currentMethodFrame.getJasminPosition().put(parameterNames.get(currentMethod).get(i), "" + i + "");
-        }
-
-
-        code.add(".method public " + ctx.methodIdentifier.getText() + "(" + params + ")Ljava/lang/String;");
-        returnTypes.put(ctx.methodIdentifier.getText(), "Ljava/lang/String;");
+        code.add(".method public " + ctx.methodIdentifier.getText() + "(" + ctx.methodIdentifier.getText() + ")Ljava/lang/String;");
 
         code.add(".limit stack 99");
         code.add(".limit locals 99");
@@ -336,8 +322,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         code.add("areturn");
         code.add(".end method");
         code.add("\n");
-
-        methodFrames.put(ctx.methodIdentifier.getText(), currentMethodFrame);
         return code;
     }
 
@@ -428,7 +412,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
                 code.add("#_" + ifStmCounter + "_" + "code_block_1: ");
                 for (int y = 0; y < ctx.ifBlock.getChildCount(); y++) {      //if block
-                    System.err.println(ctx.ifBlock.getChild(y).getText());
                     code.addAll(visit(ctx.ifBlock.getChild(y)));
                 }
                 counter = ctx.ifBlock.children.size();
@@ -1404,7 +1387,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
     }
 
-    public ArrayList<String> addCodeConditionReverse(String lop)  {
+    public ArrayList<String> addCodeConditionReverse(String lop) {
         ArrayList<String> code = new ArrayList<>();
         switch (lop) {
             case "==":
@@ -1543,13 +1526,12 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
     @Override
     public ArrayList<String> visitStringVariable(LangParser.StringVariableContext ctx) {
-        System.err.println("check");
+
         ArrayList<String> code = new ArrayList<>();
         if (globalFrame.lookupGlobalCode(ctx.getText()).isEmpty()) {
             code.add("aload " + currentMethodFrame.lookupJasminPosition(ctx.getText()));
         } else {
             code.add("aload 0");
-            System.err.println("check");
             code.add("getfield " + globalFrame.lookupGlobalCode(ctx.getText()));
         }
         return code;
@@ -1562,14 +1544,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         code.add("getstatic\tjava/lang/System.in Ljava/io/InputStream;\n");
         code.add("invokespecial\tjava/util/Scanner/<init>(Ljava/io/InputStream;)V\n");
         code.add("invokevirtual java/util/Scanner/nextLine()Ljava/lang/String;");
-        return code;
-    }
-
-    @Override
-    public ArrayList<String> visitStringParam(LangParser.StringParamContext ctx) {
-        ArrayList<String> code = new ArrayList<>();
-        code.add("Ljava/lang/String;");
-        currentMethodFrame.getJasminPosition().put(ctx.variableName().getText(), String.valueOf(currentMethodFrame.getJasminPosition().size()));
         return code;
     }
 
@@ -1608,14 +1582,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         code.add("getstatic\tjava/lang/System.in Ljava/io/InputStream;\n");
         code.add("invokespecial\tjava/util/Scanner/<init>(Ljava/io/InputStream;)V\n");
         code.add("invokevirtual java/util/Scanner/nextInt()I");
-        return code;
-    }
-
-    @Override
-    public ArrayList<String> visitIntParam(LangParser.IntParamContext ctx) {
-        ArrayList<String> code = new ArrayList<>();
-        code.add("I");
-        currentMethodFrame.getJasminPosition().put(ctx.variableName().getText(), String.valueOf(currentMethodFrame.getJasminPosition().size()));
         return code;
     }
 
