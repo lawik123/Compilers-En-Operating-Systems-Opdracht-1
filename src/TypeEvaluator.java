@@ -15,6 +15,29 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
     @Override
     public DataType visitProg(LangParser.ProgContext ctx) {
         globalScope = new Scope();
+        for (int i = 0; i < ctx.methodnames().getChildCount(); i++) {
+            String[] split = ctx.methodnames().getChild(i).getText().split("/");
+            String[] split2 = split[0].split("\\(");
+            Symbol lookUpMethod = globalScope.lookupMethod(split2[1].substring(1));
+            if (lookUpMethod == null) {
+                MethodType newMethod = null;
+                switch (split2[0]) {
+                    case "~void":
+                        newMethod = new MethodType(DataType.VOID);
+                        break;
+                    case "~int":
+                        newMethod = new MethodType(DataType.INT);
+                        break;
+                    case "~string":
+                        newMethod = new MethodType(DataType.STRING);
+                        break;
+                }
+                globalScope.declareMethod(split2[1].substring(1), newMethod);
+            } else {
+                throw new EvaluateException("Method already exists");
+            }
+
+        }
         return super.visitProg(ctx);
     }
 
@@ -127,20 +150,17 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
     public DataType visitVoidMethodDecl(LangParser.VoidMethodDeclContext ctx) {
         currentScope = globalScope.openScope();
         String methodIdentifier = ctx.methodIdentifier.getText();
-        Symbol lookupMethod = globalScope.lookupMethod(methodIdentifier);
-        if (lookupMethod == null) {
-            MethodType newMethod = new MethodType(DataType.VOID);
-            for (int i = 0; i < ctx.methodDeclParams().size(); i++) {
-                newMethod.addParameter(visit(ctx.methodDeclParams(i)));
-            }
-            globalScope.declareMethod(methodIdentifier, newMethod);
-            for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
-                visit(ctx.nonGlobalExpr(i));
-            }
-            currentScope = currentScope.closeScope();
-            return DataType.VOID;
+        Symbol method = globalScope.lookupMethod(methodIdentifier);
+        MethodType methodType = (MethodType) method.getType();
+        for (int i = 0; i < ctx.methodDeclParams().size(); i++) {
+            methodType.addParameter(visit(ctx.methodDeclParams(i)));
         }
-        throw new EvaluateException("Method already exists");
+        for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
+            visit(ctx.nonGlobalExpr(i));
+        }
+        currentScope = currentScope.closeScope();
+        return DataType.VOID;
+
     }
 
     @Override
@@ -154,22 +174,19 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
         } catch (NullPointerException npe) {
 
         }
-        if (lookupMethod == null) {
-            if (returnvalue == DataType.INT) {
-                MethodType newMethod = new MethodType(DataType.INT);
-                for (int i = 0; i < ctx.methodDeclParams().size(); i++) {
-                    newMethod.addParameter(visit(ctx.methodDeclParams(i)));
-                }
-                globalScope.declareMethod(methodIdentifier, newMethod);
-                for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
-                    visit(ctx.nonGlobalExpr(i));
-                }
-                currentScope = currentScope.closeScope();
-                return DataType.INT;
+        if (returnvalue == DataType.INT) {
+            MethodType newMethod = (MethodType) lookupMethod.getType();
+            for (int i = 0; i < ctx.methodDeclParams().size(); i++) {
+                newMethod.addParameter(visit(ctx.methodDeclParams(i)));
             }
-            throw new EvaluateException("Return type is not an int");
+
+            for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
+                visit(ctx.nonGlobalExpr(i));
+            }
+            currentScope = currentScope.closeScope();
+            return DataType.INT;
         }
-        throw new EvaluateException("Method already exists");
+        throw new EvaluateException("Return type is not an int");
     }
 
     @Override
@@ -183,22 +200,20 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
         } catch (NullPointerException npe) {
 
         }
-        if (lookupMethod == null) {
-            if (returnvalue == DataType.STRING) {
-                MethodType newMethod = new MethodType(DataType.STRING);
-                for (int i = 0; i < ctx.methodDeclParams().size(); i++) {
-                    newMethod.addParameter(visit(ctx.methodDeclParams(i)));
-                }
-                globalScope.declareMethod(methodIdentifier, newMethod);
-                for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
-                    visit(ctx.nonGlobalExpr(i));
-                }
-                currentScope = currentScope.closeScope();
-                return DataType.STRING;
+        if (returnvalue == DataType.STRING) {
+            MethodType newMethod = (MethodType) lookupMethod.getType();
+            for (int i = 0; i < ctx.methodDeclParams().size(); i++) {
+                newMethod.addParameter(visit(ctx.methodDeclParams(i)));
             }
-            throw new EvaluateException("Return type is not a string");
+
+            for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
+                visit(ctx.nonGlobalExpr(i));
+            }
+            currentScope = currentScope.closeScope();
+            return DataType.STRING;
         }
-        throw new EvaluateException("Method already exists");
+        throw new EvaluateException("Return type is not a string");
+
     }
 
     //method declaration parameters
@@ -254,8 +269,8 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
     @Override
     public DataType visitIfStm(LangParser.IfStmContext ctx) {
         currentScope = currentScope.openScope();
-        for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
-            visit(ctx.nonGlobalExpr(i));
+        for (int i = 0; i < ctx.ifExprsensions().size(); i++) {
+            visit(ctx.ifExprsensions(i));
         }
         currentScope = currentScope.closeScope();
         return super.visitIfStm(ctx);

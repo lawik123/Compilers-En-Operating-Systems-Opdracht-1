@@ -3,21 +3,25 @@
     global ~int a IS 3;
     global ~string helloWorld IS "Hello";
 
-~void ()method3 /
-        for(~int i IS 0; i < 10; incr(i)) /
-            ~int b IS i * a;
-            if(b > 4) /
-            WRITE(b);
-            \
-        \
-        return;
 
-\
 
 ~void ()method2 /
     ()method3;
     WRITE("Einde");
     return;
+\
+
+~void ()method3 /
+        for(~int i IS 0; i < 10; incr(i)) /
+            ~int b IS i * a;
+            if(b > 4) /
+            b IS 5;
+            WRITE(b);
+            \
+        \
+        helloWorld IS READSTRING;
+        return;
+
 \
 
 ~void ()myMethod /

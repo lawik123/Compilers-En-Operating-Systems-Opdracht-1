@@ -1,4 +1,4 @@
-// Generated from D:/School projecten/Compilers\Lang.g4 by ANTLR 4.7
+// Generated from D:/Desktop/Saxion/Jaar 2/Kwartiel 3/Compilers en Operating Systems/Practicum/Opdracht1(2)/Compilers-En-Operating-Systems-Opdracht-1\Lang.g4 by ANTLR 4.6
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -26,6 +26,16 @@ public interface LangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitExpression(LangParser.ExpressionContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link LangParser#methodnames}.
+	 * @param ctx the parse tree
+	 */
+	void enterMethodnames(LangParser.MethodnamesContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LangParser#methodnames}.
+	 * @param ctx the parse tree
+	 */
+	void exitMethodnames(LangParser.MethodnamesContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link LangParser#nonGlobalExpr}.
 	 * @param ctx the parse tree
@@ -248,6 +258,16 @@ public interface LangListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitReadStringExpr(LangParser.ReadStringExprContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link LangParser#ifExprsensions}.
+	 * @param ctx the parse tree
+	 */
+	void enterIfExprsensions(LangParser.IfExprsensionsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link LangParser#ifExprsensions}.
+	 * @param ctx the parse tree
+	 */
+	void exitIfExprsensions(LangParser.IfExprsensionsContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code minusFirstMathExpression}
 	 * labeled alternative in {@link LangParser#mathExpr}.

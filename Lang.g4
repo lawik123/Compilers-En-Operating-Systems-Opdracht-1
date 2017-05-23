@@ -1,10 +1,11 @@
 grammar Lang;
-prog:'#'className=nameClass 'BEGIN' varGlobalDecl* expression* runMethod 'END';
+prog:'#'className=nameClass 'BEGIN' varGlobalDecl* (expression*|methodnames) runMethod 'END';
 
-expression: methodDecl
-|varMod
-|mathExpr
+expression:
+varMod
 ;
+
+methodnames:methodDecl*;
 
 nonGlobalExpr:ifStm
             |whileStm
@@ -39,7 +40,7 @@ runMethod: '~void' '()run'  opener nonGlobalExpr* 'return;' closer;
 callMethodExpr: '('(methodCallParams (',' methodCallParams)*)?')'methodIdentifier=methodName ';';
 
 //statements
-ifStm:'if' '(' ifCondition ')' opener ifBlock=nonGlobalExpr* closer (('?' '(' ifCondition ')' opener ifElseBlock=nonGlobalExpr* closer)* ('?' opener elseBlock=nonGlobalExpr* closer)?)?;
+ifStm:'if' '(' ifCondition ')' opener ifBlock=ifExprsensions closer (('?' '(' ifCondition ')' opener ifElseBlock=ifExprsensions closer)* ('?' opener elseBlock=ifExprsensions closer)?)?;
 whileStm: 'REPEAT' opener nonGlobalExpr* closer 'UNTIL' '(' ifCondition ')';
 forStm: 'for' '(' varDecl forCondition ';' idCrement=IDcrement '(' idValue=variableName ')' ')' opener nonGlobalExpr* closer;
 
@@ -49,6 +50,8 @@ writevalues: mathExpr       #writeMath
 |stringvalues               #writeString;
 readIntExpr: 'READINT';
 readStringExpr: 'READSTRING';
+
+ifExprsensions:nonGlobalExpr*;
 
 
 

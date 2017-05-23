@@ -55,9 +55,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         code.add(".end method");
         code.add("\n");
 
-        for (int i = 0; i < ctx.expression().size(); i++) {
-            allOtherMethods.addAll(visit(ctx.expression(i)));
-        }
+        allOtherMethods.addAll(visit(ctx.methodnames()));
 
         code.add("\n");
         code.add(".method public static main([Ljava/lang/String;)V");
@@ -147,6 +145,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         ArrayList<String> code = new ArrayList<>();
         if (globalFrame.lookupGlobalCode(ctx.identifier.getText()).isEmpty()) {
             code.add("iload " + currentMethodFrame.lookupJasminPosition(ctx.identifier.getText()));
+            code.add("pop");
             code.addAll(visit(ctx.mathExpr()));
             currentMethodFrame.declareJasminPosition(ctx.identifier.getText(), Integer.parseInt(currentMethodFrame.lookupJasminPosition(ctx.identifier.getText())), "I");      //create new position
             code.add("istore " + currentMethodFrame.lookupJasminPosition(ctx.identifier.getText()));
@@ -166,6 +165,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         if (globalFrame.lookupGlobalCode(ctx.identifier.getText()).isEmpty()) {
             code.add("aload " + currentMethodFrame.getJasminPosition().size());
             currentMethodFrame.declareJasminPosition(ctx.identifier.getText(), currentMethodFrame.getJasminPosition().size(), "Ljava/lang/String;");      //create new position
+            code.add("pop");
             code.addAll(visit(ctx.stringvalues()));
             code.add("astore " + currentMethodFrame.getJasminPosition().size());
             return code;
@@ -178,6 +178,17 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     }
 
     //method declarations
+
+
+    @Override
+    public ArrayList<String> visitMethodnames(LangParser.MethodnamesContext ctx) {
+        ArrayList<String> code = new ArrayList<>();
+        for(int i =0;i<ctx.getChildCount();i++){
+            code.addAll(visit(ctx.getChild(i)));
+        }
+        return code;
+    }
+
     @Override
     public ArrayList<String> visitVoidMethodDecl(LangParser.VoidMethodDeclContext ctx) {
         currentMethodFrame = new MethodFrame(globalFrame);
@@ -416,8 +427,9 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                 code.addAll(visit(ctx.ifCondition(i)));
 
                 code.add("#_" + ifStmCounter + "_" + "code_block_1: ");
-                for (int y = 0; y < ctx.ifBlock.children.size(); y++) {      //if block
-                    code.addAll(visit(ctx.nonGlobalExpr(y)));
+                for (int y = 0; y < ctx.ifBlock.getChildCount(); y++) {      //if block
+                    System.err.println(ctx.ifBlock.getChild(y).getText());
+                    code.addAll(visit(ctx.ifBlock.getChild(y)));
                 }
                 counter = ctx.ifBlock.children.size();
             } else if (i < ctx.ifCondition().size()) {     //if else block
@@ -427,7 +439,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
                 code.add("#_" + ifStmCounter + "_" + "code_block_" + (i + 1) + ":");
                 for (int y = 0; y < ctx.ifElseBlock.children.size(); y++) {
-                    code.addAll(visit(ctx.nonGlobalExpr(y + counter)));
+                    code.addAll(visit(ctx.ifElseBlock.getChild(y + counter)));
                 }
                 counter += ctx.ifElseBlock.children.size();
             }
@@ -437,7 +449,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
             if (sizeElseChildren > 0 && i == ctx.ifCondition().size() - 1) {
                 code.add("#_" + ifStmCounter + "_" + "ELSE: ");
                 for (int y = 0; y < sizeElseChildren; y++) {
-                    code.addAll(visit(ctx.nonGlobalExpr(y + counter)));
+                    code.addAll(visit(ctx.elseBlock.getChild(y + counter)));
                 }
             }
 

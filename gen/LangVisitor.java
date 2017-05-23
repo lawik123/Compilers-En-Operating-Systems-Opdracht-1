@@ -1,4 +1,4 @@
-// Generated from D:/School projecten/Compilers\Lang.g4 by ANTLR 4.7
+// Generated from D:/Desktop/Saxion/Jaar 2/Kwartiel 3/Compilers en Operating Systems/Practicum/Opdracht1(2)/Compilers-En-Operating-Systems-Opdracht-1\Lang.g4 by ANTLR 4.6
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
 /**
@@ -21,6 +21,12 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitExpression(LangParser.ExpressionContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link LangParser#methodnames}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMethodnames(LangParser.MethodnamesContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link LangParser#nonGlobalExpr}.
 	 * @param ctx the parse tree
@@ -152,6 +158,12 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitReadStringExpr(LangParser.ReadStringExprContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link LangParser#ifExprsensions}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitIfExprsensions(LangParser.IfExprsensionsContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code minusFirstMathExpression}
 	 * labeled alternative in {@link LangParser#mathExpr}.

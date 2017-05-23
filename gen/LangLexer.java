@@ -1,4 +1,4 @@
-// Generated from D:/School projecten/Compilers\Lang.g4 by ANTLR 4.7
+// Generated from D:/Desktop/Saxion/Jaar 2/Kwartiel 3/Compilers en Operating Systems/Practicum/Opdracht1(2)/Compilers-En-Operating-Systems-Opdracht-1\Lang.g4 by ANTLR 4.6
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
@@ -10,7 +10,7 @@ import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class LangLexer extends Lexer {
-	static { RuntimeMetaData.checkVersion("4.7", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.6", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -22,10 +22,6 @@ public class LangLexer extends Lexer {
 		T__24=25, T__25=26, T__26=27, T__27=28, T__28=29, T__29=30, T__30=31, 
 		T__31=32, T__32=33, T__33=34, T__34=35, IDcrement=36, OP=37, LOP=38, INT=39, 
 		STRING=40, CLASSNAME=41, STRINGVALUE=42, WL=43, WS=44;
-	public static String[] channelNames = {
-		"DEFAULT_TOKEN_CHANNEL", "HIDDEN"
-	};
-
 	public static String[] modeNames = {
 		"DEFAULT_MODE"
 	};
@@ -103,16 +99,13 @@ public class LangLexer extends Lexer {
 	public String getSerializedATN() { return _serializedATN; }
 
 	@Override
-	public String[] getChannelNames() { return channelNames; }
-
-	@Override
 	public String[] getModeNames() { return modeNames; }
 
 	@Override
 	public ATN getATN() { return _ATN; }
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\2.\u0137\b\1\4\2\t"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\2.\u0137\b\1\4\2\t"+
 		"\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13"+
 		"\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
@@ -135,18 +128,18 @@ public class LangLexer extends Lexer {
 		"-\3-\3-\2\2.\3\3\5\4\7\5\t\6\13\7\r\b\17\t\21\n\23\13\25\f\27\r\31\16"+
 		"\33\17\35\20\37\21!\22#\23%\24\'\25)\26+\27-\30/\31\61\32\63\33\65\34"+
 		"\67\359\36;\37= ?!A\"C#E$G%I&K\'M(O)Q*S+U,W-Y.\3\2\t\5\2,-//<<\3\2\63"+
-		";\3\2\62;\3\2c|\5\2\62;C\\c|\3\2C\\\4\2\13\f\17\17\2\u0141\2\3\3\2\2\2"+
-		"\2\5\3\2\2\2\2\7\3\2\2\2\2\t\3\2\2\2\2\13\3\2\2\2\2\r\3\2\2\2\2\17\3\2"+
-		"\2\2\2\21\3\2\2\2\2\23\3\2\2\2\2\25\3\2\2\2\2\27\3\2\2\2\2\31\3\2\2\2"+
-		"\2\33\3\2\2\2\2\35\3\2\2\2\2\37\3\2\2\2\2!\3\2\2\2\2#\3\2\2\2\2%\3\2\2"+
-		"\2\2\'\3\2\2\2\2)\3\2\2\2\2+\3\2\2\2\2-\3\2\2\2\2/\3\2\2\2\2\61\3\2\2"+
-		"\2\2\63\3\2\2\2\2\65\3\2\2\2\2\67\3\2\2\2\29\3\2\2\2\2;\3\2\2\2\2=\3\2"+
-		"\2\2\2?\3\2\2\2\2A\3\2\2\2\2C\3\2\2\2\2E\3\2\2\2\2G\3\2\2\2\2I\3\2\2\2"+
-		"\2K\3\2\2\2\2M\3\2\2\2\2O\3\2\2\2\2Q\3\2\2\2\2S\3\2\2\2\2U\3\2\2\2\2W"+
-		"\3\2\2\2\2Y\3\2\2\2\3[\3\2\2\2\5]\3\2\2\2\7c\3\2\2\2\tg\3\2\2\2\13n\3"+
-		"\2\2\2\rs\3\2\2\2\17v\3\2\2\2\21x\3\2\2\2\23\u0080\3\2\2\2\25\u0086\3"+
-		"\2\2\2\27\u0088\3\2\2\2\31\u008a\3\2\2\2\33\u008c\3\2\2\2\35\u0094\3\2"+
-		"\2\2\37\u009b\3\2\2\2!\u00a1\3\2\2\2#\u00a4\3\2\2\2%\u00a6\3\2\2\2\'\u00ad"+
+		";\3\2\62;\3\2c|\5\2\62;C\\c|\3\2C\\\4\2\13\f\17\17\u0141\2\3\3\2\2\2\2"+
+		"\5\3\2\2\2\2\7\3\2\2\2\2\t\3\2\2\2\2\13\3\2\2\2\2\r\3\2\2\2\2\17\3\2\2"+
+		"\2\2\21\3\2\2\2\2\23\3\2\2\2\2\25\3\2\2\2\2\27\3\2\2\2\2\31\3\2\2\2\2"+
+		"\33\3\2\2\2\2\35\3\2\2\2\2\37\3\2\2\2\2!\3\2\2\2\2#\3\2\2\2\2%\3\2\2\2"+
+		"\2\'\3\2\2\2\2)\3\2\2\2\2+\3\2\2\2\2-\3\2\2\2\2/\3\2\2\2\2\61\3\2\2\2"+
+		"\2\63\3\2\2\2\2\65\3\2\2\2\2\67\3\2\2\2\29\3\2\2\2\2;\3\2\2\2\2=\3\2\2"+
+		"\2\2?\3\2\2\2\2A\3\2\2\2\2C\3\2\2\2\2E\3\2\2\2\2G\3\2\2\2\2I\3\2\2\2\2"+
+		"K\3\2\2\2\2M\3\2\2\2\2O\3\2\2\2\2Q\3\2\2\2\2S\3\2\2\2\2U\3\2\2\2\2W\3"+
+		"\2\2\2\2Y\3\2\2\2\3[\3\2\2\2\5]\3\2\2\2\7c\3\2\2\2\tg\3\2\2\2\13n\3\2"+
+		"\2\2\rs\3\2\2\2\17v\3\2\2\2\21x\3\2\2\2\23\u0080\3\2\2\2\25\u0086\3\2"+
+		"\2\2\27\u0088\3\2\2\2\31\u008a\3\2\2\2\33\u008c\3\2\2\2\35\u0094\3\2\2"+
+		"\2\37\u009b\3\2\2\2!\u00a1\3\2\2\2#\u00a4\3\2\2\2%\u00a6\3\2\2\2\'\u00ad"+
 		"\3\2\2\2)\u00b3\3\2\2\2+\u00b7\3\2\2\2-\u00be\3\2\2\2/\u00c0\3\2\2\2\61"+
 		"\u00c3\3\2\2\2\63\u00cb\3\2\2\2\65\u00d6\3\2\2\2\67\u00d8\3\2\2\29\u00da"+
 		"\3\2\2\2;\u00dc\3\2\2\2=\u00df\3\2\2\2?\u00e2\3\2\2\2A\u00e6\3\2\2\2C"+
