@@ -61,11 +61,8 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                         }
                         counter++;
                     }
-//                for (int y = 2; y < ctx.methodnames().getChild(i).getChild(y).; y++) {
-//                    paramTypes.addAll(visit(ctx.methodDeclParams(y)));
-//                }
                 } catch (NullPointerException npe) {
-
+                    System.err.println(npe.getMessage());
                 }
 
                 String params = "";
@@ -73,10 +70,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                     params = params + paramTypes.get(x);
                 }
                 methodTypes.put(currentMethod, params);
-
-//            for (int i = 0; i < parameterNames.get(currentMethod).size(); i++) {
-//                currentMethodFrame.getJasminPosition().put(parameterNames.get(currentMethod).get(i), "" + i + "");
-//            }
 
                 switch (split3[0]) {
                     case "~void":
@@ -279,13 +272,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
         code.add(".limit stack 99");
         code.add(".limit locals 99");
-//        code.add("getstatic java/lang/System/out Ljava/io/PrintStream;");
-//        code.add("new java/util/Scanner");
-//        code.add("dup");
-//        code.add("getstatic java/lang/System/in Ljava/io/InputStream;");
-//        code.add("invokespecial java/util/Scanner/<init>(Ljava/io/InputStream;)V");
-//        code.add("astore " + currentMethodFrame.getJasminPosition().size());
-//        currentMethodFrame.declareJasminPosition("Scanner", currentMethodFrame.getJasminPosition().size());
 
         //visit the method statements
         for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
@@ -308,13 +294,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
         code.add(".limit stack 99");
         code.add(".limit locals 99");
-//        code.add("getstatic java/lang/System/out Ljava/io/PrintStream;");
-//        code.add("new java/util/Scanner");
-//        code.add("dup");
-//        code.add("getstatic java/lang/System/in Ljava/io/InputStream;");
-//        code.add("invokespecial java/util/Scanner/<init>(Ljava/io/InputStream;)V");
-//        code.add("astore " + currentMethodFrame.getJasminPosition().size());
-//        currentMethodFrame.declareJasminPosition("Scanner", currentMethodFrame.getJasminPosition().size());
 
         //visit the method statements
         for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
@@ -468,7 +447,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitForStm(LangParser.ForStmContext ctx) {
         forStmCounter++;
         int currentFor = forStmCounter;
-//        String idValue = null;
         ArrayList<String> code = new ArrayList<>();
         code.addAll(visit(ctx.varDecl()));
         code.add("goto forCondition_" + forStmCounter);
@@ -488,11 +466,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
             code.addAll(visit(ctx.nonGlobalExpr(i)));
         }
         code.add("goto forIDCrement_" + forStmCounter);
-//        try {
-//            idValue = ctx.idValue.getText();
-//        } catch (NullPointerException npe) {
-//
-//        }
         code.add("endFor_" + currentFor + ":");
         return code;
     }
@@ -521,26 +494,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                 if (ctx.forConditionMore().size() == 1) {
                     if (currentAndOr.equals("&&")) {
                         code.addAll(addCodeConditionReverse(lop));
-//                        switch (lop) {
-//                            case "==":
-//                                code.add("if_icmpne");
-//                                break;
-//                            case "!=":
-//                                code.add("if_icmpeq");
-//                                break;
-//                            case "<":
-//                                code.add("if_icmpge");
-//                                break;
-//                            case "<=":
-//                                code.add("if_icmpgt");
-//                                break;
-//                            case ">":
-//                                code.add("if_icmple");
-//                                break;
-//                            case ">=":
-//                                code.add("if_icmplt");
-//                                break;
-//                        }
 
                         code.set(code.size() - 1, code.get(code.size() - 1) + " " + "endFor_" + forStmCounter);
 
@@ -549,50 +502,10 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                             code.addAll(visit(ctx.forConditionMore(i).mathComparison().mathExpr(y)));
                         }
                         code.addAll(addCodeConditionReverse(lop));
-//                        switch (cop) {
-//                            case "==":
-//                                code.add("if_icmpne");
-//                                break;
-//                            case "!=":
-//                                code.add("if_icmpeq");
-//                                break;
-//                            case "<":
-//                                code.add("if_icmpge");
-//                                break;
-//                            case "<=":
-//                                code.add("if_icmpgt");
-//                                break;
-//                            case ">":
-//                                code.add("if_icmple");
-//                                break;
-//                            case ">=":
-//                                code.add("if_icmplt");
-//                                break;
-//                        }
 
                         code.set(code.size() - 1, code.get(code.size() - 1) + " " + "endFor_" + forStmCounter);
                     } else {
                         code.addAll(addCodeCondition(lop));
-//                        switch (lop) {
-//                            case "==":
-//                                code.add("if_icmpeq");
-//                                break;
-//                            case "!=":
-//                                code.add("if_icmpne");
-//                                break;
-//                            case "<":
-//                                code.add("if_icmple");
-//                                break;
-//                            case "<=":
-//                                code.add("if_icmplt");
-//                                break;
-//                            case ">":
-//                                code.add("if_icmpgt");
-//                                break;
-//                            case ">=":
-//                                code.add("if_icmpge");
-//                                break;
-//                        }
 
                         code.set(code.size() - 1, code.get(code.size() - 1) + " " + "beginFor_" + forStmCounter);
 
@@ -600,26 +513,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                             code.addAll(visit(ctx.forConditionMore(i).mathComparison().mathExpr(y)));
                         }
                         code.addAll(addCodeCondition(lop));
-//                        switch (cop) {
-//                            case "==":
-//                                code.add("if_icmpeq");
-//                                break;
-//                            case "!=":
-//                                code.add("if_icmpne");
-//                                break;
-//                            case "<":
-//                                code.add("if_icmplt");
-//                                break;
-//                            case "<=":
-//                                code.add("if_icmple");
-//                                break;
-//                            case ">":
-//                                code.add("if_icmpgt");
-//                                break;
-//                            case ">=":
-//                                code.add("if_icmpge");
-//                                break;
-//                        }
 
                         code.set(code.size() - 1, code.get(code.size() - 1) + " " + "beginFor_" + forStmCounter);
                     }
@@ -630,26 +523,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                         if (currentAndOr.equals("&&") && nextAndOr.equals("&&")) {
                             if (i == 0) {
                                 code.addAll(addCodeConditionReverse(lop));
-//                                switch (lop) {
-//                                    case "==":
-//                                        code.add("if_icmpne");
-//                                        break;
-//                                    case "!=":
-//                                        code.add("if_icmpeq");
-//                                        break;
-//                                    case "<":
-//                                        code.add("if_icmpge");
-//                                        break;
-//                                    case "<=":
-//                                        code.add("if_icmpgt");
-//                                        break;
-//                                    case ">":
-//                                        code.add("if_icmple");
-//                                        break;
-//                                    case ">=":
-//                                        code.add("if_icmplt");
-//                                        break;
-//                                }
 
                                 code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.get(0));
                             }
@@ -659,53 +532,12 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                                 code.addAll(visit(ctx.forConditionMore(i).mathComparison().mathExpr(y)));
                             }
                             code.addAll(addCodeConditionReverse(lop));
-//                            switch (cop) {
-//
-//                                case "==":
-//                                    code.add("if_icmpne");
-//                                    break;
-//                                case "!=":
-//                                    code.add("if_icmpeq");
-//                                    break;
-//                                case "<":
-//                                    code.add("if_icmpge");
-//                                    break;
-//                                case "<=":
-//                                    code.add("if_icmpgt");
-//                                    break;
-//                                case ">":
-//                                    code.add("if_icmple");
-//                                    break;
-//                                case ">=":
-//                                    code.add("if_icmplt");
-//                                    break;
-//                            }
 
                             code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.get(0));
 
                         } else if (currentAndOr.equals("&&") && nextAndOr.equals("||")) {
                             if (i == 0) {
                                 code.addAll(addCodeConditionReverse(lop));
-//                                switch (lop) {
-//                                    case "==":
-//                                        code.add("if_icmpne");
-//                                        break;
-//                                    case "!=":
-//                                        code.add("if_icmpeq");
-//                                        break;
-//                                    case "<":
-//                                        code.add("if_icmpge");
-//                                        break;
-//                                    case "<=":
-//                                        code.add("if_icmpgt");
-//                                        break;
-//                                    case ">":
-//                                        code.add("if_icmple");
-//                                        break;
-//                                    case ">=":
-//                                        code.add("if_icmplt");
-//                                        break;
-//                                }
 
                                 code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.get(0));
                             }
@@ -715,26 +547,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                                 code.addAll(visit(ctx.forConditionMore(i).mathComparison().mathExpr(y)));
                             }
                             code.addAll(addCodeCondition(lop));
-//                            switch (cop) {
-//                                case "==":
-//                                    code.add("if_icmpeq");
-//                                    break;
-//                                case "!=":
-//                                    code.add("if_icmpne");
-//                                    break;
-//                                case "<":
-//                                    code.add("if_icmplt");
-//                                    break;
-//                                case "<=":
-//                                    code.add("if_icmple");
-//                                    break;
-//                                case ">":
-//                                    code.add("if_icmpgt");
-//                                    break;
-//                                case ">=":
-//                                    code.add("if_icmpge");
-//                                    break;
-//                            }
 
                             code.set(code.size() - 1, code.get(code.size() - 1) + " " + "beginFor_" + forStmCounter);
                             code.add(labels.get(0) + ":");
@@ -743,26 +555,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                         } else if (currentAndOr.equals("||") && nextAndOr.equals("||")) {
                             if (i == 0) {
                                 code.addAll(addCodeCondition(lop));
-//                                switch (lop) {
-//                                    case "==":
-//                                        code.add("if_icmpeq");
-//                                        break;
-//                                    case "!=":
-//                                        code.add("if_icmpne");
-//                                        break;
-//                                    case "<":
-//                                        code.add("if_icmplt");
-//                                        break;
-//                                    case "<=":
-//                                        code.add("if_icmple");
-//                                        break;
-//                                    case ">":
-//                                        code.add("if_icmpgt");
-//                                        break;
-//                                    case ">=":
-//                                        code.add("if_icmpge");
-//                                        break;
-//                                }
 
                                 code.set(code.size() - 1, code.get(code.size() - 1) + " " + "beginFor_" + forStmCounter);
                             }
@@ -772,52 +564,12 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                                 code.addAll(visit(ctx.forConditionMore(i).mathComparison().mathExpr(y)));
                             }
                             code.addAll(addCodeCondition(lop));
-//                            switch (cop) {
-//                                case "==":
-//                                    code.add("if_icmpeq");
-//                                    break;
-//                                case "!=":
-//                                    code.add("if_icmpne");
-//                                    break;
-//                                case "<":
-//                                    code.add("if_icmplt");
-//                                    break;
-//                                case "<=":
-//                                    code.add("if_icmple");
-//                                    break;
-//                                case ">":
-//                                    code.add("if_icmpgt");
-//                                    break;
-//                                case ">=":
-//                                    code.add("if_icmpge");
-//                                    break;
-//                            }
 
                             code.set(code.size() - 1, code.get(code.size() - 1) + " " + "beginFor_" + forStmCounter);
 
                         } else if (currentAndOr.equals("||") && nextAndOr.equals("&&")) {
                             if (i == 0) {
                                 code.addAll(addCodeCondition(lop));
-//                                switch (lop) {
-//                                    case "==":
-//                                        code.add("if_icmpeq");
-//                                        break;
-//                                    case "!=":
-//                                        code.add("if_icmpne");
-//                                        break;
-//                                    case "<":
-//                                        code.add("if_icmplt");
-//                                        break;
-//                                    case "<=":
-//                                        code.add("if_icmple");
-//                                        break;
-//                                    case ">":
-//                                        code.add("if_icmpgt");
-//                                        break;
-//                                    case ">=":
-//                                        code.add("if_icmpge");
-//                                        break;
-//                                }
 
                                 code.set(code.size() - 1, code.get(code.size() - 1) + " " + "beginFor_" + forStmCounter);
                             }
@@ -827,26 +579,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                                 code.addAll(visit(ctx.forConditionMore(i).mathComparison().mathExpr(y)));
                             }
                             code.addAll(addCodeConditionReverse(cop));
-//                            switch (cop) {
-//                                case "==":
-//                                    code.add("if_icmpne");
-//                                    break;
-//                                case "!=":
-//                                    code.add("if_icmpeq");
-//                                    break;
-//                                case "<":
-//                                    code.add("if_icmpge");
-//                                    break;
-//                                case "<=":
-//                                    code.add("if_icmpgt");
-//                                    break;
-//                                case ">":
-//                                    code.add("if_icmple");
-//                                    break;
-//                                case ">=":
-//                                    code.add("if_icmplt");
-//                                    break;
-//                            }
 
                             code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.get(0));
 
@@ -857,26 +589,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                             code.addAll(visit(ctx.forConditionMore(i).mathComparison().mathExpr(y)));
                         }
                         code.addAll(addCodeConditionReverse(cop));
-//                        switch (cop) {
-//                            case "==":
-//                                code.add("if_icmpne");
-//                                break;
-//                            case "!=":
-//                                code.add("if_icmpeq");
-//                                break;
-//                            case "<":
-//                                code.add("if_icmpge");
-//                                break;
-//                            case "<=":
-//                                code.add("if_icmpgt");
-//                                break;
-//                            case ">":
-//                                code.add("if_icmple");
-//                                break;
-//                            case ">=":
-//                                code.add("if_icmplt");
-//                                break;
-//                        }
 
                         code.set(code.size() - 1, code.get(code.size() - 1) + " " + "endFor_" + forStmCounter);
 
@@ -888,26 +600,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
         } else {
             code.addAll(addCodeConditionReverse(lop));
-//            switch (lop) {
-//                case "==":
-//                    code.add("if_icmpne");
-//                    break;
-//                case "!=":
-//                    code.add("if_icmpeq");
-//                    break;
-//                case "<":
-//                    code.add("if_icmpge");
-//                    break;
-//                case "<=":
-//                    code.add("if_icmpgt");
-//                    break;
-//                case ">":
-//                    code.add("if_icmple");
-//                    break;
-//                case ">=":
-//                    code.add("if_icmplt");
-//                    break;
-//            }
 
             code.set(code.size() - 1, code.get(code.size() - 1) + " " + "endFor_" + forStmCounter);
 
@@ -941,26 +633,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                 if (ctx.ifConditionMore().size() == 1) {
                     if (currentAndOr.equals("&&")) {
                         code.addAll(addCodeConditionReverse(lop));
-//                        switch (lop) {
-//                            case "==":
-//                                code.add("if_icmpne");
-//                                break;
-//                            case "!=":
-//                                code.add("if_icmpeq");
-//                                break;
-//                            case "<":
-//                                code.add("if_icmpge");
-//                                break;
-//                            case "<=":
-//                                code.add("if_icmpgt");
-//                                break;
-//                            case ">":
-//                                code.add("if_icmple");
-//                                break;
-//                            case ">=":
-//                                code.add("if_icmplt");
-//                                break;
-//                        }
 
                         code.set(code.size() - 1, code.get(code.size() - 1) + " " + ifLabels.get(conditionCounter));
 
@@ -969,50 +641,10 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                             code.addAll(visit(ctx.ifConditionMore(i).mathComparison().mathExpr(y)));
                         }
                         code.addAll(addCodeConditionReverse(cop));
-//                        switch (cop) {
-//                            case "==":
-//                                code.add("if_icmpne");
-//                                break;
-//                            case "!=":
-//                                code.add("if_icmpeq");
-//                                break;
-//                            case "<":
-//                                code.add("if_icmpge");
-//                                break;
-//                            case "<=":
-//                                code.add("if_icmpgt");
-//                                break;
-//                            case ">":
-//                                code.add("if_icmple");
-//                                break;
-//                            case ">=":
-//                                code.add("if_icmplt");
-//                                break;
-//                        }
 
                         code.set(code.size() - 1, code.get(code.size() - 1) + " " + ifLabels.get(conditionCounter));
                     } else {
                         code.addAll(addCodeCondition(lop));
-//                        switch (lop) {
-//                            case "==":
-//                                code.add("if_icmpeq");
-//                                break;
-//                            case "!=":
-//                                code.add("if_icmpne");
-//                                break;
-//                            case "<":
-//                                code.add("if_icmple");
-//                                break;
-//                            case "<=":
-//                                code.add("if_icmplt");
-//                                break;
-//                            case ">":
-//                                code.add("if_icmpgt");
-//                                break;
-//                            case ">=":
-//                                code.add("if_icmpge");
-//                                break;
-//                        }
 
                         code.set(code.size() - 1, code.get(code.size() - 1) + " " + "#_" + +ifStmCounter + "_" + "code_block_" + conditionCounter);
 
@@ -1020,26 +652,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                             code.addAll(visit(ctx.ifConditionMore(i).mathComparison().mathExpr(y)));
                         }
                         code.addAll(addCodeCondition(cop));
-//                        switch (cop) {
-//                            case "==":
-//                                code.add("if_icmpeq");
-//                                break;
-//                            case "!=":
-//                                code.add("if_icmpne");
-//                                break;
-//                            case "<":
-//                                code.add("if_icmplt");
-//                                break;
-//                            case "<=":
-//                                code.add("if_icmple");
-//                                break;
-//                            case ">":
-//                                code.add("if_icmpgt");
-//                                break;
-//                            case ">=":
-//                                code.add("if_icmpge");
-//                                break;
-//                        }
 
                         code.set(code.size() - 1, code.get(code.size() - 1) + " " + "#_" + +ifStmCounter + "_" + "code_block_" + conditionCounter);
                     }
@@ -1050,26 +662,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                         if (currentAndOr.equals("&&") && nextAndOr.equals("&&")) {
                             if (i == 0) {
                                 code.addAll(addCodeConditionReverse(lop));
-//                                switch (lop) {
-//                                    case "==":
-//                                        code.add("if_icmpne");
-//                                        break;
-//                                    case "!=":
-//                                        code.add("if_icmpeq");
-//                                        break;
-//                                    case "<":
-//                                        code.add("if_icmpge");
-//                                        break;
-//                                    case "<=":
-//                                        code.add("if_icmpgt");
-//                                        break;
-//                                    case ">":
-//                                        code.add("if_icmple");
-//                                        break;
-//                                    case ">=":
-//                                        code.add("if_icmplt");
-//                                        break;
-//                                }
 
                                 code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.get(0));
                             }
@@ -1079,52 +671,12 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                                 code.addAll(visit(ctx.ifConditionMore(i).mathComparison().mathExpr(y)));
                             }
                             code.addAll(addCodeConditionReverse(cop));
-//                            switch (cop) {
-//                                case "==":
-//                                    code.add("if_icmpne");
-//                                    break;
-//                                case "!=":
-//                                    code.add("if_icmpeq");
-//                                    break;
-//                                case "<":
-//                                    code.add("if_icmpge");
-//                                    break;
-//                                case "<=":
-//                                    code.add("if_icmpgt");
-//                                    break;
-//                                case ">":
-//                                    code.add("if_icmple");
-//                                    break;
-//                                case ">=":
-//                                    code.add("if_icmplt");
-//                                    break;
-//                            }
 
                             code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.get(0));
 
                         } else if (currentAndOr.equals("&&") && nextAndOr.equals("||")) {
                             if (i == 0) {
                                 code.addAll(addCodeConditionReverse(lop));
-//                                switch (lop) {
-//                                    case "==":
-//                                        code.add("if_icmpne");
-//                                        break;
-//                                    case "!=":
-//                                        code.add("if_icmpeq");
-//                                        break;
-//                                    case "<":
-//                                        code.add("if_icmpge");
-//                                        break;
-//                                    case "<=":
-//                                        code.add("if_icmpgt");
-//                                        break;
-//                                    case ">":
-//                                        code.add("if_icmple");
-//                                        break;
-//                                    case ">=":
-//                                        code.add("if_icmplt");
-//                                        break;
-//                                }
 
                                 code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.get(0));
                             }
@@ -1134,26 +686,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                                 code.addAll(visit(ctx.ifConditionMore(i).mathComparison().mathExpr(y)));
                             }
                             code.addAll(addCodeCondition(cop));
-//                            switch (cop) {
-//                                case "==":
-//                                    code.add("if_icmpeq");
-//                                    break;
-//                                case "!=":
-//                                    code.add("if_icmpne");
-//                                    break;
-//                                case "<":
-//                                    code.add("if_icmplt");
-//                                    break;
-//                                case "<=":
-//                                    code.add("if_icmple");
-//                                    break;
-//                                case ">":
-//                                    code.add("if_icmpgt");
-//                                    break;
-//                                case ">=":
-//                                    code.add("if_icmpge");
-//                                    break;
-//                            }
 
                             code.set(code.size() - 1, code.get(code.size() - 1) + " " + "#_" + +ifStmCounter + "_" + "code_block_" + conditionCounter);
                             code.add(labels.get(0) + ":");
@@ -1162,26 +694,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                         } else if (currentAndOr.equals("||") && nextAndOr.equals("||")) {
                             if (i == 0) {
                                 code.addAll(addCodeCondition(lop));
-//                                switch (lop) {
-//                                    case "==":
-//                                        code.add("if_icmpeq");
-//                                        break;
-//                                    case "!=":
-//                                        code.add("if_icmpne");
-//                                        break;
-//                                    case "<":
-//                                        code.add("if_icmplt");
-//                                        break;
-//                                    case "<=":
-//                                        code.add("if_icmple");
-//                                        break;
-//                                    case ">":
-//                                        code.add("if_icmpgt");
-//                                        break;
-//                                    case ">=":
-//                                        code.add("if_icmpge");
-//                                        break;
-//                                }
 
                                 code.set(code.size() - 1, code.get(code.size() - 1) + " " + "#_" + +ifStmCounter + "_" + "code_block_" + conditionCounter);
                             }
@@ -1191,52 +703,12 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                                 code.addAll(visit(ctx.ifConditionMore(i).mathComparison().mathExpr(y)));
                             }
                             code.addAll(addCodeCondition(cop));
-//                            switch (cop) {
-//                                case "==":
-//                                    code.add("if_icmpeq");
-//                                    break;
-//                                case "!=":
-//                                    code.add("if_icmpne");
-//                                    break;
-//                                case "<":
-//                                    code.add("if_icmplt");
-//                                    break;
-//                                case "<=":
-//                                    code.add("if_icmple");
-//                                    break;
-//                                case ">":
-//                                    code.add("if_icmpgt");
-//                                    break;
-//                                case ">=":
-//                                    code.add("if_icmpge");
-//                                    break;
-//                            }
 
                             code.set(code.size() - 1, code.get(code.size() - 1) + " " + "#_" + +ifStmCounter + "_" + "code_block_" + conditionCounter);
 
                         } else if (currentAndOr.equals("||") && nextAndOr.equals("&&")) {
                             if (i == 0) {
                                 code.addAll(addCodeCondition(lop));
-//                                switch (lop) {
-//                                    case "==":
-//                                        code.add("if_icmpeq");
-//                                        break;
-//                                    case "!=":
-//                                        code.add("if_icmpne");
-//                                        break;
-//                                    case "<":
-//                                        code.add("if_icmplt");
-//                                        break;
-//                                    case "<=":
-//                                        code.add("if_icmple");
-//                                        break;
-//                                    case ">":
-//                                        code.add("if_icmpgt");
-//                                        break;
-//                                    case ">=":
-//                                        code.add("if_icmpge");
-//                                        break;
-//                                }
 
                                 code.set(code.size() - 1, code.get(code.size() - 1) + " " + "#_" + +ifStmCounter + "_" + "code_block_" + conditionCounter);
                             }
@@ -1246,26 +718,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                                 code.addAll(visit(ctx.ifConditionMore(i).mathComparison().mathExpr(y)));
                             }
                             code.addAll(addCodeConditionReverse(cop));
-//                            switch (cop) {
-//                                case "==":
-//                                    code.add("if_icmpne");
-//                                    break;
-//                                case "!=":
-//                                    code.add("if_icmpeq");
-//                                    break;
-//                                case "<":
-//                                    code.add("if_icmpge");
-//                                    break;
-//                                case "<=":
-//                                    code.add("if_icmpgt");
-//                                    break;
-//                                case ">":
-//                                    code.add("if_icmple");
-//                                    break;
-//                                case ">=":
-//                                    code.add("if_icmplt");
-//                                    break;
-//                            }
 
                             code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.get(0));
 
@@ -1276,26 +728,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                             code.addAll(visit(ctx.ifConditionMore(i).mathComparison().mathExpr(y)));
                         }
                         code.addAll(addCodeConditionReverse(cop));
-//                        switch (cop) {
-//                            case "==":
-//                                code.add("if_icmpne");
-//                                break;
-//                            case "!=":
-//                                code.add("if_icmpeq");
-//                                break;
-//                            case "<":
-//                                code.add("if_icmpge");
-//                                break;
-//                            case "<=":
-//                                code.add("if_icmpgt");
-//                                break;
-//                            case ">":
-//                                code.add("if_icmple");
-//                                break;
-//                            case ">=":
-//                                code.add("if_icmplt");
-//                                break;
-//                        }
 
                         code.set(code.size() - 1, code.get(code.size() - 1) + " " + ifLabels.get(conditionCounter));
 
@@ -1309,53 +741,11 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                     //flip statement
                     code.set(code.size() - 1, code.get(code.size() - 1).replaceAll("code_block_" + conditionCounter, ifLabels.get(conditionCounter)));
                     String lopr = code.get(code.size() - 1).substring(7, 9);
-//                    switch (lopr) {
-//                        case "eq":
-//                            code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lopr, "ne"));
-//                            break;
-//                        case "ne":
-//                            code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lopr, "eq"));
-//                            break;
-//                        case "lt":
-//                            code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lopr, "ge"));
-//                            break;
-//                        case "le":
-//                            code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lopr, "gt"));
-//                            break;
-//                        case "gt":
-//                            code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lopr, "le"));
-//                            break;
-//                        case "ge":
-//                            code.set(code.size() - 1, code.get(code.size() - 1).replaceAll(lopr, "lt"));
-//                            break;
-//
-//                    }
                 }
             }
 
         } else {
             code.addAll(addCodeConditionReverse(lop));
-//            switch (lop) {
-//
-//                case "==":
-//                    code.add("if_icmpne");
-//                    break;
-//                case "!=":
-//                    code.add("if_icmpeq");
-//                    break;
-//                case "<":
-//                    code.add("if_icmpge");
-//                    break;
-//                case "<=":
-//                    code.add("if_icmpgt");
-//                    break;
-//                case ">":
-//                    code.add("if_icmple");
-//                    break;
-//                case ">=":
-//                    code.add("if_icmplt");
-//                    break;
-//            }
 
             code.set(code.size() - 1, code.get(code.size() - 1) + " " + ifLabels.get(conditionCounter));
 
