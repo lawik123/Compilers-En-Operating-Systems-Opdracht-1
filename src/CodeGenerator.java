@@ -615,9 +615,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                             code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.peek());
 
                         }
-                    } else if (i == ctx.forConditionMore().size() - 1) { //last condition
-
-                        }
+                     
                     } else if (i == ctx.forConditionMore().size() - 1) { //last condition
 
                         //add the math values
