@@ -1,0 +1,94 @@
+.class public Test
+.super java/lang/Object
+
+
+
+
+.method public <init>()V
+aload_0
+invokespecial java/lang/Object/<init>()V
+return
+.end method
+
+
+
+
+.method public static main([Ljava/lang/String;)V
+.limit stack 8
+.limit locals 4
+new Test
+dup
+invokespecial Test/<init>()V
+ldc "iets"
+astore 0
+goto forCondition_1
+forIDCrement_1:
+iinc 0 1
+forCondition_1:
+ldc 1
+ldc 10
+if_icmpge endFor_1
+beginFor_1:
+ldc 2
+istore 1
+iload 1
+ldc 2
+iadd
+istore 2
+iload 1
+iload 2
+if_icmple #_1_1_label_0
+iload 2
+ldc 4
+if_icmpeq #_1_code_block_1
+#_1_1_label_0:
+iload 1
+ldc 2
+if_icmpne #_1_ELSE_IF_1
+iload 2
+ldc 4
+if_icmpeq #_1_ELSE_IF_1
+#_1_code_block_1: 
+getstatic java/lang/System.out Ljava/io/PrintStream;
+new java/lang/StringBuilder
+dup
+invokespecial java/lang/StringBuilder/<init>()V
+iload 2
+invokevirtual java/lang/StringBuilder/append(I)Ljava/lang/StringBuilder;
+invokevirtual java/lang/StringBuilder/toString()Ljava/lang/String;
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+goto endif_1
+#_1_ELSE_IF_1:
+iload 2
+ldc 4
+if_icmpeq #_1_ELSE
+#_1_code_block_2:
+getstatic java/lang/System.out Ljava/io/PrintStream;
+new java/lang/StringBuilder
+dup
+invokespecial java/lang/StringBuilder/<init>()V
+iload 1
+invokevirtual java/lang/StringBuilder/append(I)Ljava/lang/StringBuilder;
+invokevirtual java/lang/StringBuilder/toString()Ljava/lang/String;
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+goto endif_1
+#_1_ELSE: 
+getstatic java/lang/System.out Ljava/io/PrintStream;
+new java/lang/StringBuilder
+dup
+invokespecial java/lang/StringBuilder/<init>()V
+ldc "pietje"
+invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;
+iload 1
+iload 2
+iadd
+invokevirtual java/lang/StringBuilder/append(I)Ljava/lang/StringBuilder;
+invokevirtual java/lang/StringBuilder/toString()Ljava/lang/String;
+invokevirtual java/io/PrintStream/println(Ljava/lang/String;)V
+endif_1:
+goto forIDCrement_1
+endFor_1:
+return
+.end method
+
+

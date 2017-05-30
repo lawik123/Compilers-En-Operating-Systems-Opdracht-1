@@ -1,0 +1,23 @@
+#Test BEGIN
+
+~int ()method3 /
+    return 5;
+    \
+
+~void ()method2 /
+    WRITE("Einde");
+    return;
+\
+
+~void ()myMethod /
+    ()method2;
+    WRITE(()method3;);
+    return;
+\
+
+~void ()run /
+    ()myMethod;
+    return;
+\
+
+END

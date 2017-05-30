@@ -1,0 +1,14 @@
+#Test BEGIN
+
+
+~void (~string a, ~int b)methodemetonevenparameters /
+
+    return;
+\
+
+~void ()run /
+    (5)methodemetonevenparameters;
+    return;
+\
+
+END

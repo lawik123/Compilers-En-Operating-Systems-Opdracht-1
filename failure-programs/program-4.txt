@@ -1,0 +1,14 @@
+#Test BEGIN
+
+
+~void (~string a)methodemetstringparameter /
+
+    return;
+\
+
+~void ()run /
+    (5)methodemetstringparameter;
+    return;
+\
+
+END

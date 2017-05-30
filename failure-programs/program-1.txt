@@ -1,0 +1,10 @@
+#Test BEGIN
+
+
+~void ()run /
+    ~int a IS "stringinintgaatfout";
+    WRITE(a);
+    return;
+\
+
+END

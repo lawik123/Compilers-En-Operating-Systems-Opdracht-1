@@ -1,0 +1,10 @@
+#Test BEGIN
+
+
+~void ()run /
+    ~int a IS 5;
+    WRITE(a);
+    return;
+\
+
+END

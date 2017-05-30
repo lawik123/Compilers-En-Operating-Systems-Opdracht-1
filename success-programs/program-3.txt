@@ -1,0 +1,17 @@
+#Test BEGIN
+
+~string ()method2 /
+    return READSTRING;
+\
+
+~void ()myMethod /
+    WRITE(()method2; +"1");
+    return;
+\
+
+~void ()run /
+    ()myMethod;
+    return;
+\
+
+END

@@ -1,0 +1,20 @@
+#Test BEGIN
+
+
+~void ()methodemetdezelfdenaam /
+
+    return;
+\
+
+~void ()methodemetdezelfdenaam /
+
+    return;
+\
+
+
+~void ()run /
+
+    return;
+\
+
+END

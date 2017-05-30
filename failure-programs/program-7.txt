@@ -1,0 +1,10 @@
+#Test BEGIN
+
+
+~void ()run /
+    ~string a IS "stringbijintoptellenkanniet";
+    ~int b IS 1+ a;
+    return;
+\
+
+END

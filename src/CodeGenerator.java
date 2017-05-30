@@ -103,14 +103,24 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         }
         code.add("\n");
         code.add(".method public <init>()V");
+        int initSize =0;
         if (ctx.varGlobalDecl().size() > 0) {
-            code.add(".limit stack 99");
-            code.add(".limit locals 99");
+            code.add(".limit stack ");
+            code.add(".limit locals ");
+            initSize = code.size()-1;
         }
+
+
 
         code.add("aload_0");
         code.add("invokespecial java/lang/Object/<init>()V");
         code.addAll(globalDeclarations);
+        if (ctx.varGlobalDecl().size() > 0) {
+            int stack = calculateStack(code); //stack size
+            int locals = 1; // locals size
+            code.set(initSize - 1, code.get(initSize-1) + stack);
+            code.set(initSize, code.get(initSize) + locals);
+        }
         code.add("return");
         code.add(".end method");
         code.add("\n");
@@ -122,13 +132,18 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
         code.add("\n");
         code.add(".method public static main([Ljava/lang/String;)V");
-        code.add(".limit stack 99");
-        code.add(".limit locals 99");
+        code.add(".limit stack ");
+        code.add(".limit locals ");
+        int runSize = code.size()-1;
         code.add("new " + className);
         code.add("dup");
         code.add("invokespecial " + className + "/<init>()V");
 
         code.addAll(visit(ctx.runMethod()));
+        int stack = calculateStack(code)+1; //stack size
+        int locals = currentMethodFrame.getJasminPosition().size()  ; // locals size
+        code.set(runSize - 1, code.get(runSize-1) + stack);
+        code.set(runSize, code.get(runSize) + (locals+1)) ;
         code.add("return");
         code.add(".end method");
         code.add("\n");
@@ -266,13 +281,19 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
         code.add(".method public " + ctx.methodIdentifier.getText() + "(" + methodTypes.get(ctx.methodIdentifier.getText()) + ")V");
 
-        code.add(".limit stack 99");
-        code.add(".limit locals 99");
+        code.add(".limit stack ");
+        code.add(".limit locals ");
 
         //visit the method statements
         for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
             code.addAll(visit(ctx.nonGlobalExpr(i)));
         }
+
+        int stack = calculateStack(code);
+        int locals = currentMethodFrame.getJasminPosition().size()+ctx.methodDeclParams().size();
+        code.set(1,code.get(1)+stack);
+        code.set(2,code.get(2)+locals);
+
 
         code.add("return");
         code.add(".end method");
@@ -281,6 +302,8 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         return code;
     }
 
+
+
     @Override
     public ArrayList<String> visitIntMethodDecl(LangParser.IntMethodDeclContext ctx) {
         currentMethodFrame = methodFrames.get(ctx.methodIdentifier.getText()); //set the current method frame
@@ -288,15 +311,21 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
         code.add(".method public " + ctx.methodIdentifier.getText() + "(" + methodTypes.get(ctx.methodIdentifier.getText()) + ")I");
 
-        code.add(".limit stack 99");
-        code.add(".limit locals 99");
+        code.add(".limit stack ");
+        code.add(".limit locals ");
 
         //visit the method statements
         for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
             code.addAll(visit(ctx.nonGlobalExpr(i)));
         }
 
-        code.add("ldc " + ctx.returnvalue.getText());
+
+
+        code.addAll(visit(ctx.returnvalue));
+        int stack = calculateStack(code);
+        int locals = currentMethodFrame.getJasminPosition().size()+ctx.methodDeclParams().size();
+        code.set(1,code.get(1)+stack);
+        code.set(2,code.get(2)+locals);
         code.add("ireturn");
         code.add(".end method");
         code.add("\n");
@@ -310,19 +339,59 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
         code.add(".method public " + ctx.methodIdentifier.getText() + "(" + methodTypes.get(ctx.methodIdentifier.getText()) + ")Ljava/lang/String;");
 
-        code.add(".limit stack 99");
-        code.add(".limit locals 99");
+        code.add(".limit stack ");
+        code.add(".limit locals ");
 
         //visit the method statements
         for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
             code.addAll(visit(ctx.nonGlobalExpr(i)));
         }
 
-        code.add("ldc " + ctx.returnvalue.getText());
+
+
+
+        code.addAll(visit(ctx.returnvalue));
+        int stack = calculateStack(code); //stack size
+        int locals = currentMethodFrame.getJasminPosition().size()+ctx.methodDeclParams().size(); // locals size
+        code.set(1,code.get(1)+stack);
+        code.set(2,code.get(2)+locals);
         code.add("areturn");
         code.add(".end method");
         code.add("\n");
         return code;
+    }
+
+    //calculates stack size
+    public int calculateStack(ArrayList<String> arrayList){
+        int counter = 0;
+        int max = 0;
+        for(String string:arrayList){
+            if(string.startsWith("ldc")||string.startsWith("iload") || string.startsWith("aload")
+                    || string.startsWith("getstatic")
+                    || string.startsWith("new java/lang/StringBuilder")|| string.startsWith("dup")
+                    || string.startsWith("getfield") || string.startsWith("new java/util/Scanner")
+                    ) {
+                counter++;
+                if (max < counter) {
+                    max = counter;
+                }
+            }else if(string.startsWith("iinc")){
+                counter = counter+2;
+                if (max < counter) {
+                    max = counter;
+                }
+            }else if(string.startsWith("istore") || string.startsWith("pop") || string.startsWith("invokespecial")
+                    || string.startsWith("invokevirtual") || string.startsWith("iadd") || string.startsWith("isub")
+                    || string.startsWith("imul") || string.startsWith("idiv")|| string.startsWith("irem")){
+                counter--;
+
+            }else if(string.startsWith("if") || string.startsWith("putfield")){
+                counter = counter-2;
+            }
+
+        }
+
+        return max;
     }
 
     //method declaration parameters
@@ -615,7 +684,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                             code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.peek());
 
                         }
-                     
+
                     } else if (i == ctx.forConditionMore().size() - 1) { //last condition
 
                         //add the math values
@@ -900,11 +969,19 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitWriteMath(LangParser.WriteMathContext ctx) {
         ArrayList<String> code = new ArrayList<>();
         code.addAll(visit(ctx.mathExpr()));
-        //check if the variable is an integer
-        if (currentMethodFrame.lookupType(ctx.getText()).equals("I")||code.get(code.size()-1).startsWith("i")) {
-            code.add("invokevirtual java/lang/StringBuilder/append(I)Ljava/lang/StringBuilder;");
-        } else {
-            code.add("invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;");
+        if(code.get(code.size()-1).startsWith("invoke")){
+            if(code.get(code.size()-1).endsWith("I")){
+                code.add("invokevirtual java/lang/StringBuilder/append(I)Ljava/lang/StringBuilder;");
+            } else {
+                code.add("invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;");
+            }
+        }else {
+            //check if the variable is an integer
+            if (currentMethodFrame.lookupType(ctx.getText()).equals("I") || code.get(code.size() - 1).startsWith("i")) {
+                code.add("invokevirtual java/lang/StringBuilder/append(I)Ljava/lang/StringBuilder;");
+            } else {
+                code.add("invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;");
+            }
         }
         return code;
     }
@@ -913,11 +990,19 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitWriteString(LangParser.WriteStringContext ctx) {
         ArrayList<String> code = new ArrayList<>();
         code.addAll(visit(ctx.stringvalues()));
-        //check if the variable is an integer
-        if (currentMethodFrame.lookupType(ctx.getText()).equals("I")||code.get(code.size()-1).startsWith("i")) {
-            code.add("invokevirtual java/lang/StringBuilder/append(I)Ljava/lang/StringBuilder;");
-        } else {
-            code.add("invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;");
+        if(code.get(code.size()-1).startsWith("invoke")){
+            if(code.get(code.size()-1).endsWith("I")){
+                code.add("invokevirtual java/lang/StringBuilder/append(I)Ljava/lang/StringBuilder;");
+            } else {
+                code.add("invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;");
+            }
+        }else {
+            //check if the variable is an integer
+            if (currentMethodFrame.lookupType(ctx.getText()).equals("I") || code.get(code.size() - 1).startsWith("i")) {
+                code.add("invokevirtual java/lang/StringBuilder/append(I)Ljava/lang/StringBuilder;");
+            } else {
+                code.add("invokevirtual java/lang/StringBuilder/append(Ljava/lang/String;)Ljava/lang/StringBuilder;");
+            }
         }
         return code;
     }
@@ -1020,9 +1105,10 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     @Override
     public ArrayList<String> visitStringRead(LangParser.StringReadContext ctx) {
         ArrayList<String> code = new ArrayList<>();
-        code.add("new java/util/Scanner\ndup\n");
-        code.add("getstatic\tjava/lang/System.in Ljava/io/InputStream;\n");
-        code.add("invokespecial\tjava/util/Scanner/<init>(Ljava/io/InputStream;)V\n");
+        code.add("new java/util/Scanner");
+        code.add("dup");
+        code.add("getstatic\tjava/lang/System.in Ljava/io/InputStream;");
+        code.add("invokespecial\tjava/util/Scanner/<init>(Ljava/io/InputStream;)V");
         code.add("invokevirtual java/util/Scanner/nextLine()Ljava/lang/String;");
         return code;
     }
@@ -1051,7 +1137,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
             if (currentMethodFrame.lookupType(ctx.getText()).equals("I")) {
                 code.add("iload " + currentMethodFrame.lookupJasminPosition(ctx.getText()));
             }else{
-                System.err.println("check: "+ctx.getText());
                 code.add("aload " + currentMethodFrame.lookupJasminPosition(ctx.getText()));
             }
         } else {
@@ -1064,9 +1149,10 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     @Override
     public ArrayList<String> visitIntread(LangParser.IntreadContext ctx) {
         ArrayList<String> code = new ArrayList<>();
-        code.add("new java/util/Scanner\ndup\n");
-        code.add("getstatic\tjava/lang/System.in Ljava/io/InputStream;\n");
-        code.add("invokespecial\tjava/util/Scanner/<init>(Ljava/io/InputStream;)V\n");
+        code.add("new java/util/Scanner");
+        code.add("dup");
+        code.add("getstatic\tjava/lang/System.in Ljava/io/InputStream;");
+        code.add("invokespecial\tjava/util/Scanner/<init>(Ljava/io/InputStream;)V");
         code.add("invokevirtual java/util/Scanner/nextInt()I");
         return code;
     }

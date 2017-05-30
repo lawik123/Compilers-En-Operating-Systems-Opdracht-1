@@ -334,6 +334,17 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
         throw new EvaluateException("Incompatible types");
     }
 
+    @Override
+    public DataType visitMathComparison(LangParser.MathComparisonContext ctx) {
+        DataType left = visit(ctx.identifierLeft);
+        DataType right = visit(ctx.identifierRight);
+
+        if(left==DataType.INT && right==DataType.INT){
+            return DataType.INT;
+        }
+        throw new EvaluateException("Incompatible types");
+    }
+
     //Getters for the DataType control
     //String
     @Override
@@ -343,7 +354,11 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
 
     @Override
     public DataType visitStringVariable(LangParser.StringVariableContext ctx) {
-        return DataType.STRING;
+        VariableType varType = (VariableType) currentScope.lookupVariable(ctx.getText()).getType();
+        if(varType.getDataType()== DataType.STRING) {
+            return DataType.STRING;
+        }
+        return DataType.INT;
     }
 
     @Override
@@ -371,7 +386,11 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
     //Int
     @Override
     public DataType visitIntvariable(LangParser.IntvariableContext ctx) {
-        return DataType.INT;
+        VariableType varType = (VariableType) currentScope.lookupVariable(ctx.getText()).getType();
+        if(varType.getDataType()== DataType.INT) {
+            return DataType.INT;
+        }
+        return DataType.STRING;
     }
 
     @Override

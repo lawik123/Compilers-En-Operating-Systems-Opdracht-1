@@ -1,0 +1,9 @@
+#Test BEGIN
+
+
+~void ()run /
+    ()methodedienietbestaataanroepen;
+    return;
+\
+
+END

@@ -3,12 +3,12 @@
     global ~string helloWorld IS "Hello";
 
 ~void (~int c)method2 /
-    (2)method3;
-    WRITE(c);
+    ~int x IS c +(2)method3;;
+    WRITE(x);
     return;
 \
 
-~void (~int a)method3 /
+~int (~int a)method3 /
         for(~int i IS 0; i < 10; incr(i)) /
             ~int b IS i * a;
             if(b > 4) /
@@ -17,8 +17,7 @@
             \
         \
         helloWorld IS READSTRING;
-        return;
-
+        return 3;
 \
 
 ~void ()myMethod /

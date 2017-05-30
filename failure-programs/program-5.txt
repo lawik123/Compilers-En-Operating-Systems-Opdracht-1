@@ -1,0 +1,15 @@
+#Test BEGIN
+
+
+~int ()methode2 /
+
+    return "stringreturnipvint";
+\
+
+
+~void ()run /
+    ()methode2;
+    return;
+\
+
+END
