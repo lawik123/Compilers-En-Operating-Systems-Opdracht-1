@@ -115,12 +115,6 @@ public interface LangVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitIfStm(LangParser.IfStmContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link LangParser#whileStm}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitWhileStm(LangParser.WhileStmContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link LangParser#forStm}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

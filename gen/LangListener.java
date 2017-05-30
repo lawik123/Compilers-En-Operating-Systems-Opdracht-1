@@ -185,16 +185,6 @@ public interface LangListener extends ParseTreeListener {
 	 */
 	void exitIfStm(LangParser.IfStmContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link LangParser#whileStm}.
-	 * @param ctx the parse tree
-	 */
-	void enterWhileStm(LangParser.WhileStmContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link LangParser#whileStm}.
-	 * @param ctx the parse tree
-	 */
-	void exitWhileStm(LangParser.WhileStmContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link LangParser#forStm}.
 	 * @param ctx the parse tree
 	 */

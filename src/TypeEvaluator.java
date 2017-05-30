@@ -171,12 +171,6 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
     @Override
     public DataType visitVoidMethodDecl(LangParser.VoidMethodDeclContext ctx) {
         currentScope = globalScope.openScope();
-        String methodIdentifier = ctx.methodIdentifier.getText();
-        Symbol method = globalScope.lookupMethod(methodIdentifier);
-        MethodType methodType = (MethodType) method.getType();
-//        for (int i = 0; i < ctx.methodDeclParams().size(); i++) {
-//            methodType.addParameter(visit(ctx.methodDeclParams(i)));
-//        }
         for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
             visit(ctx.nonGlobalExpr(i));
         }
@@ -188,8 +182,6 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
     @Override
     public DataType visitIntMethodDecl(LangParser.IntMethodDeclContext ctx) {
         currentScope = globalScope.openScope();
-        String methodIdentifier = ctx.methodIdentifier.getText();
-        Symbol lookupMethod = globalScope.lookupMethod(methodIdentifier);
         DataType returnvalue = null;
         try {
             returnvalue = visit(ctx.mathExpr());
@@ -197,11 +189,6 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
 
         }
         if (returnvalue == DataType.INT) {
-            MethodType newMethod = (MethodType) lookupMethod.getType();
-//            for (int i = 0; i < ctx.methodDeclParams().size(); i++) {
-//                newMethod.addParameter(visit(ctx.methodDeclParams(i)));
-//            }
-
             for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
                 visit(ctx.nonGlobalExpr(i));
             }
@@ -214,8 +201,6 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
     @Override
     public DataType visitStringMethodDecl(LangParser.StringMethodDeclContext ctx) {
         currentScope = globalScope.openScope();
-        String methodIdentifier = ctx.methodIdentifier.getText();
-        Symbol lookupMethod = globalScope.lookupMethod(methodIdentifier);
         DataType returnvalue = null;
         try {
             returnvalue = visit(ctx.stringvalues());
@@ -223,11 +208,6 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
 
         }
         if (returnvalue == DataType.STRING) {
-            MethodType newMethod = (MethodType) lookupMethod.getType();
-//            for (int i = 0; i < ctx.methodDeclParams().size(); i++) {
-//                newMethod.addParameter(visit(ctx.methodDeclParams(i)));
-//            }
-
             for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
                 visit(ctx.nonGlobalExpr(i));
             }
@@ -296,16 +276,6 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
         }
         currentScope = currentScope.closeScope();
         return super.visitIfStm(ctx);
-    }
-
-    @Override
-    public DataType visitWhileStm(LangParser.WhileStmContext ctx) {
-        currentScope = currentScope.openScope();
-        for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
-            visit(ctx.nonGlobalExpr(i));
-        }
-        currentScope = currentScope.closeScope();
-        return super.visitWhileStm(ctx);
     }
 
     @Override

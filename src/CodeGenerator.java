@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Created by lars on 3/12/2017.
@@ -10,7 +12,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     private MethodFrame globalFrame;
 
     private int ifStmCounter = 0;
-    private int whileStmCounter = 0;
     private int forStmCounter = 0;
     private int conditionCounter = 0;
     private ArrayList<String> ifLabels = new ArrayList<>();
@@ -23,38 +24,40 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     private String className;
     private HashMap<String, String> methodTypes = new HashMap<>();
     private HashMap<String, MethodFrame> methodFrames = new HashMap<>();
-    private HashMap<String, ArrayList<String>> parameterNames = new HashMap<>();
     private HashMap<String, String> returnTypes = new HashMap<>();
 
     private boolean hasElse;
 
+
+
     @Override
     public ArrayList<String> visitProg(LangParser.ProgContext ctx) {
-        globalFrame = new MethodFrame();
+        globalFrame = new MethodFrame(); //declare the global frame
         ArrayList<String> code = new ArrayList<>();
         className = ctx.className.getText();
         if(ctx.methodnames()!=null) {
-            for (int i = 0; i < ctx.methodnames().getChildCount(); i++) {
-                currentMethodFrame = new MethodFrame(globalFrame);
-                currentMethodFrame.getJasminPosition().put("placeholder", "0");
+            for (int i = 0; i < ctx.methodnames().getChildCount(); i++) { //loop through all the methods
+                currentMethodFrame = new MethodFrame(globalFrame); //set the current method frame to the global frame
+                currentMethodFrame.getJasminPosition().put("placeholder", "0"); //add a placeholder jasmin position
+
+                //split the method to get the name, return type and parameters
                 String[] split = ctx.methodnames().getChild(i).getText().split("/");
                 String[] split2 = split[0].split("\\)");
                 String[] split3 = split[0].split("\\(");
 
                 ArrayList<String> paramTypes = new ArrayList<>();
-                currentMethod = split2[1];
-                parameterNames.put(currentMethod, new ArrayList<>());
+                currentMethod = split2[1]; //set the current method
 
                 try {
                     String child = "";
                     int counter = 2;
-                    while (!child.equals(")")) {
+                    while (!child.equals(")")) { //loop through the parameters and declare their jasmin position
                         child = ctx.methodnames().getChild(i).getChild(counter).getText();
                         if (!child.equals(",")) {
-                            if (child.contains("~int")) {
+                            if (child.contains("~int")) { //int parameter
                                 paramTypes.add("I");
                                 currentMethodFrame.declareJasminPosition(child.substring(4), (currentMethodFrame.getJasminPosition().size()), "I");
-                            } else if (child.contains("~string")) {
+                            } else if (child.contains("~string")) { //string parameter
                                 paramTypes.add("Ljava/lang/String;");
                                 currentMethodFrame.declareJasminPosition(child.substring(7), (currentMethodFrame.getJasminPosition().size()), "Ljava/lang/String;");
                             }
@@ -65,12 +68,14 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                     System.err.println(npe.getMessage());
                 }
 
+                //create a new string consisting of the parameter types and add it to the methodTypes
                 String params = "";
                 for (int x = 0; x < paramTypes.size(); x++) {
                     params = params + paramTypes.get(x);
                 }
                 methodTypes.put(currentMethod, params);
 
+                //get the return types and add it to the returnTypes
                 switch (split3[0]) {
                     case "~void":
                         returnTypes.put(currentMethod, "V");
@@ -82,6 +87,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                         returnTypes.put(currentMethod, "Ljava/lang/String;");
                         break;
                 }
+                //add the method to the methodFrames
                 methodFrames.put(currentMethod, currentMethodFrame);
             }
         }
@@ -89,6 +95,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         code.add(".class public " + className);
         code.add(".super java/lang/Object");
         code.add("\n");
+        //visit the global variable declaration(s) visitor
         if (ctx.varGlobalDecl().size() > 0) {
             for (int i = 0; i < ctx.varGlobalDecl().size(); i++) {
                 code.addAll(visit(ctx.varGlobalDecl(i)));
@@ -107,6 +114,8 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         code.add("return");
         code.add(".end method");
         code.add("\n");
+
+        //visit the methods
         if(ctx.methodnames()!=null) {
             allOtherMethods.addAll(visit(ctx.methodnames()));
         }
@@ -133,6 +142,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         currentMethodFrame = new MethodFrame(globalFrame);
         ArrayList<String> code = new ArrayList<>();
         inRun = true;
+        //visit the expressions
         for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
             code.addAll(visit(ctx.nonGlobalExpr(i)));
         }
@@ -145,6 +155,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         ArrayList<String> code = new ArrayList<>();
         String identifier = ctx.identifier.getText();
 
+        //declare global jasmin variable
         globalFrame.declareGlobalJasminVariable(identifier, className + "/" + identifier + " " + "I", "I");
         globalDeclarations.add("aload 0");
         globalDeclarations.addAll(visit(ctx.mathExpr()));
@@ -159,6 +170,8 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitDeclareStringGlobalVariable(LangParser.DeclareStringGlobalVariableContext ctx) {
         ArrayList<String> code = new ArrayList<>();
         String identifier = ctx.identifier.getText();
+
+       //declare global jasmin variable
         globalFrame.declareGlobalJasminVariable(identifier, className + "/" + identifier + " " + "Ljava/lang/String;", "Ljava/lang/String;");
         globalDeclarations.add("aload 0");
         globalDeclarations.addAll(visit(ctx.stringvalues()));
@@ -174,7 +187,10 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitDeclareIntVariable(LangParser.DeclareIntVariableContext ctx) {
         ArrayList<String> code = new ArrayList<>();
         String identifier = ctx.identifier.getText();
+
+        //declare jasmin position
         currentMethodFrame.declareJasminPosition(identifier, currentMethodFrame.getJasminPosition().size(), "I");
+
         code.addAll(visit(ctx.mathExpr()));
         code.add("istore " + (currentMethodFrame.getJasminPosition().size() - 1));
 
@@ -185,7 +201,10 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitDeclareStringVariable(LangParser.DeclareStringVariableContext ctx) {
         ArrayList<String> code = new ArrayList<>();
         String identifier = ctx.identifier.getText();
+
+        //declare jasmin position
         currentMethodFrame.declareJasminPosition(identifier, currentMethodFrame.getJasminPosition().size(), "Ljava/lang/String;");
+
         code.addAll(visit(ctx.stringvalues()));
         code.add("astore " + (currentMethodFrame.getJasminPosition().size()-1));
         return code;
@@ -195,6 +214,8 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     @Override
     public ArrayList<String> visitIntVarModify(LangParser.IntVarModifyContext ctx) {
         ArrayList<String> code = new ArrayList<>();
+
+        //check if there is a global variable with the same name
         if (globalFrame.lookupGlobalCode(ctx.identifier.getText()).isEmpty()) {
             code.add("iload " + currentMethodFrame.lookupJasminPosition(ctx.identifier.getText()));
             code.add("pop");
@@ -210,7 +231,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         }
     }
 
-    //TODO!!!
     @Override
     public ArrayList<String> visitStringVarModify(LangParser.StringVarModifyContext ctx) {
         ArrayList<String> code = new ArrayList<>();
@@ -241,7 +261,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
     @Override
     public ArrayList<String> visitVoidMethodDecl(LangParser.VoidMethodDeclContext ctx) {
-        currentMethodFrame = methodFrames.get(ctx.methodIdentifier.getText());
+        currentMethodFrame = methodFrames.get(ctx.methodIdentifier.getText()); //set the current method frame
         ArrayList<String> code = new ArrayList<>();
 
         code.add(".method public " + ctx.methodIdentifier.getText() + "(" + methodTypes.get(ctx.methodIdentifier.getText()) + ")V");
@@ -263,7 +283,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
     @Override
     public ArrayList<String> visitIntMethodDecl(LangParser.IntMethodDeclContext ctx) {
-        currentMethodFrame = methodFrames.get(ctx.methodIdentifier.getText());
+        currentMethodFrame = methodFrames.get(ctx.methodIdentifier.getText()); //set the current method frame
         ArrayList<String> code = new ArrayList<>();
 
         code.add(".method public " + ctx.methodIdentifier.getText() + "(" + methodTypes.get(ctx.methodIdentifier.getText()) + ")I");
@@ -285,7 +305,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
     @Override
     public ArrayList<String> visitStringMethodDecl(LangParser.StringMethodDeclContext ctx) {
-        currentMethodFrame = methodFrames.get(ctx.methodIdentifier.getText());
+        currentMethodFrame = methodFrames.get(ctx.methodIdentifier.getText()); //set the current method frame
         ArrayList<String> code = new ArrayList<>();
 
         code.add(".method public " + ctx.methodIdentifier.getText() + "(" + methodTypes.get(ctx.methodIdentifier.getText()) + ")Ljava/lang/String;");
@@ -324,14 +344,14 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     @Override
     public ArrayList<String> visitCallMethodExpr(LangParser.CallMethodExprContext ctx) {
         ArrayList<String> code = new ArrayList<>();
-        if (!inRun) {
+        if (!inRun) { //check if the method is being called in the run method
             code.add("aload_0");
         }
         for (int i =0;i<ctx.methodCallParams().size();i++) {
             code.addAll(visit(ctx.methodCallParams(i)));
 
         }
-        String dataTypes = methodTypes.get(ctx.methodIdentifier.getText());
+        String dataTypes = methodTypes.get(ctx.methodIdentifier.getText()); //get the parameter data types
         code.add("invokevirtual " + className + "/" + ctx.methodIdentifier.getText() + "(" + dataTypes + ")" + returnTypes.get(ctx.methodIdentifier.getText()));
         return code;
     }
@@ -355,21 +375,20 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     //statement visitors
     @Override
     public ArrayList<String> visitIfStm(LangParser.IfStmContext ctx) {
-        ifStmCounter++;     //up the ifStmcounter by 1
+        ifStmCounter++; //increment the counter which keeps track of (if/else if/else) blocks
         ArrayList<String> code = new ArrayList<>();
         //declare the needed variables
         int sizeElseChildren = 0;
         int conditionSize;
-        conditionSize = ctx.ifCondition().size();
-        try {
-            //else block
-            sizeElseChildren = ctx.elseBlock.children.size();       //gets the size of the children in ELSE block
+        conditionSize = ctx.ifCondition().size(); //get the amount of if/else if/else blocks
+        try { //check if there is an else block
+            sizeElseChildren = ctx.elseBlock.children.size();
             hasElse = true;
         } catch (NullPointerException npe) {
             hasElse = false;
         }
 
-        //create all needed labels for this ifstatement
+        //create labels for the if/else if/else blocks
         for (int i = 0; i <= conditionSize; i++) {
             if (i == 0) {
                 ifLabels.add("#_" + ifStmCounter + "_" + "IF");
@@ -391,17 +410,17 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
             if (i == 0) {
                 conditionCounter = 1;
-                code.addAll(visit(ctx.ifCondition(i)));
+                code.addAll(visit(ctx.ifCondition(i))); //condition(s)
 
                 code.add("#_" + ifStmCounter + "_" + "code_block_1: ");
                 for (int y = 0; y < ctx.ifBlock.getChildCount(); y++) {      //if block
                     code.addAll(visit(ctx.ifBlock.getChild(y)));
                 }
                 counter = ctx.ifBlock.children.size()-1;
-            } else if (i < ctx.ifCondition().size()) {     //if else block
+            } else if (i < ctx.ifCondition().size()) {     //else if block
                 conditionCounter = i + 1;
                 code.add(ifLabels.get(i) + ":");
-                code.addAll(visit(ctx.ifCondition(i)));
+                code.addAll(visit(ctx.ifCondition(i))); //condition(s)
 
                 code.add("#_" + ifStmCounter + "_" + "code_block_" + (i + 1) + ":");
                 for (int y = 0; y < ctx.ifElseBlock.children.size(); y++) {
@@ -427,25 +446,10 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         return code;
     }
 
-    @Override
-    public ArrayList<String> visitWhileStm(LangParser.WhileStmContext ctx) {
-        whileStmCounter++;
-        ArrayList<String> code = new ArrayList<>();
-        code.add("goto whileCondition_" + whileStmCounter);
-        code.add("beginWhile_" + whileStmCounter + ":");
-        for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
-            code.addAll(visit(ctx.nonGlobalExpr(i)));
-        }
-        code.add("whileCondition_" + whileStmCounter + ":");
-        code.addAll(visit(ctx.ifCondition()));
-        code.add("endWhile_" + whileStmCounter + ":");
-        return code;
-
-    }
 
     @Override
     public ArrayList<String> visitForStm(LangParser.ForStmContext ctx) {
-        forStmCounter++;
+        forStmCounter++; //increment the counter which keeps track of for blocks
         int currentFor = forStmCounter;
         ArrayList<String> code = new ArrayList<>();
         code.addAll(visit(ctx.varDecl()));
@@ -453,8 +457,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
 
         code.add("forIDCrement_" + forStmCounter + ":");
-        //check for increment by 1 or by -1
-        if (ctx.idCrement.getText().equals("incr")) {
+        if (ctx.idCrement.getText().equals("incr")) { //check if the value in the for loop should be incremented
             code.add("iinc " + currentMethodFrame.lookupJasminPosition(ctx.idValue.getText()) + " 1");
         } else {
             code.add("iinc " + currentMethodFrame.lookupJasminPosition(ctx.idValue.getText()) + " -1");
@@ -475,13 +478,15 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     @Override
     public ArrayList<String> visitForCondition(LangParser.ForConditionContext ctx) {
         ArrayList<String> code = new ArrayList<>();
-        String lop = ctx.mathComparison().lop.getText();
+        String lop = ctx.mathComparison().lop.getText(); //get the logical operator
+
+        //add the math values
         for (int i = 0; i < ctx.mathComparison().mathExpr().size(); i++) {
             code.addAll(visit(ctx.mathComparison().mathExpr(i)));
         }
-        //create labels if the condition has more than 1 checks
-        if (ctx.forConditionMore().size() > 0) {
-            ArrayList<String> labels = new ArrayList<>();
+        if (ctx.forConditionMore().size() > 0) { //check if there is more than one condition
+            Queue<String> labels = new LinkedList<>();
+            //create labels for the conditions
             for (int i = 0; i < ctx.forConditionMore().size(); i++) {
                 if (i < ctx.forConditionMore().size() - 1 && ctx.forConditionMore(i).andOR.getText().equals("&&") && ctx.forConditionMore(i + 1).andOR.getText().equals("||")) {
                     labels.add(forStmCounter + "_label_" + i);
@@ -489,109 +494,147 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                     labels.add("endFor_" + forStmCounter);
                 }
             }
-            for (int i = 0; i < ctx.forConditionMore().size(); i++) {
-                String currentAndOr = ctx.forConditionMore(i).andOR.getText();
-                String cop = ctx.forConditionMore(i).mathComparison().lop.getText();
+            for (int i = 0; i < ctx.forConditionMore().size(); i++) { //loop through the conditions
+                String currentAndOr = ctx.forConditionMore(i).andOR.getText(); //check if condition is && or ||
+                String cop = ctx.forConditionMore(i).mathComparison().lop.getText(); //get the logical operator of the current condition
 
-                if (ctx.forConditionMore().size() == 1) {
+                if (ctx.forConditionMore().size() == 1) {//check if there only 1 extra condition
                     if (currentAndOr.equals("&&")) {
+                        //add the comparison
                         code.addAll(addCodeConditionReverse(lop));
+                        //set the label to jump to
                         code.set(code.size() - 1, code.get(code.size() - 1) + " " + "endFor_" + forStmCounter);
 
+                        //add the math values
                         for (int y = 0; y < ctx.forConditionMore(i).mathComparison().mathExpr().size(); y++) {
                             code.addAll(visit(ctx.forConditionMore(i).mathComparison().mathExpr(y)));
                         }
+                        //add the comparison
                         code.addAll(addCodeConditionReverse(lop));
 
+                        //set the label to jump to
                         code.set(code.size() - 1, code.get(code.size() - 1) + " " + "endFor_" + forStmCounter);
                     } else {
+                        //add the comparison
                         code.addAll(addCodeCondition(lop));
 
+                        //set the label to jump to
                         code.set(code.size() - 1, code.get(code.size() - 1) + " " + "beginFor_" + forStmCounter);
 
+                        //add the math values
                         for (int y = 0; y < ctx.forConditionMore(i).mathComparison().mathExpr().size(); y++) {
                             code.addAll(visit(ctx.forConditionMore(i).mathComparison().mathExpr(y)));
                         }
+
+                        //add the comparison
                         code.addAll(addCodeCondition(lop));
 
+                        //set the label to jump to
                         code.set(code.size() - 1, code.get(code.size() - 1) + " " + "beginFor_" + forStmCounter);
                     }
 
                 } else {
-                    if (i < ctx.forConditionMore().size() - 1) {
-                        String nextAndOr = ctx.forConditionMore(i + 1).andOR.getText();
+                    if (i < ctx.forConditionMore().size() - 1) { //loop through all the conditions except for the last one
+                        String nextAndOr = ctx.forConditionMore(i + 1).andOR.getText(); //check if next condition is && or ||
                         if (currentAndOr.equals("&&") && nextAndOr.equals("&&")) {
                             if (i == 0) {
+                                //add the comparison
                                 code.addAll(addCodeConditionReverse(lop));
-
-                                code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.get(0));
+                                //set the correct label to jump to
+                                code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.peek());
                             }
 
+                            //add the math values
                             for (int y = 0; y < ctx.forConditionMore(i).mathComparison().mathExpr().size(); y++) {
                                 code.addAll(visit(ctx.forConditionMore(i).mathComparison().mathExpr(y)));
                             }
+
+                            //add the comparison
                             code.addAll(addCodeConditionReverse(lop));
 
-                            code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.get(0));
+                            //set the label to jump to
+                            code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.peek());
 
                         } else if (currentAndOr.equals("&&") && nextAndOr.equals("||")) {
                             if (i == 0) {
+                                //add the comparison
                                 code.addAll(addCodeConditionReverse(lop));
-
-                                code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.get(0));
+                                //set the label to jump to
+                                code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.peek());
                             }
 
+                            //add the math values
                             for (int y = 0; y < ctx.forConditionMore(i).mathComparison().mathExpr().size(); y++) {
                                 code.addAll(visit(ctx.forConditionMore(i).mathComparison().mathExpr(y)));
                             }
+
+                            //add the comparison
                             code.addAll(addCodeCondition(lop));
 
+                            //set the label to jump to
                             code.set(code.size() - 1, code.get(code.size() - 1) + " " + "beginFor_" + forStmCounter);
-                            code.add(labels.get(0) + ":");
-                            labels.remove(0);
+                            //add the label from the labels queue
+                            code.add(labels.remove() + ":");
 
                         } else if (currentAndOr.equals("||") && nextAndOr.equals("||")) {
                             if (i == 0) {
+                                //add the comparison
                                 code.addAll(addCodeCondition(lop));
-
+                                //set the label to jump to
                                 code.set(code.size() - 1, code.get(code.size() - 1) + " " + "beginFor_" + forStmCounter);
                             }
 
+                            //add the math values
                             for (int y = 0; y < ctx.forConditionMore(i).mathComparison().mathExpr().size(); y++) {
                                 code.addAll(visit(ctx.forConditionMore(i).mathComparison().mathExpr(y)));
                             }
+
+                            //add the comparison
                             code.addAll(addCodeCondition(lop));
 
+                            //set the label to jump to
                             code.set(code.size() - 1, code.get(code.size() - 1) + " " + "beginFor_" + forStmCounter);
 
                         } else if (currentAndOr.equals("||") && nextAndOr.equals("&&")) {
                             if (i == 0) {
+                                //add the comparison
                                 code.addAll(addCodeCondition(lop));
-
+                                //set the label to jump to
                                 code.set(code.size() - 1, code.get(code.size() - 1) + " " + "beginFor_" + forStmCounter);
                             }
 
+
+                            //add the math vlaues
                             for (int y = 0; y < ctx.forConditionMore(i).mathComparison().mathExpr().size(); y++) {
                                 code.addAll(visit(ctx.forConditionMore(i).mathComparison().mathExpr(y)));
                             }
+                            //add the comparison
                             code.addAll(addCodeConditionReverse(cop));
 
-                            code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.get(0));
+                            //set the label to jump to
+                            code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.peek());
 
                         }
-                    } else if (i == ctx.forConditionMore().size() - 1) {
+                    } else if (i == ctx.forConditionMore().size() - 1) { //last condition
+
+                        //add the math values
                         for (int y = 0; y < ctx.forConditionMore(i).mathComparison().mathExpr().size(); y++) {
                             code.addAll(visit(ctx.forConditionMore(i).mathComparison().mathExpr(y)));
                         }
+
+                        //add the comparison
                         code.addAll(addCodeConditionReverse(cop));
 
+                        //set the label to jump to
                         code.set(code.size() - 1, code.get(code.size() - 1) + " " + "endFor_" + forStmCounter);
                     }
                 }
             }
 
         } else {
+            //add the comparison
             code.addAll(addCodeConditionReverse(lop));
+            //set the label to jump to
             code.set(code.size() - 1, code.get(code.size() - 1) + " " + "endFor_" + forStmCounter);
         }
         return code;
@@ -600,13 +643,15 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     @Override
     public ArrayList<String> visitIfCondition(LangParser.IfConditionContext ctx) {
         ArrayList<String> code = new ArrayList<>();
-        String lop = ctx.mathComparison().lop.getText();
+        String lop = ctx.mathComparison().lop.getText(); //get the logical operator
+        //add the math values
         for (int i = 0; i < ctx.mathComparison().mathExpr().size(); i++) {
             code.addAll(visit(ctx.mathComparison().mathExpr(i)));
         }
 
-        if (ctx.ifConditionMore().size() > 0) {
-            ArrayList<String> labels = new ArrayList<>();
+        if (ctx.ifConditionMore().size() > 0) { //check if there is more than one condition
+            Queue<String> labels = new LinkedList<>();
+            //create labels for the conditions
             for (int i = 0; i < ctx.ifConditionMore().size(); i++) {
                 if (i < ctx.ifConditionMore().size() - 1 && ctx.ifConditionMore(i).andOR.getText().equals("&&") && ctx.ifConditionMore(i + 1).andOR.getText().equals("||")) {
                     labels.add("#_" + ifStmCounter + "_" + conditionCounter + "_label_" + i);
@@ -614,109 +659,144 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                     labels.add(ifLabels.get(conditionCounter));
                 }
             }
-            for (int i = 0; i < ctx.ifConditionMore().size(); i++) {
-                String currentAndOr = ctx.ifConditionMore(i).andOR.getText();
-                String cop = ctx.ifConditionMore(i).mathComparison().lop.getText();
+            for (int i = 0; i < ctx.ifConditionMore().size(); i++) { //loop through the conditions
+                String currentAndOr = ctx.ifConditionMore(i).andOR.getText(); // check if condition is && or ||
+                String cop = ctx.ifConditionMore(i).mathComparison().lop.getText(); //get the logical operator
 
-                if (ctx.ifConditionMore().size() == 1) {
+                if (ctx.ifConditionMore().size() == 1) { //check if there is only one extra condition
                     if (currentAndOr.equals("&&")) {
+                        //add the comparison
                         code.addAll(addCodeConditionReverse(lop));
 
+                        //set the label to jump to
                         code.set(code.size() - 1, code.get(code.size() - 1) + " " + ifLabels.get(conditionCounter));
 
-
+                        //add the math values
                         for (int y = 0; y < ctx.ifConditionMore(i).mathComparison().mathExpr().size(); y++) {
                             code.addAll(visit(ctx.ifConditionMore(i).mathComparison().mathExpr(y)));
                         }
+
+                        //add the comparison
                         code.addAll(addCodeConditionReverse(cop));
 
+                        //set the label to jump to
                         code.set(code.size() - 1, code.get(code.size() - 1) + " " + ifLabels.get(conditionCounter));
                     } else {
+                        //add the comparison
                         code.addAll(addCodeCondition(lop));
 
+                        //set the label to jump to
                         code.set(code.size() - 1, code.get(code.size() - 1) + " " + "#_" + +ifStmCounter + "_" + "code_block_" + conditionCounter);
 
+                        //add the math values
                         for (int y = 0; y < ctx.ifConditionMore(i).mathComparison().mathExpr().size(); y++) {
                             code.addAll(visit(ctx.ifConditionMore(i).mathComparison().mathExpr(y)));
                         }
+
+                        //add the comparison
                         code.addAll(addCodeCondition(cop));
 
+                        //set the label to jump to
                         code.set(code.size() - 1, code.get(code.size() - 1) + " " + "#_" + +ifStmCounter + "_" + "code_block_" + conditionCounter);
                     }
 
                 } else {
-                    if (i < ctx.ifConditionMore().size() - 1) {
-                        String nextAndOr = ctx.ifConditionMore(i + 1).andOR.getText();
+                    if (i < ctx.ifConditionMore().size() - 1) {//loop through all conditions except the last one
+                        String nextAndOr = ctx.ifConditionMore(i + 1).andOR.getText(); //check if next condition is && or ||
                         if (currentAndOr.equals("&&") && nextAndOr.equals("&&")) {
                             if (i == 0) {
+                                //add the comparison
                                 code.addAll(addCodeConditionReverse(lop));
-
-                                code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.get(0));
+                                //set the label to jump to
+                                code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.peek());
                             }
 
-
+                            //add the math values
                             for (int y = 0; y < ctx.ifConditionMore(i).mathComparison().mathExpr().size(); y++) {
                                 code.addAll(visit(ctx.ifConditionMore(i).mathComparison().mathExpr(y)));
                             }
+
+                            //add the comparison
                             code.addAll(addCodeConditionReverse(cop));
 
-                            code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.get(0));
+                            //set the label to jump to
+                            code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.peek());
 
                         } else if (currentAndOr.equals("&&") && nextAndOr.equals("||")) {
                             if (i == 0) {
+                                //add the comparison
                                 code.addAll(addCodeConditionReverse(lop));
 
-                                code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.get(0));
+                                //set the label to jump to
+                                code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.peek());
                             }
 
-
+                            //add the math values
                             for (int y = 0; y < ctx.ifConditionMore(i).mathComparison().mathExpr().size(); y++) {
                                 code.addAll(visit(ctx.ifConditionMore(i).mathComparison().mathExpr(y)));
                             }
+
+                            //add the condition
                             code.addAll(addCodeCondition(cop));
 
+                            //set the label to jump to
                             code.set(code.size() - 1, code.get(code.size() - 1) + " " + "#_" + +ifStmCounter + "_" + "code_block_" + conditionCounter);
-                            code.add(labels.get(0) + ":");
-                            labels.remove(0);
+
+                            //add the label from the labels queue
+                            code.add(labels.remove() + ":");
 
                         } else if (currentAndOr.equals("||") && nextAndOr.equals("||")) {
                             if (i == 0) {
+                                //add the comparison
                                 code.addAll(addCodeCondition(lop));
 
+                                //set the label to jump
                                 code.set(code.size() - 1, code.get(code.size() - 1) + " " + "#_" + +ifStmCounter + "_" + "code_block_" + conditionCounter);
                             }
 
-
+                            //add the math values
                             for (int y = 0; y < ctx.ifConditionMore(i).mathComparison().mathExpr().size(); y++) {
                                 code.addAll(visit(ctx.ifConditionMore(i).mathComparison().mathExpr(y)));
                             }
+
+                            //add the comparison
                             code.addAll(addCodeCondition(cop));
 
+                            //set the label to jump to
                             code.set(code.size() - 1, code.get(code.size() - 1) + " " + "#_" + +ifStmCounter + "_" + "code_block_" + conditionCounter);
 
                         } else if (currentAndOr.equals("||") && nextAndOr.equals("&&")) {
                             if (i == 0) {
+                                //add the comparison
                                 code.addAll(addCodeCondition(lop));
 
+                                //set the label to jump
                                 code.set(code.size() - 1, code.get(code.size() - 1) + " " + "#_" + +ifStmCounter + "_" + "code_block_" + conditionCounter);
                             }
 
-
+                            //add the math values
                             for (int y = 0; y < ctx.ifConditionMore(i).mathComparison().mathExpr().size(); y++) {
                                 code.addAll(visit(ctx.ifConditionMore(i).mathComparison().mathExpr(y)));
                             }
+
+                            //add the comparison
                             code.addAll(addCodeConditionReverse(cop));
 
-                            code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.get(0));
+                            //set the label to jump to
+                            code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.peek());
 
 
                         }
-                    } else if (i == ctx.ifConditionMore().size() - 1) {
+                    } else if (i == ctx.ifConditionMore().size() - 1) { //last condition
+                        //add the math values
                         for (int y = 0; y < ctx.ifConditionMore(i).mathComparison().mathExpr().size(); y++) {
                             code.addAll(visit(ctx.ifConditionMore(i).mathComparison().mathExpr(y)));
                         }
+
+                        //add the comparison
                         code.addAll(addCodeConditionReverse(cop));
 
+                        //set the label to jump to
                         code.set(code.size() - 1, code.get(code.size() - 1) + " " + ifLabels.get(conditionCounter));
 
 
@@ -726,15 +806,15 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
                 //check if the last condition is an ||
                 if (currentAndOr.equals("||") && i == ctx.ifConditionMore().size() - 1) {
-                    //flip statement
+                    //set the label to jump to
                     code.set(code.size() - 1, code.get(code.size() - 1).replaceAll("code_block_" + conditionCounter, ifLabels.get(conditionCounter)));
-                    String lopr = code.get(code.size() - 1).substring(7, 9);
                 }
             }
 
         } else {
+            //add the comparison
             code.addAll(addCodeConditionReverse(lop));
-
+            //set the label to jump to
             code.set(code.size() - 1, code.get(code.size() - 1) + " " + ifLabels.get(conditionCounter));
 
         }

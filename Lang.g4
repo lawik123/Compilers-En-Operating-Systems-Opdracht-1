@@ -8,7 +8,6 @@ varMod
 methodnames:methodDecl*;
 
 nonGlobalExpr:ifStm
-            |whileStm
             |forStm
             |writeExpr
             |varMod
@@ -41,7 +40,6 @@ callMethodExpr: '('(methodCallParams (',' methodCallParams)*)?')'methodIdentifie
 
 //statements
 ifStm:'if' '(' ifCondition ')' opener ifBlock=ifExprsensions closer (('?' '(' ifCondition ')' opener ifElseBlock=ifExprsensions closer)* ('?' opener elseBlock=ifExprsensions closer)?)?;
-whileStm: 'REPEAT' opener nonGlobalExpr* closer 'UNTIL' '(' ifCondition ')';
 forStm: 'for' '(' varDecl forCondition ';' idCrement=IDcrement '(' idValue=variableName ')' ')' opener nonGlobalExpr* closer;
 
 //user input/output
