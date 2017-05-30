@@ -1,9 +1,6 @@
 #Test BEGIN
-
     global ~int a IS 3;
     global ~string helloWorld IS "Hello";
-
-
 
 ~void (~int c)method2 /
     (2)method3;

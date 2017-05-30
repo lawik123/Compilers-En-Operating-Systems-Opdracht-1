@@ -4,7 +4,8 @@
 public class Type {
 
     /**
-     * class functions as parent class for data and variable Type
+     * class functions as parent class for method and variable Type
+     * has no other functions
      */
     public Type() {
     }

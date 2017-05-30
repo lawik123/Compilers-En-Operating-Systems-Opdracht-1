@@ -101,7 +101,6 @@ public class Scope {
         return getParentScope();
     }
 
-
     //Getters
     private Scope getParentScope() {
         return parentScope;

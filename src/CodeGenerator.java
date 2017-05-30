@@ -230,8 +230,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     }
 
     //method declarations
-
-
     @Override
     public ArrayList<String> visitMethodnames(LangParser.MethodnamesContext ctx) {
         ArrayList<String> code = new ArrayList<>();
@@ -357,19 +355,21 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     //statement visitors
     @Override
     public ArrayList<String> visitIfStm(LangParser.IfStmContext ctx) {
-        ifStmCounter++;
+        ifStmCounter++;     //up the ifStmcounter by 1
         ArrayList<String> code = new ArrayList<>();
+        //declare the needed variables
         int sizeElseChildren = 0;
         int conditionSize;
         conditionSize = ctx.ifCondition().size();
         try {
             //else block
-            sizeElseChildren = ctx.elseBlock.children.size();
+            sizeElseChildren = ctx.elseBlock.children.size();       //gets the size of the children in ELSE block
             hasElse = true;
         } catch (NullPointerException npe) {
             hasElse = false;
         }
 
+        //create all needed labels for this ifstatement
         for (int i = 0; i <= conditionSize; i++) {
             if (i == 0) {
                 ifLabels.add("#_" + ifStmCounter + "_" + "IF");
@@ -385,8 +385,8 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
             }
         }
 
-
         int counter = 0;
+        //loop through if statement and visit all blocks
         for (int i = 0; i < ctx.ifCondition().size(); i++) {
 
             if (i == 0) {
@@ -412,7 +412,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
             if (i < ctx.ifCondition().size()) {
                 code.add("goto " + "endif_" + (ifStmCounter));
             }
-            if (sizeElseChildren > 0 && i == ctx.ifCondition().size() - 1) {
+            if (sizeElseChildren > 0 && i == ctx.ifCondition().size() - 1) {        //else block
                 code.add("#_" + ifStmCounter + "_" + "ELSE: ");
                 for (int y = 0; y < sizeElseChildren; y++) {
                     code.addAll(visit(ctx.elseBlock.getChild(y + counter)));
@@ -453,6 +453,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
 
         code.add("forIDCrement_" + forStmCounter + ":");
+        //check for increment by 1 or by -1
         if (ctx.idCrement.getText().equals("incr")) {
             code.add("iinc " + currentMethodFrame.lookupJasminPosition(ctx.idValue.getText()) + " 1");
         } else {
@@ -478,6 +479,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
         for (int i = 0; i < ctx.mathComparison().mathExpr().size(); i++) {
             code.addAll(visit(ctx.mathComparison().mathExpr(i)));
         }
+        //create labels if the condition has more than 1 checks
         if (ctx.forConditionMore().size() > 0) {
             ArrayList<String> labels = new ArrayList<>();
             for (int i = 0; i < ctx.forConditionMore().size(); i++) {
@@ -494,9 +496,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                 if (ctx.forConditionMore().size() == 1) {
                     if (currentAndOr.equals("&&")) {
                         code.addAll(addCodeConditionReverse(lop));
-
                         code.set(code.size() - 1, code.get(code.size() - 1) + " " + "endFor_" + forStmCounter);
-
 
                         for (int y = 0; y < ctx.forConditionMore(i).mathComparison().mathExpr().size(); y++) {
                             code.addAll(visit(ctx.forConditionMore(i).mathComparison().mathExpr(y)));
@@ -527,7 +527,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                                 code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.get(0));
                             }
 
-
                             for (int y = 0; y < ctx.forConditionMore(i).mathComparison().mathExpr().size(); y++) {
                                 code.addAll(visit(ctx.forConditionMore(i).mathComparison().mathExpr(y)));
                             }
@@ -541,7 +540,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
                                 code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.get(0));
                             }
-
 
                             for (int y = 0; y < ctx.forConditionMore(i).mathComparison().mathExpr().size(); y++) {
                                 code.addAll(visit(ctx.forConditionMore(i).mathComparison().mathExpr(y)));
@@ -559,7 +557,6 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                                 code.set(code.size() - 1, code.get(code.size() - 1) + " " + "beginFor_" + forStmCounter);
                             }
 
-
                             for (int y = 0; y < ctx.forConditionMore(i).mathComparison().mathExpr().size(); y++) {
                                 code.addAll(visit(ctx.forConditionMore(i).mathComparison().mathExpr(y)));
                             }
@@ -574,14 +571,12 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                                 code.set(code.size() - 1, code.get(code.size() - 1) + " " + "beginFor_" + forStmCounter);
                             }
 
-
                             for (int y = 0; y < ctx.forConditionMore(i).mathComparison().mathExpr().size(); y++) {
                                 code.addAll(visit(ctx.forConditionMore(i).mathComparison().mathExpr(y)));
                             }
                             code.addAll(addCodeConditionReverse(cop));
 
                             code.set(code.size() - 1, code.get(code.size() - 1) + " " + labels.get(0));
-
 
                         }
                     } else if (i == ctx.forConditionMore().size() - 1) {
@@ -591,22 +586,15 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                         code.addAll(addCodeConditionReverse(cop));
 
                         code.set(code.size() - 1, code.get(code.size() - 1) + " " + "endFor_" + forStmCounter);
-
-
                     }
-
                 }
             }
 
         } else {
             code.addAll(addCodeConditionReverse(lop));
-
             code.set(code.size() - 1, code.get(code.size() - 1) + " " + "endFor_" + forStmCounter);
-
         }
-
         return code;
-
     }
 
     @Override
@@ -817,6 +805,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
                 "dup\n" +
                 "invokespecial java/lang/StringBuilder/<init>()V");
 
+        //visit all writevalues
         for (int i = 0; i < ctx.writevalues().size(); i++) {
             code.addAll(visit(ctx.writevalues(i)));
         }
@@ -830,6 +819,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitWriteMath(LangParser.WriteMathContext ctx) {
         ArrayList<String> code = new ArrayList<>();
         code.addAll(visit(ctx.mathExpr()));
+        //check if the variable is an integer
         if (currentMethodFrame.lookupType(ctx.getText()).equals("I")||code.get(code.size()-1).startsWith("i")) {
             code.add("invokevirtual java/lang/StringBuilder/append(I)Ljava/lang/StringBuilder;");
         } else {
@@ -842,6 +832,7 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
     public ArrayList<String> visitWriteString(LangParser.WriteStringContext ctx) {
         ArrayList<String> code = new ArrayList<>();
         code.addAll(visit(ctx.stringvalues()));
+        //check if the variable is an integer
         if (currentMethodFrame.lookupType(ctx.getText()).equals("I")||code.get(code.size()-1).startsWith("i")) {
             code.add("invokevirtual java/lang/StringBuilder/append(I)Ljava/lang/StringBuilder;");
         } else {
@@ -929,9 +920,10 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
     @Override
     public ArrayList<String> visitStringVariable(LangParser.StringVariableContext ctx) {
-
         ArrayList<String> code = new ArrayList<>();
+        //check if variable is a global variable
         if (!currentMethodFrame.lookupJasminPositionNonGlobal(ctx.getText()).isEmpty()) {
+            //checks if variable is Type int
             if (currentMethodFrame.lookupType(ctx.getText()).equals("I")) {
                 code.add("iload " + currentMethodFrame.lookupJasminPosition(ctx.getText()));
             }else{
@@ -971,9 +963,10 @@ public class CodeGenerator extends LangBaseVisitor<ArrayList<String>> {
 
     @Override
     public ArrayList<String> visitIntvariable(LangParser.IntvariableContext ctx) {
-
         ArrayList<String> code = new ArrayList<>();
+        //check if variable is a global variable
         if (!currentMethodFrame.lookupJasminPositionNonGlobal(ctx.getText()).isEmpty()) {
+            //checks if variable is Type int
             if (currentMethodFrame.lookupType(ctx.getText()).equals("I")) {
                 code.add("iload " + currentMethodFrame.lookupJasminPosition(ctx.getText()));
             }else{
