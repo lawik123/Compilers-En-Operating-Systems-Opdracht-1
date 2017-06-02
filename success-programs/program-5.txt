@@ -1,10 +1,10 @@
 #Test BEGIN
     global ~int a IS 3;
-    global ~string helloWorld IS "Hello";
+    global ~string helloWorld IS "globalvariableoverschrijving:";
 
 ~void (~int c)method2 /
     ~int x IS c +(2)method3;;
-    WRITE(x);
+    WRITE("print int x: "+x);
     return;
 \
 
@@ -12,10 +12,10 @@
         for(~int i IS 0; i < 10; incr(i)) /
             ~int b IS i * a;
             if(b > 4) /
-            b IS 5;
-            WRITE(a);
+            WRITE(b);
             \
         \
+        WRITE(helloWorld);
         helloWorld IS READSTRING;
         return 3;
 \

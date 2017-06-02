@@ -144,8 +144,10 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
                 return DataType.INT;
             }
         }
-        throw new EvaluateException("value is not an int");
+        throw new EvaluateException("variable is not an int");
     }
+
+
 
     @Override
     public DataType visitStringVarModify(LangParser.StringVarModifyContext ctx) {
@@ -164,13 +166,19 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
             }
         }
 
-        throw new EvaluateException("value is not a string");
+        throw new EvaluateException("variable is not a string");
     }
 
     //method declarations
     @Override
     public DataType visitVoidMethodDecl(LangParser.VoidMethodDeclContext ctx) {
         currentScope = globalScope.openScope();
+        if(ctx.methodDeclParams().size()>0) {
+            for (int i = 0; i < ctx.methodDeclParams().size(); i++) {
+                visit(ctx.methodDeclParams(i));
+            }
+        }
+
         for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
             visit(ctx.nonGlobalExpr(i));
         }
@@ -182,6 +190,11 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
     @Override
     public DataType visitIntMethodDecl(LangParser.IntMethodDeclContext ctx) {
         currentScope = globalScope.openScope();
+        if(ctx.methodDeclParams().size()>0) {
+            for (int i = 0; i < ctx.methodDeclParams().size(); i++) {
+                visit(ctx.methodDeclParams(i));
+            }
+        }
         DataType returnvalue = null;
         try {
             returnvalue = visit(ctx.mathExpr());
@@ -201,6 +214,11 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
     @Override
     public DataType visitStringMethodDecl(LangParser.StringMethodDeclContext ctx) {
         currentScope = globalScope.openScope();
+        if(ctx.methodDeclParams().size()>0) {
+            for (int i = 0; i < ctx.methodDeclParams().size(); i++) {
+                visit(ctx.methodDeclParams(i));
+            }
+        }
         DataType returnvalue = null;
         try {
             returnvalue = visit(ctx.stringvalues());
@@ -280,12 +298,24 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
 
     @Override
     public DataType visitForStm(LangParser.ForStmContext ctx) {
-        currentScope = currentScope.openScope();
-        for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
-            visit(ctx.nonGlobalExpr(i));
+        VariableType variableType;
+        if(visit(ctx.varDecl())==DataType.INT ) {
+            try {
+                 variableType = (VariableType) currentScope.lookupVariable(ctx.idValue.getText()).getType();
+            }catch (NullPointerException npe){
+                throw new EvaluateException("variable "  +ctx.idValue.getText() +" does not exist");
+            }
+            if (variableType.getDataType() == DataType.INT) {
+                currentScope = currentScope.openScope();
+                for (int i = 0; i < ctx.nonGlobalExpr().size(); i++) {
+                    visit(ctx.nonGlobalExpr(i));
+                }
+                currentScope = currentScope.closeScope();
+                return super.visitForStm(ctx);
+            }
+            throw new EvaluateException("for loop increment variable is not of type int");
         }
-        currentScope = currentScope.closeScope();
-        return super.visitForStm(ctx);
+        throw new EvaluateException("for loop counter is not of type int");
     }
 
     //mathExpression visitors
@@ -354,7 +384,12 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
 
     @Override
     public DataType visitStringVariable(LangParser.StringVariableContext ctx) {
-        VariableType varType = (VariableType) currentScope.lookupVariable(ctx.getText()).getType();
+        VariableType varType;
+        try {
+            varType = (VariableType) currentScope.lookupVariable(ctx.getText()).getType();
+        }catch (NullPointerException npe){
+            throw new EvaluateException("Variable " + ctx.getText() + " does not exist");
+        }
         if(varType.getDataType()== DataType.STRING) {
             return DataType.STRING;
         }
@@ -375,18 +410,25 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
 
     @Override
     public DataType visitStringParam(LangParser.StringParamContext ctx) {
+        currentScope.declareVariable(ctx.getText().substring(7),DataType.STRING);
         return DataType.STRING;
     }
 
     @Override
     public DataType visitStringCallParam(LangParser.StringCallParamContext ctx) {
+
         return DataType.STRING;
     }
 
     //Int
     @Override
     public DataType visitIntvariable(LangParser.IntvariableContext ctx) {
-        VariableType varType = (VariableType) currentScope.lookupVariable(ctx.getText()).getType();
+        VariableType varType;
+        try {
+            varType = (VariableType) currentScope.lookupVariable(ctx.getText()).getType();
+        }catch (NullPointerException npe){
+            throw new EvaluateException("Variable " + ctx.getText() + " does not exist");
+        }
         if(varType.getDataType()== DataType.INT) {
             return DataType.INT;
         }
@@ -412,6 +454,7 @@ public class TypeEvaluator extends LangBaseVisitor<DataType> {
 
     @Override
     public DataType visitIntParam(LangParser.IntParamContext ctx) {
+        currentScope.declareVariable(ctx.getText().substring(4),DataType.INT);
         return DataType.INT;
     }
 

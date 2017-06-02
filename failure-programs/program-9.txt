@@ -1,0 +1,12 @@
+#Test BEGIN
+
+~void ()run /
+
+    for(~int i IS 0; variablebestaatniet < 10; incr(i)) /
+            WRITE("pietje");
+            
+        \
+    return;
+\
+
+END

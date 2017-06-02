@@ -18,7 +18,7 @@ public class Compiler {
     public static void main(String[] args) {
         try {
             // Create lexer and get a token stream
-            ANTLRInputStream inputStream = new ANTLRFileStream("success-programs/program-4.txt");
+            ANTLRInputStream inputStream = new ANTLRFileStream("success-programs/program-5.txt");
 
             LangLexer lexer = new LangLexer(inputStream);
             CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -42,6 +42,7 @@ public class Compiler {
 
                 }
                 writer.close();
+                System.out.println("Jasmin code successfully generated");
             }catch (EvaluateException e){
                 e.printStackTrace();
             }

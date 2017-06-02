@@ -119,7 +119,7 @@ LOP:'<'|'<='|'>'|'>='|'=='|'!=';
 INT: '0'	|	[1-9][0-9]*;
 STRING: [a-z] [a-zA-Z0-9]*;
 CLASSNAME: [A-Z] [a-zA-Z0-9]*;
-STRINGVALUE: '"' [a-zA-Z0-9]* '"';
+STRINGVALUE: '"' (~["\\\r\n] | '\\' (. | EOF))* '"';
 
 //skippers
 WL:	[\n\t\r] ->	skip;       //skip enter or tabs

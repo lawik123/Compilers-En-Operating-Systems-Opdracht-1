@@ -1,0 +1,12 @@
+#Test BEGIN
+
+~void ()run /
+    ~string b IS "isgeenint";
+    for(~int i IS 0; i < 10; incr(b)) /
+            WRITE("pietje");
+            
+        \
+    return;
+\
+
+END

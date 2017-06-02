@@ -1,0 +1,12 @@
+#Test BEGIN
+
+~void ()run /
+
+    for(~string i IS "stringineenforloopkanniet"; i < 10; incr(i)) /
+            WRITE("pietje");
+
+        \
+    return;
+\
+
+END
